@@ -26,6 +26,7 @@
     <modules>
         <module>centero-core</module>
         <module>centero-api</module>
+        <module>centero-common</module>
     </modules>
 
     <dependencyManagement>
