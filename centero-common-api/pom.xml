@@ -7,8 +7,8 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>centero-common</artifactId>
-    <name>centero-common</name>
+    <artifactId>centero-common-api</artifactId>
+    <name>centero-common-api</name>
     <description>centero-2.0 centero-common-api module</description>
 
     <properties>
