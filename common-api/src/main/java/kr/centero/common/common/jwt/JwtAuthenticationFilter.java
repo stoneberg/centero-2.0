@@ -30,7 +30,7 @@ import static kr.centero.common.common.jwt.JwtTokenProvider.TOKEN_PREFIX;
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final String AUTH_ENTRY_POINT = "/api/v1/auth";
+    private static final String AUTH_ENTRY_POINT = "/api/common/v1/auth";
     private final JwtTokenProvider jwtTokenProvider;
     private final UserTokenMapper userTokenMapper;
     private final HandlerExceptionResolver exceptionResolver;
@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        // skip jwt filter if request path is /api/v1/auth/** (login, signup, refresh, logout)
+        // skip jwt filter if request path is /api/common/v1/auth/** (login, signup, refresh, logout)
         if (request.getServletPath().contains(AUTH_ENTRY_POINT)) {
             filterChain.doFilter(request, response);
             return;

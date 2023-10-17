@@ -47,5 +47,5 @@ public class UserAuthController {
         return ApiResponse.ok(signinResponse);
     }
 
-    // 로그아웃(/api/v1/auth/signout) -> SecurityConfig 에 정의된 CustomLogoutHandler를 통해 처리
+    // 로그아웃(/api/common/v1/auth/signout) -> SecurityConfig 에 정의된 CustomLogoutHandler를 통해 처리
 }

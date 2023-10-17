@@ -32,7 +32,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String LOGOUT_URL = "/api/v1/user/signout";
+    private static final String LOGOUT_URL = "/api/common/v1/user/signout";
     private final HttpRequestEndpointChecker httpRequestEndpointChecker;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final IpBlacklistFilter ipBlacklistFilter;
@@ -59,7 +59,7 @@ public class SecurityConfig {
                         .requestMatchers(mvcMatcherBuilder.pattern("/v3/api-docs/**")).permitAll()
                         .requestMatchers(mvcMatcherBuilder.pattern("/swagger-ui/**")).permitAll()
                         .requestMatchers(mvcMatcherBuilder.pattern("/swagger-resources/**")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern("/api/v1/auth/**")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/api/common/v1/auth/**")).permitAll()
                         .anyRequest().authenticated()
         );
 
