@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.centero.common.user.mapper.UserMapper">
+
+    <!-- 등록된 사용자 확인 -->
+    <select id="findAll" resultType="User">
+        /* SQL_ID : kr.centero.common.user.mapper.UserMapper.findAll */
+        SELECT
+            tu.user_id,
+            tu.username,
+            tu.password,
+            tu.email,
+            tr.role_name
+        FROM tb_user tu
+        INNER JOIN tb_user_role tur ON tur.user_id = tu.user_id
+        INNER JOIN tb_role tr ON tr.role_id = tur.role_id
+        ORDER BY tu.username, tr.role_name
+    </select>
+
+    <!-- 등록된 사용자 확인 -->
+    <select id="existsUser" parameterType="User" resultType="Boolean">
+        /* SQL_ID : kr.centero.common.user.mapper.UserMapper.existsUser */
+        SELECT COUNT(user_id) > 0 AS exists_user
+        FROM tb_user
+        WHERE
+            username = #{username} AND
+            email = #{email}
+    </select>
+
+    <!-- 사용자 등록 -->
+    <insert id="save" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
+        /* SQL_ID : kr.centero.common.user.mapper.UserMapper.save */
+        INSERT INTO tb_user (username, password, email)
+        VALUES (#{username}, #{password}, #{email})
+    </insert>
+
+    <!-- 사용자 전체 삭제 -->
+    <delete id="deleteAll">
+        /* SQL_ID : kr.centero.common.user.mapper.UserMapper.UserMapper.deleteAll */
+        DELETE FROM tb_user
+    </delete>
+
+</mapper>

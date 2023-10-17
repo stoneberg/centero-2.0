@@ -1,0 +1,19 @@
+SERVER_PORT: 8080
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+# Current Active Profile
+  config:
+    activate:
+      on-profile: h2
+# Database Configuration
+DRIVER_CLASS_NAME: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+DATABASE_URL: jdbc:log4jdbc:h2:mem:testdb
+DATABASE_USERNAME: sa
+DATABASE_PASSWORD:
+HIKARI_MINIMUM_IDLE: 5
+HIKARI_MAX_LIFETIME: 240000
+HIKARI_MAXIMUM_POOL_SIZE: 10
+HIKARI_IDLE_TIMEOUT: 100000
