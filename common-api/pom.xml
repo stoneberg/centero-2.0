@@ -7,7 +7,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>centero-common-api</artifactId>
+    <artifactId>common-api</artifactId>
     <name>centero-common-api</name>
     <description>centero-2.0 centero-common-api module</description>
 
@@ -18,11 +18,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spingboot.version}</version>
-        </dependency>
         <!--        <dependency>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-security</artifactId>
@@ -48,6 +43,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <classifier>exe</classifier>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
