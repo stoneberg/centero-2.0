@@ -22,6 +22,7 @@
         <module>centero-core</module>
         <module>ghg-api</module>
         <module>common-api</module>
+        <module>netzero-api</module>
     </modules>
 
     <properties>
