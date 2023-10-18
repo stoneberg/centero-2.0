@@ -1,4 +1,4 @@
-package kr.centero.ghg.api;
+package kr.centero.ghg;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

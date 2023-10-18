@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.centero.ghg.admin.mdm.mapper.CodeMapper">
+
+        <select id="getCodeTreeList" resultType="map" parameterType="map"> 
+        SELECT CODE_CD
+             , CODE_NM
+             , CODE_LVL
+             , P_CODE_CD
+             , DSP_ORDER
+             , EXP_FR_DT
+             , EXP_TO_DT
+             , USE_YN
+             , ATTR1_JSON
+             , ATTR2_JSON
+             , ATTR3_JSON
+             , ATTR4_JSON
+             , ATTR5_JSON
+             , ATTR6_JSON
+             , ATTR7_JSON
+             , ATTR8_JSON
+             , ATTR9_JSON
+             , ATTR10_JSON
+          FROM CMN_CODE
+         ORDER BY P_CODE_CD, DSP_ORDER
+    </select>
+
+    <select id="findAll" parameterType="Code" resultType="Code">
+        /* SQL_ID : kr.centero.ghg.admin.mdm.mapper.CodeMapper.findAll */
+        SELECT A.CODE_CD
+             , A.CODE_NM
+             , A.CODE_LVL
+             , A.P_CODE_CD
+             , B.CODE_NM P_CODE_NM
+             , A.DSP_ORDER
+             , A.USE_YN
+             , A.EXP_FR_DT
+             , A.EXP_TO_DT
+             , A.ATTR1_JSON
+             , A.ATTR1_VAL
+             , A.ATTR2_JSON
+             , A.ATTR2_VAL
+             , A.ATTR3_JSON
+             , A.ATTR3_VAL
+             , A.ATTR4_JSON
+             , A.ATTR4_VAL
+             , A.ATTR5_JSON
+             , A.ATTR5_VAL
+             , A.ATTR6_JSON
+             , A.ATTR6_VAL
+             , A.ATTR7_JSON
+             , A.ATTR7_VAL
+             , A.ATTR8_JSON
+             , A.ATTR8_VAL
+             , A.ATTR9_JSON
+             , A.ATTR9_VAL
+             , A.ATTR10_JSON
+             , A.ATTR10_VAL
+          FROM CMN_CODE A
+             , CMN_CODE B
+         WHERE B.CODE_CD = A.P_CODE_CD
+         <if test='pCodeCd != null and pCodeCd.size() > 0'>
+           AND A.P_CODE_CD IN <foreach collection="pCodeCd" item="item" open="(" close=")" separator=",">#{item}</foreach>
+         </if>
+         <if test='searchText != null and searchText != ""'>
+           AND INSTR(CONCAT(IFNULL(A.CODE_NM,''),IFNULL(A.ATTR1_VAL,''),IFNULL(A.ATTR2_VAL,''),IFNULL(A.ATTR3_VAL,''),IFNULL(A.ATTR4_VAL,''),IFNULL(A.ATTR5_VAL,'')), #{searchText}) <![CDATA[>]]> 0
+         </if>
+         <if test='useYn != null and useYn != ""'>
+           AND A.USE_YN = #{useYn}
+         </if>
+         <if test='period != null and period.size() > 0'>
+           AND A.EXP_FR_DT <![CDATA[<=]]> STR_TO_DATE(#{period[1]}, '%Y-%m-%d')
+           AND A.EXP_TO_DT <![CDATA[>=]]> STR_TO_DATE(#{period[0]}, '%Y-%m-%d')
+         </if>
+         ORDER BY A.CODE_LVL, A.P_CODE_CD, A.DSP_ORDER
+    </select>
+
+    <update id="save" parameterType="java.util.List">
+        <foreach collection="list" item="item">
+            <choose>
+            <when test='item.CRUD_FLAG == "C"'>
+                INSERT
+                  INTO CMN_CODE(
+                      CODE_CD
+                    , CODE_NM
+                    , CODE_LVL
+                    , P_CODE_CD
+                    , DSP_ORDER
+                    , USE_YN
+                    , EXP_FR_DT
+                    , EXP_TO_DT
+                    , ATTR1_JSON
+                    , ATTR1_VAL
+                    , ATTR2_JSON
+                    , ATTR2_VAL
+                    , ATTR3_JSON
+                    , ATTR3_VAL
+                    , ATTR4_JSON
+                    , ATTR4_VAL
+                    , ATTR5_JSON
+                    , ATTR5_VAL
+                    , ATTR6_JSON
+                    , ATTR6_VAL
+                    , ATTR7_JSON
+                    , ATTR7_VAL
+                    , ATTR8_JSON
+                    , ATTR8_VAL
+                    , ATTR9_JSON
+                    , ATTR9_VAL
+                    , ATTR10_JSON
+                    , ATTR10_VAL)
+                VALUES (
+                      #{item.CODE_CD}
+                    , #{item.CODE_NM}
+                    , #{item.CODE_LVL}
+                    , #{item.P_CODE_CD}
+                    , #{item.DSP_ORDER}
+                    , #{item.USE_YN}
+                    , #{item.EXP_FR_DT}
+                    , #{item.EXP_TO_DT}
+                    , #{item.ATTR1_JSON}
+                    , #{item.ATTR1_VAL}
+                    , #{item.ATTR2_JSON}
+                    , #{item.ATTR2_VAL}
+                    , #{item.ATTR3_JSON}
+                    , #{item.ATTR3_VAL}
+                    , #{item.ATTR4_JSON}
+                    , #{item.ATTR4_VAL}
+                    , #{item.ATTR5_JSON}
+                    , #{item.ATTR5_VAL}
+                    , #{item.ATTR6_JSON}
+                    , #{item.ATTR6_VAL}
+                    , #{item.ATTR7_JSON}
+                    , #{item.ATTR7_VAL}
+                    , #{item.ATTR8_JSON}
+                    , #{item.ATTR8_VAL}
+                    , #{item.ATTR9_JSON}
+                    , #{item.ATTR9_VAL}
+                    , #{item.ATTR10_JSON}
+                    , #{item.ATTR10_VAL}               
+                );
+            </when>
+             <!--<when test='item.CRUD_FLAG == "D"'>
+				DELETE FROM CMN_CODE WHERE CODE_CD = #{item.CODE_CD}; 
+			 </when>-->
+            <otherwise>
+                UPDATE CMN_CODE
+                   SET CODE_NM = #{item.CODE_NM}
+                    , CODE_LVL = #{item.CODE_LVL}
+                    , P_CODE_CD = #{item.P_CODE_CD}
+                    , DSP_ORDER = #{item.DSP_ORDER}
+                    , USE_YN = #{item.USE_YN}
+                    , EXP_FR_DT = #{item.EXP_FR_DT}
+                    , EXP_TO_DT = #{item.EXP_TO_DT}
+                    , ATTR1_JSON = #{item.ATTR1_JSON}
+                    , ATTR1_VAL = #{item.ATTR1_VAL}
+                    , ATTR2_JSON = #{item.ATTR2_JSON}
+                    , ATTR2_VAL = #{item.ATTR2_VAL}
+                    , ATTR3_JSON = #{item.ATTR3_JSON}
+                    , ATTR3_VAL = #{item.ATTR3_VAL}
+                    , ATTR4_JSON = #{item.ATTR4_JSON}
+                    , ATTR4_VAL = #{item.ATTR4_VAL}
+                    , ATTR5_JSON = #{item.ATTR5_JSON}
+                    , ATTR5_VAL = #{item.ATTR5_VAL}
+                    , ATTR6_JSON = #{item.ATTR6_JSON}
+                    , ATTR6_VAL = #{item.ATTR6_VAL}
+                    , ATTR7_JSON = #{item.ATTR7_JSON}
+                    , ATTR7_VAL = #{item.ATTR7_VAL}
+                    , ATTR8_JSON = #{item.ATTR8_JSON}
+                    , ATTR8_VAL = #{item.ATTR8_VAL}
+                    , ATTR9_JSON = #{item.ATTR9_JSON}
+                    , ATTR9_VAL = #{item.ATTR9_VAL}
+                    , ATTR10_JSON = #{item.ATTR10_JSON}
+                    , ATTR10_VAL = #{item.ATTR10_VAL} 
+                WHERE CODE_CD = #{item.CODE_CD}
+                ;
+            </otherwise>
+            </choose>
+        </foreach>
+    </update>
+
+
+</mapper>

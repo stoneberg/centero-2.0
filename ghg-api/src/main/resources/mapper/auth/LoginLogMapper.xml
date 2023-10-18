@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.centero.ghg.auth.mapper.LoginLogMapper">
+
+    <!-- 로그인 로그 기록 -->
+    <insert id="insertLoginLog">
+        /* SQL_ID : kr.centero.ghg.auth.mapper.LoginLogMapper.insertLoginLog */
+        INSERT INTO tb_login_logs(username, login_success, ip_address, failure_count)
+        VALUES(#{username}, #{loginSuccess}, #{ipAddress}, #{failureCount})
+    </insert>
+
+    <!-- 사용자의 최근 실패한 로그인 횟수 얻기 -->
+    <select id="findRecentFailureCount" resultType="Integer">
+        /* SQL_ID : kr.centero.ghg.auth.mapper.LoginLogMapper.findRecentFailureCount */
+        SELECT failure_count
+        FROM tb_login_logs
+        WHERE username = #{username}
+        ORDER BY login_time DESC
+        LIMIT 1
+    </select>
+
+</mapper>

@@ -15,7 +15,7 @@
         <filter class="kr.centero.common.common.filter.LogbackDenyFilter"/>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${LOG_PATTERN}</pattern>
-        </encoder>
+        </encoder>ㄲ
     </appender>
 
     <!-- SQL 로그를 위한 애펜더 -->

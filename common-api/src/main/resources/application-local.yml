@@ -13,3 +13,10 @@ HIKARI_MINIMUM_IDLE: 5
 HIKARI_MAX_LIFETIME: 240000
 HIKARI_MAXIMUM_POOL_SIZE: 10
 HIKARI_IDLE_TIMEOUT: 100000
+
+token:
+  signing:
+    key: e147f935d2219326321bfc7b2ce4bccd8324e2fca4d03841e5ee8210da788bab
+  expiration:
+    access: 10m # w(week), d(day), h(hour), m(minute), s(second)
+    refresh: 1h # w(week), d(day), h(hour), m(minute), s(second)
