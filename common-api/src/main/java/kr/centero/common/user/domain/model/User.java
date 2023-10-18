@@ -1,13 +1,11 @@
 package kr.centero.common.user.domain.model;
 
 import kr.centero.common.common.mybatis.pagination.PageInfo;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.ibatis.type.Alias;
 
 @Data
+@Builder
 @Alias("User")
 @NoArgsConstructor
 @AllArgsConstructor

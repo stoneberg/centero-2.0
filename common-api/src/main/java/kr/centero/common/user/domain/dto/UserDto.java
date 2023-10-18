@@ -14,19 +14,34 @@ import java.util.List;
 public class UserDto {
 
     /**
-     * 사용자 정보 상세 조회 요청 DTO
+     * 사용자 검색 조건 조회 요청 DTO
      */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UserDetailRequest {
+    public static class UserRequest {
         private Long userId;
         private String username;
         private String email;
         private String role;
     }
 
+    /**
+     * 사용자 검색 조건 페이징 조회 요청 DTO
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserPageRequest {
+        private Long userId;
+        private String username;
+        private String email;
+        private String role;
+        private Integer pageNo;
+        private Integer pageSize;
+    }
 
     /**
      * 사용자 조회 응답 DTO

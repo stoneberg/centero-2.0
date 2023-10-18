@@ -1,7 +1,5 @@
 package kr.centero.common.user.service;
 
-import kr.centero.common.common.exception.BusinessErrorCode;
-import kr.centero.common.common.exception.BusinessException;
 import kr.centero.common.common.mybatis.pagination.PageResponse;
 import kr.centero.common.user.domain.dto.UserDto;
 import kr.centero.common.user.domain.model.User;
@@ -28,44 +26,29 @@ public class UserService {
      * @return list of users
      */
     public List<UserDto.UserResponse> findUsers() {
-        return userMapper.findAllByCond(new User()).stream().map(UserMapstruct.INSTANCE::toUserDto).toList();
+        return userMapper.findUserByCond(new User()).stream().map(UserMapstruct.INSTANCE::toUserDto).toList();
     }
 
     /**
-     * find user by id : return a user
+     * find user by userId, username, email, role
      *
-     * @param userId user id (primary key)
-     * @return user
+     * @param userRequest user request
+     * @return UserResponse
      */
-    public UserDto.UserResponse findUser(Long userId) {
-        return userMapper.findUserByCond(userId, null)
-                .map(UserMapstruct.INSTANCE::toUserDto)
-                .orElseThrow(() -> new BusinessException(BusinessErrorCode.USER_NOT_FOUND));
+    public List<UserDto.UserResponse> findUserByCond(UserDto.UserRequest userRequest) {
+        User user = UserMapstruct.INSTANCE.toUser(userRequest);
+        return userMapper.findUserByCond(user).stream()
+                .map(UserMapstruct.INSTANCE::toUserDto).toList();
     }
-
-    /**
-     * find user by username, email, role
-     *
-     * @param userId user id (primary key)
-     * @param userDetailRequest user detail request
-     * @return user
-     */
-    public UserDto.UserResponse findUserByCond(Long userId, UserDto.UserDetailRequest userDetailRequest) {
-        User user = UserMapstruct.INSTANCE.toUser(userDetailRequest);
-        return userMapper.findUserByCond(userId, user)
-                .map(UserMapstruct.INSTANCE::toUserDto)
-                .orElseThrow(() -> new BusinessException(BusinessErrorCode.USER_NOT_FOUND));
-    }
-
 
     /**
      * find user pages by condition
      *
-     * @param userDetailRequest user detail request
-     * @return user page dto response
+     * @param userRequest user request
+     * @return UserPageDtoResponse
      */
-    public UserDto.UserPageDtoResponse findPagesByCond(Long userId, UserDto.UserDetailRequest userDetailRequest) {
-        User user = UserMapstruct.INSTANCE.toUser(userDetailRequest);
+    public UserDto.UserPageDtoResponse findPagesByCond(UserDto.UserRequest userRequest) {
+        User user = UserMapstruct.INSTANCE.toUser(userRequest);
         PageResponse<User> pageResponse = userMapper.findUserPageByCond(user);
         log.info("[PAG]pageResponse=======>{}", pageResponse);
 
@@ -92,11 +75,12 @@ public class UserService {
     /**
      * update user
      *
-     * @param userId user id (primary key)
-     * @param userDetailRequest user detail request
+     * @param userRequest user update request
      */
-    public void updateUser(Long userId, UserDto.UserDetailRequest userDetailRequest) {
-        User user = UserMapstruct.INSTANCE.toUser(userDetailRequest);
-        userMapper.update(userId, user);
+    public void updateUser(UserDto.UserRequest userRequest) {
+        User user = UserMapstruct.INSTANCE.toUser(userRequest);
+        userMapper.update(user);
     }
+
+
 }

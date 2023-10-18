@@ -8,23 +8,20 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 @Mapper
 public interface UserMapper extends PageMapper {
 
-    List<User> findAllByCond(User user);
+    List<User> findUserByCond(User user);
 
     default PageResponse<User> findUserPageByCond(User user) {
         prepare(user.getPageNo(), user.getPageSize());
-        return new MybatisPageResponse<>(findAllByCond(user));
+        return new MybatisPageResponse<>(findUserByCond(user));
     }
-
-    Optional<User> findUserByCond(@Param("userId") Long userId, User user);
 
     void save(User user);
 
-    void update(@Param("userId") Long userId, User user);
+    void update(User user);
 
     void deleteAll();
 

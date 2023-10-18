@@ -15,7 +15,7 @@ public interface UserMapstruct {
 
     // role -> roleName (different field name mapping)
     @Mapping(source = "role", target = "roleName")
-    User toUser(UserDto.UserDetailRequest userDetailRequest);
+    User toUser(UserDto.UserRequest userRequest);
 
     // roleName -> role (different field name mapping)
     @Mapping(source = "roleName", target = "role")

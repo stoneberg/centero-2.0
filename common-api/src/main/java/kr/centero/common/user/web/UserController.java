@@ -24,32 +24,41 @@ public class UserController {
         return ApiResponse.ok(userService.findUsers());
     }
 
-    // 사용자 조회 (request param: username, email, role) : Mapping Query String Parameters to ModelAttributes
+    // A.사용자 상세 조건 조회 (request param: username, email, role) : Mapping Query String Parameters to ModelAttributes
     @Operation(summary = "User 조회", description = "User 정보를 조회한다. [GetMapping]")
-    @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponse> findUserDetailByGetMapping(@PathVariable Long userId, UserDto.UserDetailRequest userDetailRequest) {
-        return ApiResponse.ok(userService.findUserByCond(userId, userDetailRequest));
+    @GetMapping("/query")
+    public ResponseEntity<ApiResponse> findUserByCondGetMapping(UserDto.UserRequest userRequest) {
+        return ApiResponse.ok(userService.findUserByCond(userRequest));
     }
 
-    // 사용자 상세 조회 (request param: username, email, role) : Mapping requestBody auto mapping
+    // B.사용자 상세 조건 조회 (request param: username, email, role) : Mapping requestBody auto mapping
     @Operation(summary = "User 조회", description = "User 정보를 조회한다. [PostMapping]")
-    @PostMapping("/{userId}")
-    public ResponseEntity<ApiResponse> findUserDetailByPostMapping(@PathVariable Long userId, @RequestBody UserDto.UserDetailRequest userDetailRequest) {
-        return ApiResponse.ok(userService.findUserByCond(userId, userDetailRequest));
+    @PostMapping("/query")
+    public ResponseEntity<ApiResponse> findUserByCondPostMapping(@RequestBody UserDto.UserRequest userRequest) {
+        return ApiResponse.ok(userService.findUserByCond(userRequest));
+    }
+
+    // 사용자 상세 조회 페이징 (request param: username, email, role) :  Mapping Query String Parameters to ModelAttributes
+    @Operation(summary = "User 조회", description = "User page 를 조회한다. [GetMapping]")
+    @GetMapping("/pages")
+    public ResponseEntity<ApiResponse> findUserByPageGetMapping(UserDto.UserRequest userRequest) {
+        return ApiResponse.ok(userService.findPagesByCond(userRequest));
     }
 
     // 사용자 상세 조회 페이징 (request param: username, email, role) : Mapping requestBody auto mapping
-    @Operation(summary = "User 조회", description = "User 정보를 조회한다. [PostMapping]")
-    @PostMapping("/{userId}/pages")
-    public ResponseEntity<ApiResponse> findUserByPage(@PathVariable Long userId, @RequestBody UserDto.UserDetailRequest userDetailRequest) {
-        return ApiResponse.ok(userService.findPagesByCond(userId, userDetailRequest));
+    @Operation(summary = "User 조회", description = "User page 를 조회한다. [PostMapping]")
+    @PostMapping("/pages")
+    public ResponseEntity<ApiResponse> findUserByPagePostMapping(@RequestBody UserDto.UserRequest userRequest) {
+        return ApiResponse.ok(userService.findPagesByCond(userRequest));
     }
 
     // 사용자 수정
     @Operation(summary = "User 수정", description = "User 정보를 수정한다.")
     @PutMapping("/{userId}")
-    public ResponseEntity<ApiResponse> updateUser(@PathVariable Long userId, @RequestBody UserDto.UserDetailRequest userDetailRequest) {
-        userService.updateUser(userId, userDetailRequest);
+    public ResponseEntity<ApiResponse> updateUser(@PathVariable Long userId, @RequestBody UserDto.UserRequest userRequest) {
+        // if use path variable as query condition
+        // userDetailRequest.setUserId(userId);
+        userService.updateUser(userRequest);
         return ApiResponse.ok();
     }
 
