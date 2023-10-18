@@ -1,15 +1,16 @@
 package kr.centero.common.user.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import kr.centero.common.common.mybatis.pagination.PageInfo;
+import lombok.*;
 import org.apache.ibatis.type.Alias;
 
 @Data
+@Builder
 @Alias("User")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+@EqualsAndHashCode(callSuper = true)
+public class User extends PageInfo {
     private Long userId;
     private String username;
     private String password;

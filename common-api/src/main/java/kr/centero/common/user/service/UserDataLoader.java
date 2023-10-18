@@ -42,7 +42,7 @@ public class UserDataLoader implements CommandLineRunner {
 
         // USER 생성
         Faker faker = new Faker();
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 21; i++) {
             User user = new User();
             user.setUsername(faker.name().firstName());
             user.setPassword(passwordEncoder.encode("pwd1"));
