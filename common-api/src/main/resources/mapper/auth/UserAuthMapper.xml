@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.centero.common.auth.mapper.UserAuthMapper">
+<mapper namespace="kr.centero.common.client.auth.mapper.UserAuthMapper">
 
     <!-- 로그인 처리를 위해 등록 사용자, 사용자 권한 조회 -->
     <select id="findUserByUsername" parameterType="String" resultType="UserRole">

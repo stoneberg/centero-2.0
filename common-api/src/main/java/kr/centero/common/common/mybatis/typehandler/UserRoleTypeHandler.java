@@ -1,6 +1,6 @@
 package kr.centero.common.common.mybatis.typehandler;
 
-import kr.centero.common.auth.domain.enums.ERole;
+import kr.centero.common.client.auth.domain.enums.ERole;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 

@@ -2,7 +2,7 @@ package kr.centero.common.common.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.centero.common.auth.mapper.UserTokenMapper;
+import kr.centero.common.client.auth.mapper.UserTokenMapper;
 import kr.centero.common.common.exception.ApplicationErrorCode;
 import kr.centero.common.common.exception.ApplicationException;
 import kr.centero.common.common.jwt.JwtTokenProvider;
