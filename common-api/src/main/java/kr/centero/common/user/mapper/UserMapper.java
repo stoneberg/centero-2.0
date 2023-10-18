@@ -5,7 +5,6 @@ import kr.centero.common.common.mybatis.pagination.PageMapper;
 import kr.centero.common.common.mybatis.pagination.PageResponse;
 import kr.centero.common.user.domain.model.User;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

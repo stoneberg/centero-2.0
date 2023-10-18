@@ -44,6 +44,19 @@ public class UserDto {
     }
 
     /**
+     * 사용자 수정 요청 DTO
+     */
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserUpdateRequest {
+        private Long userId;
+        private String username;
+        private String email;
+    }
+
+    /**
      * 사용자 조회 응답 DTO
      */
     @Data

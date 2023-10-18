@@ -42,9 +42,17 @@
     <update id="update" parameterType="User">
         /* SQL_ID : kr.centero.common.user.mapper.UserMapper.update */
         UPDATE tb_user
-        SET username = #{username},
-            password = #{password},
-            email = #{email}
+        <set>
+            <if test="@org.springframework.util.StringUtils@hasText(username)">
+                username = #{username},
+            </if>
+            <if test="@org.springframework.util.StringUtils@hasText(password)">
+                password = #{password},
+            </if>
+            <if test="@org.springframework.util.StringUtils@hasText(email)">
+                email = #{email},
+            </if>
+        </set>
         WHERE user_id = #{userId}
     </update>
 

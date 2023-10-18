@@ -41,24 +41,24 @@ public class UserController {
     // 사용자 상세 조회 페이징 (request param: username, email, role) :  Mapping Query String Parameters to ModelAttributes
     @Operation(summary = "User 조회", description = "User page 를 조회한다. [GetMapping]")
     @GetMapping("/pages")
-    public ResponseEntity<ApiResponse> findUserByPageGetMapping(UserDto.UserRequest userRequest) {
-        return ApiResponse.ok(userService.findPagesByCond(userRequest));
+    public ResponseEntity<ApiResponse> findUserByPageGetMapping(UserDto.UserPageRequest userPageRequest) {
+        return ApiResponse.ok(userService.findPagesByCond(userPageRequest));
     }
 
     // 사용자 상세 조회 페이징 (request param: username, email, role) : Mapping requestBody auto mapping
     @Operation(summary = "User 조회", description = "User page 를 조회한다. [PostMapping]")
     @PostMapping("/pages")
-    public ResponseEntity<ApiResponse> findUserByPagePostMapping(@RequestBody UserDto.UserRequest userRequest) {
-        return ApiResponse.ok(userService.findPagesByCond(userRequest));
+    public ResponseEntity<ApiResponse> findUserByPagePostMapping(@RequestBody UserDto.UserPageRequest userPageRequest) {
+        return ApiResponse.ok(userService.findPagesByCond(userPageRequest));
     }
 
     // 사용자 수정
     @Operation(summary = "User 수정", description = "User 정보를 수정한다.")
     @PutMapping("/{userId}")
-    public ResponseEntity<ApiResponse> updateUser(@PathVariable Long userId, @RequestBody UserDto.UserRequest userRequest) {
+    public ResponseEntity<ApiResponse> updateUser(@PathVariable Long userId, @RequestBody UserDto.UserUpdateRequest userUpdateRequest) {
         // if use path variable as query condition
         // userDetailRequest.setUserId(userId);
-        userService.updateUser(userRequest);
+        userService.updateUser(userUpdateRequest);
         return ApiResponse.ok();
     }
 

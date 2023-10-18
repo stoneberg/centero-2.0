@@ -2,13 +2,12 @@ package kr.centero.common.user.domain.model;
 
 import kr.centero.common.common.mybatis.pagination.PageInfo;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.apache.ibatis.type.Alias;
 
-@Data
-@Builder
-@Alias("User")
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
+@SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 public class User extends PageInfo {
     private Long userId;
@@ -16,4 +15,8 @@ public class User extends PageInfo {
     private String password;
     private String email;
     private String roleName;
+
+    public User() {
+        // SuperBuilder를 사용하면 기본 생성자가 필요하다.
+    }
 }
