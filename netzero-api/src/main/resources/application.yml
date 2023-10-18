@@ -22,6 +22,9 @@ spring:
     init:
       mode: ${SQL_INIT_MODE} # run schema.sql and data.sql for test in h2, local profile only
 
+logging:
+   config: classpath:logback-spring.xml
+
 # mybatis config
 mybatis:
   type-handlers-package: kr.centero.netzero.common.mybatis.typehandler
@@ -45,3 +48,4 @@ token:
 
 refresh-cookie:
   duration: 1d # w(week), d(day), h(hour), m(minute)
+

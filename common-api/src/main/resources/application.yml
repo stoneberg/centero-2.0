@@ -22,6 +22,9 @@ spring:
     init:
       mode: ${SQL_INIT_MODE} # run schema.sql and data.sql for test. always: always run, never: never run, embedded: run only embedded db
 
+logging:
+   config: classpath:logback-spring.xml
+
 # mybatis config
 mybatis:
   type-handlers-package: kr.centero.common.common.mybatis.typehandler
@@ -45,3 +48,4 @@ token:
 
 refresh-cookie:
   duration: 1d # w(week), d(day), h(hour), m(minute)
+
