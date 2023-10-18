@@ -1,4 +1,4 @@
-package kr.centero.core.common.interceptor.filter;
+package kr.centero.core.common.filter;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.filter.Filter;
