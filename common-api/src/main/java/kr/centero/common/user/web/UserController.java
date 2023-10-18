@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "User API", description = "User API CRUD")
+@Tag(name = "User API", description = "사용자 CRUD API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/common/v1/users")
