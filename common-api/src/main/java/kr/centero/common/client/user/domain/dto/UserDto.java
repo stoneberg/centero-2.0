@@ -3,9 +3,9 @@ package kr.centero.common.client.user.domain.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import kr.centero.common.client.user.mapstruct.UserMapstruct;
-import kr.centero.common.common.mybatis.pagination.PageResponse;
-import kr.centero.common.common.payload.PageDtoResponse;
 import kr.centero.common.client.user.domain.model.User;
+import kr.centero.core.common.mybatis.pagination.PageResponse;
+import kr.centero.core.common.payload.PageDtoResponse;
 import lombok.*;
 
 import java.util.List;

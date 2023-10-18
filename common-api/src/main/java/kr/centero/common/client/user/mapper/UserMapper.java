@@ -1,9 +1,9 @@
 package kr.centero.common.client.user.mapper;
 
 import kr.centero.common.client.user.domain.model.User;
-import kr.centero.common.common.mybatis.pagination.MybatisPageResponse;
-import kr.centero.common.common.mybatis.pagination.PageMapper;
-import kr.centero.common.common.mybatis.pagination.PageResponse;
+import kr.centero.core.common.mybatis.pagination.MybatisPageResponse;
+import kr.centero.core.common.mybatis.pagination.PageMapper;
+import kr.centero.core.common.mybatis.pagination.PageResponse;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
