@@ -1,2 +1,37 @@
 server:
-  port: 8082
+  port: ${SERVER_PORT:8082}
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: Centero-Netzero
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:h2}
+  datasource:
+    driver-class-name: ${DRIVER_CLASS_NAME:org.h2.Driver} # default driver class name is org.h2.Driver
+    url: ${DATABASE_URL:jdbc:h2:mem:testdb}
+    username: ${DATABASE_USERNAME:sa}
+    password: ${DATABASE_PASSWORD:}
+    hikari:
+      minimum-idle: ${HIKARI_MINIMUM_IDLE:5} # minimum number of idle connections that HikariCP tries to maintain in the pool
+      max-lifetime: ${HIKARI_MAX_LIFETIME:240000} # maximum lifetime of a connection in the pool
+      maximum-pool-size: ${HIKARI_MAXIMUM_POOL_SIZE:10} # maximum number of connections in the pool
+      idle-timeout: ${HIKARI_IDLE_TIMEOUT:100000} # maximum amount of time a connection is allowed to sit idle in the pool
+  sql:
+    init:
+      mode: always # script execution mode not only on embedded database (h2)  but also on a production one (mysql, postgresql, etc.)
+
+# mybatis config
+mybatis:
+  type-handlers-package: kr.centero.common.common.mybatis.typehandler
+  type-aliases-package: kr.centero.common.**.model
+  mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    cache-enabled: false
+    lazy-loading-enabled: false
+    aggressive-lazy-loading: false
+    default-statement-timeout: 5
+    jdbc-type-for-null: NULL
+    call-setters-on-nulls: true
+    map-underscore-to-camel-case: true
