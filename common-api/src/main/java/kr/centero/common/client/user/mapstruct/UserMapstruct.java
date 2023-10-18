@@ -2,7 +2,7 @@ package kr.centero.common.client.user.mapstruct;
 
 import kr.centero.common.client.user.domain.dto.UserDto;
 import kr.centero.common.client.user.domain.model.User;
-import kr.centero.core.config.MapStructMapperConfig;
+import kr.centero.common.config.MapStructMapperConfig;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
