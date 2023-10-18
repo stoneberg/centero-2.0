@@ -40,3 +40,5 @@ token:
   expiration:
     access: 10m # w(week), d(day), h(hour), m(minute), s(second)
     refresh: 1h # w(week), d(day), h(hour), m(minute), s(second)
+refresh-cookie:
+  duration: 7d # w(week), d(day), h(hour), m(minute)

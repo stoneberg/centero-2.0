@@ -20,4 +20,21 @@
             u.user_id, u.username
     </select>
 
+    <!-- 등록된 사용자 확인 -->
+    <select id="existsUser" parameterType="SignupUser" resultType="Boolean">
+        /* SQL_ID : kr.centero.common.user.mapper.UserAuthMapper.existsUser */
+        SELECT COUNT(user_id) > 0 AS exists_user
+        FROM tb_user
+        WHERE
+            username = #{username} AND
+            email = #{email}
+    </select>
+
+    <!-- 사용자 등록 -->
+    <insert id="save" parameterType="SignupUser" useGeneratedKeys="true" keyProperty="userId">
+        /* SQL_ID : kr.centero.common.user.mapper.UserAuthMapper.save */
+        INSERT INTO tb_user (username, password, email)
+        VALUES (#{username}, #{password}, #{email})
+    </insert>
+
 </mapper>

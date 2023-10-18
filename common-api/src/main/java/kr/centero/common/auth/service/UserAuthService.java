@@ -4,8 +4,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import kr.centero.common.auth.domain.dto.UserAuthDto;
 import kr.centero.common.auth.domain.enums.ERole;
 import kr.centero.common.auth.domain.model.CenteroUserDetails;
+import kr.centero.common.auth.domain.model.SignupUser;
 import kr.centero.common.auth.domain.model.UserToken;
 import kr.centero.common.auth.mapper.RoleMapper;
+import kr.centero.common.auth.mapper.UserAuthMapper;
 import kr.centero.common.auth.mapper.UserRoleMapper;
 import kr.centero.common.auth.mapper.UserTokenMapper;
 import kr.centero.common.auth.mapstruct.UserAuthMapstruct;
@@ -13,11 +15,8 @@ import kr.centero.common.common.exception.BusinessErrorCode;
 import kr.centero.common.common.exception.BusinessException;
 import kr.centero.common.common.jwt.JwtTokenProvider;
 import kr.centero.common.common.util.CookieUtil;
-import kr.centero.common.user.domain.model.User;
-import kr.centero.common.user.mapper.UserMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +24,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,12 +38,15 @@ public class UserAuthService {
     private static final String ROLE_PREFIX = "ROLE_";
     private final AuthenticationManager authenticationManager;
     private final CenteroUserDetailsService userDetailService;
-    private final UserTokenMapper userTokenMapper;
-    private final UserRoleMapper userRoleMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
-    private final RoleMapper roleMapper;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserTokenMapper userTokenMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRoleMapper userRoleMapper;
+    private final UserAuthMapper userAuthMapper;
+    private final RoleMapper roleMapper;
+
+    @Value("${refresh-cookie.duration}")
+    private String refreshCookieDuration;
 
     /**
      * 로그인: access, refresh 토큰 발급
@@ -56,12 +60,6 @@ public class UserAuthService {
         String username = signinRequest.getUsername();
         String password = signinRequest.getPassword();
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-
-/*        try {
-            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (Exception ex) {
-            throw new ApplicationException(ApplicationErrorCode.BAD_CREDENTIALS, HttpStatus.UNAUTHORIZED);
-        }*/
 
         CenteroUserDetails userDetails = (CenteroUserDetails) authentication.getPrincipal();
         String access = jwtTokenProvider.generateToken(userDetails);
@@ -78,7 +76,7 @@ public class UserAuthService {
         this.registerAccessToken(access, username);
 
         // 3.create refresh token cookie
-        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refresh, "1d", response);
+        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refresh, refreshCookieDuration, response);
 
         // 4.return jwt response
         return UserAuthDto.SigninResponse.builder()
@@ -110,7 +108,7 @@ public class UserAuthService {
         this.registerAccessToken(newAccessToken, username);
 
         // 3.create refresh token cookie
-        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refreshToken, "1d", httpServletResponse);
+        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refreshToken, refreshCookieDuration, httpServletResponse);
 
         // 4.return jwt response
         return UserAuthDto.SigninResponse.builder()
@@ -130,21 +128,21 @@ public class UserAuthService {
      */
     @Transactional
     public UserAuthDto.SigninResponse registerUser(UserAuthDto.SignupRequest signupRequest, HttpServletResponse response) {
-        User user = UserAuthMapstruct.INSTANCE.toUserModel(signupRequest);
+        SignupUser signupUser = UserAuthMapstruct.INSTANCE.toUserModel(signupRequest);
 
-        // 등록된 사용자인지 확인
-        if (Boolean.TRUE.equals(userMapper.existsUser(user))) {
+        // check if user already exists
+        if (Boolean.TRUE.equals(userAuthMapper.existsUser(signupUser))) {
             throw new BusinessException(BusinessErrorCode.USER_ALREADY_EXISTS);
         }
 
-        user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-        userMapper.save(user);
+        signupUser.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+        userAuthMapper.save(signupUser);
 
         // no role set default role to user
         String role = StringUtils.isBlank(signupRequest.getRole()) ? ERole.USER.name() : signupRequest.getRole();
         Long roleId = roleMapper.findByRoleName(role);
-        Long userId = user.getUserId();
-        String username = user.getUsername();
+        Long userId = signupUser.getUserId();
+        String username = signupUser.getUsername();
         userRoleMapper.save(userId, roleId);
 
         // after user registration, issue access, refresh token
@@ -156,7 +154,7 @@ public class UserAuthService {
         this.registerAccessToken(access, username);
 
         // 2.create refresh token cookie
-        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refresh, "1d", response);
+        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refresh, refreshCookieDuration, response);
 
         // 3.return jwt response
         return UserAuthDto.SigninResponse.builder()

@@ -9,8 +9,6 @@ import java.util.List;
 public interface UserMapper {
     List<User> findAll();
 
-    Boolean existsUser(User user);
-
     void save(User user);
 
     void deleteAll();

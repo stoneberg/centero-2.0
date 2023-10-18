@@ -17,16 +17,6 @@
         ORDER BY tu.username, tr.role_name
     </select>
 
-    <!-- 등록된 사용자 확인 -->
-    <select id="existsUser" parameterType="User" resultType="Boolean">
-        /* SQL_ID : kr.centero.common.user.mapper.UserMapper.existsUser */
-        SELECT COUNT(user_id) > 0 AS exists_user
-        FROM tb_user
-        WHERE
-            username = #{username} AND
-            email = #{email}
-    </select>
-
     <!-- 사용자 등록 -->
     <insert id="save" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
         /* SQL_ID : kr.centero.common.user.mapper.UserMapper.save */

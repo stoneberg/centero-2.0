@@ -20,7 +20,7 @@ public class CookieUtil {
      *
      * @param name     cookie name
      * @param value    cookie value
-     * @param duration cookie duration (ex. 1d, 1h, 1m)
+     * @param duration cookie duration (ex. 1d, 1h, 1m) [max-age]
      * @return created cookie
      */
     public static Cookie burnCookie(String name, String value, String duration) {
@@ -57,11 +57,11 @@ public class CookieUtil {
      *
      * @param name     cookie name
      * @param value    cookie value
-     * @param maxAge   cookie max age
+     * @param duration   cookie max age
      * @param response HttpServletResponse
      */
-    public static void createCookie(String name, String value, String maxAge, HttpServletResponse response) {
-        Cookie cookie = CookieUtil.burnCookie(name, value, maxAge);
+    public static void createCookie(String name, String value, String duration, HttpServletResponse response) {
+        Cookie cookie = CookieUtil.burnCookie(name, value, duration);
         response.addCookie(cookie);
     }
 
