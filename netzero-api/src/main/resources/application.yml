@@ -20,7 +20,7 @@ spring:
       idle-timeout: ${HIKARI_IDLE_TIMEOUT:100000} # maximum amount of time a connection is allowed to sit idle in the pool
   sql:
     init:
-      mode: always # script execution mode not only on embedded database (h2)  but also on a production one (mysql, postgresql, etc.)
+      mode: ${SQL_INIT_MODE} # run schema.sql and data.sql for test in h2, local profile only
 
 # mybatis config
 mybatis:

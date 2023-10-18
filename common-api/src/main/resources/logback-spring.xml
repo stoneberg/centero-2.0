@@ -72,8 +72,46 @@
         </rollingPolicy>
     </appender>
 
-    <!-- default, local -->
+    <!-- default, h2, local -->
     <springProfile name="default|h2|local">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE_LOG" />
+        </root>
+
+        <logger name="kr.centero.common" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE_LOG" />
+        </logger>
+
+        <logger name="org.springframework.web" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE_LOG" />
+        </logger>
+
+        <logger name="org.springframework.core" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE_LOG" />
+        </logger>
+
+        <logger name="org.springframework.security" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE_LOG" />
+        </logger>
+
+        <logger name="jdbc.sqltiming" level="INFO" additivity="false">
+            <appender-ref ref="CONSOLE_LOG" />
+        </logger>
+
+        <logger name="jdbc.resultsettable" level="INFO" additivity="false">
+            <appender-ref ref="CONSOLE_LOG" />
+        </logger>
+
+        <logger name="jdbc" level="OFF"/>
+        <logger name="jdbc.audit" level="OFF" />
+        <logger name="jdbc.sqlonly" level="OFF" />
+        <logger name="jdbc.resultset" level="OFF" />
+        <logger name="jdbc.connection" level="OFF" />
+        <logger name="com.zaxxer.hikari" level="OFF" />
+    </springProfile>
+
+    <!-- dev -->
+    <springProfile name="dev">
         <root level="INFO">
             <appender-ref ref="CONSOLE_LOG" />
             <appender-ref ref="ERROR_FILE_LOG" />
@@ -124,31 +162,10 @@
         <logger name="com.zaxxer.hikari" level="OFF" />
     </springProfile>
 
-    <!-- dev -->
-    <springProfile name="dev">
-        <root level="DEBUG">
-            <appender-ref ref="CONSOLE_LOG" />
-            <appender-ref ref="ERROR_FILE_LOG" />
-            <appender-ref ref="SYSTEM_LOG_FILE" />
-        </root>
-
-        <logger name="jdbc.sqltiming" level="DEBUG" additivity="false">
-            <appender-ref ref="CONSOLE_LOG" />
-            <appender-ref ref="ERROR_FILE_LOG" />
-            <appender-ref ref="SQL_LOG_FILE" />
-        </logger>
-
-        <logger name="jdbc.resultsettable" level="INFO" additivity="false">
-            <appender-ref ref="CONSOLE_LOG" />
-            <appender-ref ref="ERROR_FILE_LOG" />
-            <appender-ref ref="SQL_LOG_FILE" />
-        </logger>
-
-    </springProfile>
-
     <!-- prod -->
     <springProfile name="prod">
         <root level="ERROR">
+            <appender-ref ref="CONSOLE_LOG" />
             <appender-ref ref="ERROR_FILE_LOG" />
             <appender-ref ref="SYSTEM_LOG_FILE" />
         </root>
