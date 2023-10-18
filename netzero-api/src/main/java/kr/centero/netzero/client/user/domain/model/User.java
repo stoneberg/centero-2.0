@@ -1,7 +1,9 @@
-package kr.centero.common.client.user.domain.model;
+package kr.centero.netzero.client.user.domain.model;
 
-import kr.centero.common.common.mybatis.pagination.PageInfo;
-import lombok.*;
+import kr.centero.netzero.common.mybatis.pagination.PageInfo;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.apache.ibatis.type.Alias;
 

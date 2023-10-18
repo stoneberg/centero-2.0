@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.centero.netzero.client.auth.mapper.IpBlacklistMapper">
+
+    <select id="findByIpAddress" resultType="IpBlacklist">
+        /* SQL_ID : kr.centero.netzero.auth.mapper.IpBlacklistMapper.findByIpAddress */
+        SELECT ip_address FROM tb_ip_blacklist WHERE ip_address = #{ipAddress}
+    </select>
+
+    <select id="findIpBlacklist" resultType="IpBlacklist">
+        /* SQL_ID : kr.centero.netzero.auth.mapper.IpBlacklistMapper.findIpBlacklist */
+        SELECT ip_address FROM tb_ip_blacklist ORDER BY created_at DESC, ip_address ASC
+    </select>
+
+    <insert id="insertIpBlacklist">
+        /* SQL_ID : kr.centero.netzero.auth.mapper.IpBlacklistMapper.insertIpBlacklist. */
+        INSERT INTO tb_ip_blacklist (ip_address, reason) VALUES (#{ipAddress}, #{reason})
+    </insert>
+
+    <select id="existsIpBlacklist" resultType="boolean">
+        /* SQL_ID : kr.centero.netzero.auth.mapper.IpBlacklistMapper.existsIpBlacklist. */
+        SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END
+        FROM tb_ip_blacklist WHERE ip_address = #{ipAddress}
+    </select>
+
+    <delete id="deleteByIpBlacklist" parameterType="String">
+        /* SQL_ID : kr.centero.netzero.auth.mapper.IpBlacklistMapper.deleteByIpBlacklist. */
+        DELETE FROM tb_ip_blacklist WHERE ip_address = #{ipAddress}
+    </delete>
+
+    <insert id="insertBlacklistAccessLog" parameterType="BlacklistAccessLog">
+        /* SQL_ID : kr.centero.netzero.auth.mapper.IpBlacklistMapper.insertBlacklistAccessLog. */
+        INSERT INTO tb_blacklist_access_logs (ip_address, user_agent, uri)
+        VALUES (#{ipAddress}, #{userAgent}, #{uri})
+    </insert>
+
+</mapper>

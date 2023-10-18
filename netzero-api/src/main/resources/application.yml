@@ -24,8 +24,8 @@ spring:
 
 # mybatis config
 mybatis:
-  type-handlers-package: kr.centero.common.common.mybatis.typehandler
-  type-aliases-package: kr.centero.common.**.model
+  type-handlers-package: kr.centero.netzero.common.mybatis.typehandler
+  type-aliases-package: kr.centero.netzero.**.model
   mapper-locations: classpath:mapper/**/*.xml
   configuration:
     cache-enabled: false
@@ -35,3 +35,13 @@ mybatis:
     jdbc-type-for-null: NULL
     call-setters-on-nulls: true
     map-underscore-to-camel-case: true
+
+token:
+  signing:
+    key: e147f935d2219326321bfc7b2ce4bccd8324e2fca4d03841e5ee8210da788bab
+  expiration:
+    access: 10m # w(week), d(day), h(hour), m(minute), s(second)
+    refresh: 1h # w(week), d(day), h(hour), m(minute), s(second)
+
+refresh-cookie:
+  duration: 1d # w(week), d(day), h(hour), m(minute)
