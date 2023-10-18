@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.Alias;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @Alias("BlacklistAccessLog")
@@ -14,7 +16,7 @@ import org.apache.ibatis.type.Alias;
 public class BlacklistAccessLog {
     private Long id;
     private String ipAddress;
-    private java.sql.Timestamp accessTime;
+    private LocalDateTime accessTime;
     private String userAgent;
     private String uri;
 }

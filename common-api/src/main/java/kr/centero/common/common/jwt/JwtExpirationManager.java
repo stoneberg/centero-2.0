@@ -45,7 +45,7 @@ public class JwtExpirationManager {
         duration = duration.toLowerCase().trim();
 
         long currentTime = System.currentTimeMillis();
-        long durationInMillis = 0;
+        long durationInMillis;
 
         try {
             int durationVal = Integer.parseInt(duration.substring(0, duration.length() - 1));
