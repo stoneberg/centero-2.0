@@ -1,4 +1,4 @@
-package kr.centero.core.common.mybatis.pagination;
+package kr.centero.core.common.pagination;
 
 import java.util.List;
 

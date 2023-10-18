@@ -1,6 +1,6 @@
 package kr.centero.core.common.payload;
 
-import kr.centero.core.common.mybatis.pagination.PageResponse;
+import kr.centero.core.common.pagination.PageResponse;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

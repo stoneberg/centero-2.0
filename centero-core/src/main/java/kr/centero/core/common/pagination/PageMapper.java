@@ -1,4 +1,4 @@
-package kr.centero.core.common.mybatis.pagination;
+package kr.centero.core.common.pagination;
 
 import com.github.pagehelper.page.PageMethod;
 import org.apache.commons.lang3.StringUtils;

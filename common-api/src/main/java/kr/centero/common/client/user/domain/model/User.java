@@ -1,6 +1,6 @@
 package kr.centero.common.client.user.domain.model;
 
-import kr.centero.core.common.mybatis.pagination.PageInfo;
+import kr.centero.core.common.pagination.PageInfo;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.apache.ibatis.type.Alias;
