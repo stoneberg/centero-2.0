@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.centero.common.user.mapper.UserMapper">
 
-    <!-- 등록된 사용자 확인 -->
-    <select id="findAll" resultType="User">
-        /* SQL_ID : kr.centero.common.user.mapper.UserMapper.findAll */
+    <!-- 전체 사용자 조회 -->
+    <select id="findAllByCond" resultType="User">
+        /* SQL_ID : kr.centero.common.user.mapper.UserMapper.findAllByCond */
         SELECT
             tu.user_id,
             tu.username,
@@ -14,6 +14,49 @@
         FROM tb_user tu
         INNER JOIN tb_user_role tur ON tur.user_id = tu.user_id
         INNER JOIN tb_role tr ON tr.role_id = tur.role_id
+        <where>
+            <if test="userId != null">
+                AND tu.user_id = #{userId}
+            </if>
+            <if test="username != null and username != ''">
+                tu.username = #{username} AND
+            </if>
+            <if test="email != null and email != ''">
+                tu.email = #{email}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                tr.role_name = #{roleName}
+            </if>
+        </where>
+        ORDER BY tu.username, tr.role_name
+    </select>
+
+    <!-- 조건에 따른 사용자 조회 -->
+    <select id="findUserByCond" resultType="User">
+        /* SQL_ID : kr.centero.common.user.mapper.UserMapper.findUserByCond */
+        SELECT
+            tu.user_id,
+            tu.username,
+            tu.password,
+            tu.email,
+            tr.role_name
+        FROM tb_user tu
+         INNER JOIN tb_user_role tur ON tur.user_id = tu.user_id
+         INNER JOIN tb_role tr ON tr.role_id = tur.role_id
+        <where>
+            <if test="userId != null">
+                AND tu.user_id = #{userId}
+            </if>
+            <if test="username != null and username != ''">
+                tu.username = #{username} AND
+            </if>
+            <if test="email != null and email != ''">
+                tu.email = #{email}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                tr.role_name = #{roleName}
+            </if>
+        </where>
         ORDER BY tu.username, tr.role_name
     </select>
 
@@ -23,6 +66,16 @@
         INSERT INTO tb_user (username, password, email)
         VALUES (#{username}, #{password}, #{email})
     </insert>
+
+    <!-- 사용자 수정 -->
+    <update id="update" parameterType="User">
+        /* SQL_ID : kr.centero.common.user.mapper.UserMapper.update */
+        UPDATE tb_user
+        SET username = #{username},
+            password = #{password},
+            email = #{email}
+        WHERE user_id = #{userId}
+    </update>
 
     <!-- 사용자 전체 삭제 -->
     <delete id="deleteAll">

@@ -12,7 +12,12 @@ import java.util.List;
 @Mapper(config = MapStructMapperConfig.class)
 public interface UserMapstruct {
     UserMapstruct INSTANCE = Mappers.getMapper(UserMapstruct.class);
-    // roleName -> role
+
+    // role -> roleName (different field name mapping)
+    @Mapping(source = "role", target = "roleName")
+    User toUser(UserDto.UserDetailRequest userDetailRequest);
+
+    // roleName -> role (different field name mapping)
     @Mapping(source = "roleName", target = "role")
     UserDto.UserResponse toUserDto(User user);
 
