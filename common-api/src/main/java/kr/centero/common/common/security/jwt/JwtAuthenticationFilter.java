@@ -1,4 +1,4 @@
-package kr.centero.common.common.jwt;
+package kr.centero.common.common.security.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,9 +19,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
-
-import static kr.centero.common.common.jwt.JwtTokenProvider.AUTH_HEADER;
-import static kr.centero.common.common.jwt.JwtTokenProvider.TOKEN_PREFIX;
 
 
 /**
@@ -55,14 +52,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        final String authHeader = request.getHeader(AUTH_HEADER);
+        final String authHeader = request.getHeader(JwtTokenProvider.AUTH_HEADER);
         final String accessToken;
         final String username;
         final boolean isValidToken;
 
         // skip jwt filter if auth header is null or not start with "Bearer "
         // this means that the request is not authenticated and would be handled by the AuthenticationEntryPoint
-        if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
+        if (authHeader == null || !authHeader.startsWith(JwtTokenProvider.TOKEN_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }

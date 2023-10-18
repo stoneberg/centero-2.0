@@ -1,4 +1,4 @@
-package kr.centero.common.common.util;
+package kr.centero.common.common.security.util;
 
 import kr.centero.common.client.auth.domain.model.CenteroUserDetails;
 import org.springframework.security.core.Authentication;
@@ -8,8 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * UserUtils:
  * This class is used to get authenticated user name from the security context.
  */
-public class UserUtils {
-    private UserUtils() {
+public class UserContextUtil {
+    private UserContextUtil() {
         throw new IllegalStateException("Utility class");
     }
 

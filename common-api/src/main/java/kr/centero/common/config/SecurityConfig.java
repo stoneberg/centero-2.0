@@ -1,7 +1,7 @@
 package kr.centero.common.config;
 
-import kr.centero.common.common.filter.IpBlacklistFilter;
-import kr.centero.common.common.jwt.JwtAuthenticationFilter;
+import kr.centero.common.common.security.filter.IpBlacklistFilter;
+import kr.centero.common.common.security.jwt.JwtAuthenticationFilter;
 import kr.centero.common.common.security.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;

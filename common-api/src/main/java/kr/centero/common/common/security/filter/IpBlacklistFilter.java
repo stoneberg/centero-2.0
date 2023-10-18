@@ -1,4 +1,4 @@
-package kr.centero.common.common.filter;
+package kr.centero.common.common.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

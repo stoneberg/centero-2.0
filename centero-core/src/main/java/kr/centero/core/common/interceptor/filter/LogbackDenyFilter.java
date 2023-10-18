@@ -1,4 +1,4 @@
-package kr.centero.common.common.filter;
+package kr.centero.core.common.interceptor.filter;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.filter.Filter;
@@ -9,6 +9,9 @@ import java.util.List;
 
 public class LogbackDenyFilter extends Filter<ILoggingEvent> {
 
+    /**
+     * This list contains the phrases that will be filtered out.
+     */
     private static final List<String> filteredPhrases = Arrays.asList(
             " Preparing: ",
             " Parameters: ",

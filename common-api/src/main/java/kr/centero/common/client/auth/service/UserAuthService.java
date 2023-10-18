@@ -11,7 +11,7 @@ import kr.centero.common.client.auth.mapper.UserAuthMapper;
 import kr.centero.common.client.auth.mapper.UserRoleMapper;
 import kr.centero.common.client.auth.mapper.UserTokenMapper;
 import kr.centero.common.client.auth.mapstruct.UserAuthMapstruct;
-import kr.centero.common.common.jwt.JwtTokenProvider;
+import kr.centero.common.common.security.jwt.JwtTokenProvider;
 import kr.centero.core.common.exception.BusinessErrorCode;
 import kr.centero.core.common.exception.BusinessException;
 import kr.centero.core.common.util.CookieUtil;

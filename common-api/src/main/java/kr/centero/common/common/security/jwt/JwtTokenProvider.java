@@ -1,4 +1,4 @@
-package kr.centero.common.common.jwt;
+package kr.centero.common.common.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
