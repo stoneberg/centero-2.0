@@ -1,6 +1,6 @@
 package kr.centero.common.client.user.mapstruct;
 
-import kr.centero.common.common.config.MapStructMapperConfig;
+import kr.centero.common.config.MapStructMapperConfig;
 import kr.centero.common.client.user.domain.dto.UserDto;
 import kr.centero.common.client.user.domain.model.User;
 import org.mapstruct.Mapper;

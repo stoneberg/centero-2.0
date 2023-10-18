@@ -1,4 +1,4 @@
-package kr.centero.common.common.config;
+package kr.centero.common.config;
 
 import org.mapstruct.MapperConfig;
 import org.mapstruct.ReportingPolicy;

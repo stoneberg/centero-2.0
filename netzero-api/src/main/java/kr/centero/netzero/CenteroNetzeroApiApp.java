@@ -1,4 +1,4 @@
-package kr.centero.netzero.api;
+package kr.centero.netzero;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

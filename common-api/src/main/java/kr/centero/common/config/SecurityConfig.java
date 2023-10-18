@@ -1,4 +1,4 @@
-package kr.centero.common.common.config;
+package kr.centero.common.config;
 
 import kr.centero.common.common.filter.IpBlacklistFilter;
 import kr.centero.common.common.jwt.JwtAuthenticationFilter;

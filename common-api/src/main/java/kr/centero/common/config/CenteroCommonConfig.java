@@ -1,4 +1,4 @@
-package kr.centero.common.common.config;
+package kr.centero.common.config;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -25,7 +25,7 @@ import java.time.format.DateTimeFormatter;
 
 @Configuration
 @RequiredArgsConstructor
-public class CenteroAppConfig implements WebMvcConfigurer {
+public class CenteroCommonConfig implements WebMvcConfigurer {
     private final MdcInterceptor mdcInterceptor;
     private final LoggingInterceptor loggingInterceptor;
 
