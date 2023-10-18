@@ -1,4 +1,4 @@
-package kr.centero.common.common.interceptor.mdc;
+package kr.centero.core.common.interceptor.mdc;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

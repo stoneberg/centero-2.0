@@ -1,4 +1,4 @@
-package kr.centero.common.common.interceptor.mdc;
+package kr.centero.core.common.interceptor.mdc;
 
 import org.slf4j.MDC;
 import org.springframework.core.task.TaskDecorator;

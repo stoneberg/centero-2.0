@@ -1,9 +1,7 @@
-package kr.centero.common.common.interceptor.mdc;
+package kr.centero.core.common.interceptor.mdc;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.centero.common.common.util.UserUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -22,12 +20,7 @@ public class MdcInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(@NonNull  HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
-        String authenticatedUserName = UserUtils.getAuthenticatedUserName();
-        if (StringUtils.isNotBlank(authenticatedUserName)) {
-            MDC.put(TRACE_ID, MdcInterceptor.getRandomString() + "-" + authenticatedUserName);
-        } else {
-            MDC.put(TRACE_ID, MdcInterceptor.getRandomString());
-        }
+        MDC.put(TRACE_ID, MdcInterceptor.getRandomString());
         return true;
     }
 

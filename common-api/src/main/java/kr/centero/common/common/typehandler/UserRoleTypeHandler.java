@@ -1,4 +1,4 @@
-package kr.centero.common.common.mybatis.typehandler;
+package kr.centero.common.common.typehandler;
 
 import kr.centero.common.client.auth.domain.enums.ERole;
 import org.apache.ibatis.type.BaseTypeHandler;

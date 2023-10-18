@@ -27,7 +27,7 @@ logging:
 
 # mybatis config
 mybatis:
-  type-handlers-package: kr.centero.common.common.mybatis.typehandler
+  type-handlers-package: kr.centero.common.common.typehandler # enum type handler package
   type-aliases-package: kr.centero.common.**.model
   mapper-locations: classpath:mapper/**/*.xml
   configuration:
