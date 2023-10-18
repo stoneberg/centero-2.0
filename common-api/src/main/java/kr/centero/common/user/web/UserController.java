@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "User API", description = "User API CRUD")
+@Tag(name = "User API", description = "사용자 CRUD API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/common/v1/users")

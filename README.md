@@ -20,8 +20,11 @@
 ### 3. 인증 token 정책
 
 ### 5. API docs by swagger
-2개(ghg, netzero)의 swagger가 문서 존재합니다.(작업중)
-- local 빌드할 경우 http://localhost:8080/swagger-ui.html
+3개(common, ghg, netzero)의 swagger가 문서 존재합니다.(작업중)
+- local 빌드시
+  - common : http://localhost:8080/swagger-ui.html
+  - ghg : http://localhost:8080/swagger-ui.html
+  - netzero : http://localhost:8080/swagger-ui.html
 
 ### 6. Commit log format
 [모듈명][기능] 설명

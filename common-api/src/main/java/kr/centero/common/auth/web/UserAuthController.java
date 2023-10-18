@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "User Auth API", description = "User Auth API")
+@Tag(name = "User Auth API", description = "사용자 로그인 / 토큰 API")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
