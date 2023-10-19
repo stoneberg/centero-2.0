@@ -6,9 +6,11 @@ import kr.centero.common.client.user.domain.dto.UserDto;
 import kr.centero.common.client.user.service.UserService;
 import kr.centero.core.common.payload.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @Tag(name = "Centero User API", description = "Centero User CRUD API")
 @RestController
 @RequiredArgsConstructor
@@ -49,6 +51,7 @@ public class UserController {
     @Operation(summary = "Centero User 조회", description = "Centero User page 를 조회한다. [PostMapping]")
     @PostMapping("/pages")
     public ResponseEntity<ApiResponse> findUserByPagePostMapping(@RequestBody UserDto.UserPageRequest userPageRequest) {
+        log.info("PAG#1===============>{}", userPageRequest);
         return ApiResponse.ok(userService.findPagesByCond(userPageRequest));
     }
 

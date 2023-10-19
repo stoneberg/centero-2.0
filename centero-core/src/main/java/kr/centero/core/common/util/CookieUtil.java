@@ -46,8 +46,10 @@ public class CookieUtil {
         }
 
         cookie.setMaxAge(expiry);
-        cookie.setHttpOnly(true);
+        // cookie.setHttpOnly(true);
+        cookie.setHttpOnly(false);
         cookie.setPath("/");
+        cookie.setDomain("centero.kr");
         // cookie.setSecure(true); // https에서만 쿠키 사용 가능
         return cookie;
     }

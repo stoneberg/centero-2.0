@@ -44,11 +44,12 @@ public class UserService {
     /**
      * find user pages by condition
      *
-     * @param userRequest user request
+     * @param userPageRequest user page request
      * @return UserPageDtoResponse
      */
-    public UserDto.UserPageDtoResponse findPagesByCond(UserDto.UserRequest userRequest) {
-        User user = UserMapstruct.INSTANCE.toUser(userRequest);
+    public UserDto.UserPageDtoResponse findPagesByCond(UserDto.UserPageRequest userPageRequest) {
+        log.info("PAG#2===============>{}", userPageRequest);
+        User user = UserMapstruct.INSTANCE.toUser(userPageRequest);
         PageResponse<User> pageResponse = userMapper.findUserPageByCond(user);
         log.info("[PAG]pageResponse=======>{}", pageResponse);
 
@@ -75,10 +76,11 @@ public class UserService {
     /**
      * update user
      *
-     * @param userRequest user update request
+     * @param userUpdateRequest user update request
      */
-    public void updateUser(UserDto.UserRequest userRequest) {
-        User user = UserMapstruct.INSTANCE.toUser(userRequest);
+    @Transactional
+    public void updateUser(UserDto.UserUpdateRequest userUpdateRequest) {
+        User user = UserMapstruct.INSTANCE.toUser(userUpdateRequest);
         userMapper.update(user);
     }
 

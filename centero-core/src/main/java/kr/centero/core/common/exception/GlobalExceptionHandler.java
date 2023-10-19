@@ -12,6 +12,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,24 +55,16 @@ public class GlobalExceptionHandler {
     /**
      * Handle Custom ApplicationException
      *
-     * @param ex
-     * @param request
-     * @return
+     * @param ex     custom application exception
+     * @param request web request
+     * @return error response
      */
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ErrorResponse> handleApplicationException(ApplicationException ex, WebRequest request) {
         log.error("[Exception]ApplicationException: {}", ExceptionUtils.getMessage(ex));
         log.error("[Exception]ApplicationException: {}", ExceptionUtils.getStackTrace(ex));
         HttpStatus httpStatus = ex.getHttpStatus();
-
-        String customMessage = "";
-        if (ex.getErrorCode().equals(ApplicationErrorCode.LOGIN_FAILURE.getCode())) {
-            log.info("11111============================================");
-            customMessage = ex.getMessage() + " 번째 로그인 시도에 실패했습니다.";
-        } else {
-            log.info("22222============================================");
-            customMessage = ex.getMessage();
-        }
+        String customMessage = this.handleLoginError(ex);
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(httpStatus.value())
@@ -80,6 +75,16 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(errorResponse, httpStatus);
+    }
+
+    private String handleLoginError(ApplicationException ex) {
+        String customMessage;
+        if (ex.getErrorCode().equals(ApplicationErrorCode.LOGIN_FAILURE.getCode())) {
+            customMessage = "Failed the " + ex.getMessage() + "th attempt to log in";
+        } else {
+            customMessage = ex.getMessage();
+        }
+        return customMessage;
     }
 
     // @TODO: handle other exceptions
@@ -125,6 +130,51 @@ public class GlobalExceptionHandler {
 //        log.info("[ZET]message: {}", message);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex, WebRequest request) {
+        log.error("[Exception]HttpRequestMethodNotSupportedException: {}", ExceptionUtils.getMessage(ex));
+        log.error("[Exception]HttpRequestMethodNotSupportedException: {}", ExceptionUtils.getStackTrace(ex));
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .code(ApplicationErrorCode.BAD_REQUEST.getCode())
+                .message(ex.getMessage())
+                .path(request.getDescription(false))
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BindException.class)
+    protected ResponseEntity<ErrorResponse> handleBindException(BindException ex, WebRequest request) {
+        log.error("[Exception]BindException: {}", ExceptionUtils.getMessage(ex));
+        log.error("[Exception]BindException: {}", ExceptionUtils.getStackTrace(ex));
+        String errorMessage = this.getFirstBindException(ex);
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .code(ApplicationErrorCode.BAD_REQUEST.getCode())
+                .message(errorMessage)
+                .path(request.getDescription(false))
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    private String getFirstBindException(BindException bindException) {
+        // 필드 오류 목록에서 첫 번째 오류 가져오기
+        FieldError firstFieldError = bindException.getFieldError();
+
+        // 첫 번째 오류가 존재하는 경우, 해당 에러 메시지 반환
+        if (firstFieldError != null) {
+            return String.format("%s: %s", firstFieldError.getField(), firstFieldError.getDefaultMessage());
+        }
+
+        // 오류가 없는 경우, 빈 문자열 또는 적절한 메시지 반환
+        return "No errors found.";
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

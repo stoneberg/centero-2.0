@@ -1,8 +1,8 @@
 package kr.centero.ghg.client.user.mapstruct;
 
+import kr.centero.ghg.client.user.domain.dto.UserDto;
 import kr.centero.ghg.client.user.domain.model.User;
 import kr.centero.ghg.config.MapStructMapperConfig;
-import kr.centero.ghg.client.user.domain.dto.UserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -16,6 +16,11 @@ public interface UserMapstruct {
     // role -> roleName (different field name mapping)
     @Mapping(source = "role", target = "roleName")
     User toUser(UserDto.UserRequest userRequest);
+
+    @Mapping(source = "role", target = "roleName")
+    User toUser(UserDto.UserPageRequest userRequest);
+
+    User toUser(UserDto.UserUpdateRequest userUpdateRequest);
 
     // roleName -> role (different field name mapping)
     @Mapping(source = "roleName", target = "role")

@@ -7,7 +7,6 @@ import org.apache.ibatis.type.Alias;
 
 @Getter
 @Setter
-@Alias("User")
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 public class User extends PageInfo {

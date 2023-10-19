@@ -48,6 +48,7 @@ public class UserService {
      * @return UserPageDtoResponse
      */
     public UserDto.UserPageDtoResponse findPagesByCond(UserDto.UserPageRequest userPageRequest) {
+        log.info("PAG#2===============>{}", userPageRequest);
         User user = UserMapstruct.INSTANCE.toUser(userPageRequest);
         PageResponse<User> pageResponse = userMapper.findUserPageByCond(user);
         log.info("[PAG]pageResponse=======>{}", pageResponse);
@@ -82,6 +83,5 @@ public class UserService {
         User user = UserMapstruct.INSTANCE.toUser(userUpdateRequest);
         userMapper.update(user);
     }
-
 
 }
