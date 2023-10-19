@@ -1,6 +1,6 @@
 package kr.centero.ghg.common.util;
 
-import kr.centero.ghg.auth.domain.model.CenteroUserDetails;
+import kr.centero.ghg.client.auth.domain.model.CenteroUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

@@ -1,9 +1,9 @@
 package kr.centero.ghg.common.security;
 
 import jakarta.servlet.http.HttpServletRequest;
-import kr.centero.ghg.auth.domain.model.LoginLog;
-import kr.centero.ghg.auth.service.CenteroUserDetailsService;
-import kr.centero.ghg.auth.service.LoginLogService;
+import kr.centero.ghg.client.auth.domain.model.LoginLog;
+import kr.centero.ghg.client.auth.service.CenteroUserDetailsService;
+import kr.centero.ghg.client.auth.service.LoginLogService;
 import kr.centero.ghg.common.exception.ApplicationErrorCode;
 import kr.centero.ghg.common.exception.ApplicationException;
 import kr.centero.ghg.common.util.IpAddressUtil;

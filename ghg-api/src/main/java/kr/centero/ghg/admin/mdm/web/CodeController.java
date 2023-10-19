@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Code API", description = "Code API CRUD")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/v1/code")
+@RequestMapping("/api/ghg/v1/admin/code")
 public class CodeController {
 
     private final CodeService service;

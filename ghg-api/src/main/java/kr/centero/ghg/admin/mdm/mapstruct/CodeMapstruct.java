@@ -1,6 +1,6 @@
 package kr.centero.ghg.admin.mdm.mapstruct;
 
-import kr.centero.ghg.common.config.MapStructMapperConfig;
+import kr.centero.ghg.config.MapStructMapperConfig;
 
 import java.util.List;
 

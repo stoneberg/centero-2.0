@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.centero.ghg.client.auth.mapper.UserAuthMapper">
+
+    <!-- 로그인 처리를 위해 등록 사용자, 사용자 권한 조회 -->
+    <select id="findUserByUsername" parameterType="String" resultType="UserRole">
+        /* SQL_ID : kr.centero.ghg.auth.mapper.UserAuthMapper.findUserByUsername */
+        SELECT
+            u.user_id,
+            u.username,
+            u.password,
+            u.email,
+            r.role_id,
+            r.role_name
+        FROM tb_user u inner join tb_user_role ur on u.user_id = ur.user_id
+        inner join tb_role r on ur.role_id = r.role_id
+        WHERE
+            username = #{username}
+        ORDER BY
+            u.user_id, u.username
+    </select>
+
+    <!-- 등록된 사용자 확인 -->
+    <select id="existsUser" parameterType="SignupUser" resultType="Boolean">
+        /* SQL_ID : kr.centero.ghg.user.mapper.UserAuthMapper.existsUser */
+        SELECT COUNT(user_id) > 0 AS exists_user
+        FROM tb_user
+        WHERE
+            username = #{username} AND
+            email = #{email}
+    </select>
+
+    <!-- 사용자 등록 -->
+    <insert id="save" parameterType="SignupUser" useGeneratedKeys="true" keyProperty="userId">
+        /* SQL_ID : kr.centero.ghg.user.mapper.UserAuthMapper.save */
+        INSERT INTO tb_user (username, password, email)
+        VALUES (#{username}, #{password}, #{email})
+    </insert>
+
+</mapper>
