@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Code API", description = "Code API CRUD")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/ghg/v1/admin/code")
+@RequestMapping("/api/ghg/v1/admin/codes")
 public class CodeController {
 
     private final CodeService service;
@@ -21,7 +21,7 @@ public class CodeController {
     // requestBody
     // auto mapping
     @Operation(summary = "코드 조회", description = "코드 정보를 조회한다. [PostMapping]")
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<ApiResponse> findAll(@RequestBody CodeDto.CodeRequest codeRequest) {
         return ApiResponse.ok(service.findAll(codeRequest));
     }
