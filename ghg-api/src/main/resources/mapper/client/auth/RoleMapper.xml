@@ -4,7 +4,7 @@
 
     <!-- 권한 조회 -->
     <select id="findByRoleName" resultType="Long">
-        /* SQL_ID : kr.centero.ghg.auth.mapper.RoleMapper.findByRoleName */
+        /* SQL_ID : kr.centero.ghg.client.auth.mapper.RoleMapper.findByRoleName */
         SELECT role_id
         FROM tb_role
         WHERE role_name = #{roleName}
@@ -12,14 +12,14 @@
 
     <!-- 권한 등록 -->
     <insert id="save" parameterType="Role" useGeneratedKeys="true" keyProperty="roleId">
-        /* SQL_ID : kr.centero.ghg.auth.mapper.RoleMapper.save */
+        /* SQL_ID : kr.centero.ghg.client.auth.mapper.RoleMapper.save */
         INSERT INTO tb_role (role_name)
         VALUES (#{roleName})
     </insert>
 
     <!-- 권한 전체 삭제 -->
     <delete id="deleteAll">
-        /* SQL_ID : kr.centero.ghg.auth.mapper.RoleMapper.deleteAll */
+        /* SQL_ID : kr.centero.ghg.client.auth.mapper.RoleMapper.deleteAll */
         DELETE
         FROM tb_role
     </delete>

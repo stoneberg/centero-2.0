@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import kr.centero.core.common.pagination.PageResponse;
+import kr.centero.core.common.payload.PageDtoResponse;
 import kr.centero.ghg.admin.mdm.domain.model.Code;
 import kr.centero.ghg.admin.mdm.mapstruct.CodeMapstruct;
-import kr.centero.ghg.common.mybatis.pagination.PageResponse;
-import kr.centero.ghg.common.payload.PageDtoResponse;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

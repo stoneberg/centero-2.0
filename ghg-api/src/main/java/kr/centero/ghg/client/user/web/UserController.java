@@ -2,9 +2,9 @@ package kr.centero.ghg.client.user.web;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.centero.core.common.payload.ApiResponse;
 import kr.centero.ghg.client.user.domain.dto.UserDto;
 import kr.centero.ghg.client.user.service.UserService;
-import kr.centero.ghg.common.payload.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

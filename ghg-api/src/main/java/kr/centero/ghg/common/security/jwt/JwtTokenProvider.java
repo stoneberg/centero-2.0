@@ -1,4 +1,4 @@
-package kr.centero.ghg.common.jwt;
+package kr.centero.ghg.common.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -20,8 +20,7 @@ import java.util.function.Function;
  * JwtTokenProvider:
  * This class is used to generate the jwt token and validate the token.
  * Secret key is stored in the application.yml file.
- * Secret key is generated from the url:
- * <a href="https://asecuritysite.com/encryption/plain">...</a>
+ * Secret key is generated from the url: <a href="https://asecuritysite.com/encryption/plain">...</a>
  */
 @Component
 @RequiredArgsConstructor

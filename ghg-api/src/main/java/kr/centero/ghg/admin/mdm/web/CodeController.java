@@ -2,8 +2,8 @@ package kr.centero.ghg.admin.mdm.web;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kr.centero.core.common.payload.ApiResponse;
 import kr.centero.ghg.admin.mdm.service.CodeService;
-import kr.centero.ghg.common.payload.ApiResponse;
 import kr.centero.ghg.admin.mdm.domain.dto.CodeDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

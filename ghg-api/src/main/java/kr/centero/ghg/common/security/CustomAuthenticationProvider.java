@@ -1,12 +1,12 @@
 package kr.centero.ghg.common.security;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kr.centero.core.common.exception.ApplicationErrorCode;
+import kr.centero.core.common.exception.ApplicationException;
+import kr.centero.core.common.util.IpAddressUtil;
 import kr.centero.ghg.client.auth.domain.model.LoginLog;
 import kr.centero.ghg.client.auth.service.CenteroUserDetailsService;
 import kr.centero.ghg.client.auth.service.LoginLogService;
-import kr.centero.ghg.common.exception.ApplicationErrorCode;
-import kr.centero.ghg.common.exception.ApplicationException;
-import kr.centero.ghg.common.util.IpAddressUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -22,11 +22,9 @@ import java.time.LocalDateTime;
 
 /**
  * AuthenticationProvider:
- * Authenticate the user by checking the credentials against some source of
- * data.
+ * Authenticate the user by checking the credentials against some source of data.
  * In this case, the source of data is the database.
- * Make logs of login success or failure base on the result count of
- * authentication.
+ * Make logs of login success or failure base on the result count of authentication.
  */
 @Component
 @RequiredArgsConstructor
@@ -52,8 +50,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String clientIP = IpAddressUtil.getClientIP(httpServletRequest);
 
         if (recentFailureCount >= MAX_FAILURE_COUNT) {
-            throw new ApplicationException(ApplicationErrorCode.LOGIN_FAILURE_EXCEED_MAX_COUNT,
-                    HttpStatus.UNAUTHORIZED);
+            throw new ApplicationException(ApplicationErrorCode.LOGIN_FAILURE_EXCEED_MAX_COUNT, HttpStatus.UNAUTHORIZED);
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -61,8 +58,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         if (!passwordEncoder.matches(presentedPassword, userDetails.getPassword())) {
             // make log of login failure
             this.logAuthentication(username, false, clientIP, recentFailureCount + 1);
-            throw new ApplicationException(ApplicationErrorCode.LOGIN_FAILURE, String.valueOf(recentFailureCount + 1),
-                    HttpStatus.UNAUTHORIZED);
+            throw new ApplicationException(ApplicationErrorCode.LOGIN_FAILURE, String.valueOf(recentFailureCount + 1), HttpStatus.UNAUTHORIZED);
         }
 
         // make log of login success and reset failure count
@@ -77,8 +73,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     }
 
     private Authentication createSuccessfulAuthentication(final Authentication authentication, final UserDetails user) {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user,
-                authentication.getCredentials(), user.getAuthorities());
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user, authentication.getCredentials(), user.getAuthorities());
         token.setDetails(authentication.getDetails());
         return token;
     }
@@ -98,3 +93,4 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 .build();
     }
 }
+

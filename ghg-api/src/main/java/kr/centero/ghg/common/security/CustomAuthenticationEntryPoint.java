@@ -3,7 +3,7 @@ package kr.centero.ghg.common.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.centero.ghg.common.exception.ErrorResponse;
+import kr.centero.core.common.exception.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,16 +18,14 @@ import java.util.Objects;
 
 /**
  * AuthenticationEntryPoint:
- * Protect resources from unauthorized user who try to access without
- * authentication.
+ * Protect resources from unauthorized user who try to access without authentication.
  */
 @RequiredArgsConstructor
 public class CustomAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
     private final HttpRequestEndpointChecker endpointChecker;
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response,
-            AuthenticationException authException) throws IOException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         String path = new UrlPathHelper().getPathWithinApplication(request);
         if (endpointChecker.isNotExistingEndpoint(request)) {
             ErrorResponse errorResponse = this.getErrorResponse(path, HttpStatus.NOT_FOUND);

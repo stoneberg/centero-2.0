@@ -4,7 +4,7 @@
 
     <!-- 조건에 따른 사용자 조회 -->
     <select id="findUserByCond" parameterType="User" resultType="User">
-        /* SQL_ID : kr.centero.ghg.user.mapper.UserMapper.findUserByCond */
+        /* SQL_ID : kr.centero.ghg.client.user.mapper.UserMapper.findUserByCond */
         SELECT
             tu.user_id,
             tu.username,
@@ -33,14 +33,14 @@
 
     <!-- 사용자 등록 -->
     <insert id="save" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
-        /* SQL_ID : kr.centero.ghg.user.mapper.UserMapper.save */
+        /* SQL_ID : kr.centero.ghg.client.user.mapper.UserMapper.save */
         INSERT INTO tb_user (username, password, email)
         VALUES (#{username}, #{password}, #{email})
     </insert>
 
     <!-- 사용자 수정 -->
     <update id="update" parameterType="User">
-        /* SQL_ID : kr.centero.ghg.user.mapper.UserMapper.update */
+        /* SQL_ID : kr.centero.ghg.client.user.mapper.UserMapper.update */
         UPDATE tb_user
         SET username = #{username},
             password = #{password},
@@ -50,7 +50,7 @@
 
     <!-- 사용자 전체 삭제 -->
     <delete id="deleteAll">
-        /* SQL_ID : kr.centero.ghg.user.mapper.UserMapper.UserMapper.deleteAll */
+        /* SQL_ID : kr.centero.ghg.client.user.mapper.UserMapper.deleteAll */
         DELETE FROM tb_user
     </delete>
 

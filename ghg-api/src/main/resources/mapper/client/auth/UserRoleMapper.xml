@@ -4,14 +4,14 @@
 
     <!-- 사용자-권한 부여 -->
     <insert id="save" parameterType="Role">
-        /* SQL_ID : kr.centero.ghg.auth.mapper.UserRoleMapper.save */
+        /* SQL_ID : kr.centero.ghg.client.auth.mapper.UserRoleMapper.save */
         INSERT INTO tb_user_role (user_id, role_id)
         VALUES (#{userId}, #{roleId})
     </insert>
 
     <!-- 사용자-권한 전체 삭제 -->
     <delete id="deleteAll">
-        /* SQL_ID : kr.centero.ghg.auth.mapper.UserRoleMapper.deleteAll */
+        /* SQL_ID : kr.centero.ghg.client.auth.mapper.UserRoleMapper.deleteAll */
         DELETE
         FROM tb_user_role
     </delete>

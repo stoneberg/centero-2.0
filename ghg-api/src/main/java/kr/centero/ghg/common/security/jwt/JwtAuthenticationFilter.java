@@ -1,4 +1,4 @@
-package kr.centero.ghg.common.jwt;
+package kr.centero.ghg.common.security.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,17 +20,14 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
-import static kr.centero.ghg.common.jwt.JwtTokenProvider.AUTH_HEADER;
-import static kr.centero.ghg.common.jwt.JwtTokenProvider.TOKEN_PREFIX;
 
 /**
  * JwtAuthenticationFilter:
- * This class is used to authenticate the user by checking the jwt token in the
- * request header.
+ * This class is used to authenticate the user by checking the jwt token in the request header.
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final String AUTH_ENTRY_POINT = "/api/ghg/v1/auth";
+    private static final String COMMON_AUTH_ENTRY_POINT = "/api/common/v1/auth";
     private final JwtTokenProvider jwtTokenProvider;
     private final UserTokenMapper userTokenMapper;
     private final HandlerExceptionResolver exceptionResolver;
@@ -48,24 +45,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain) throws ServletException, IOException {
-        // skip jwt filter if request path is /api/common/v1/auth/** (login, signup,
-        // refresh, logout)
-        if (request.getServletPath().contains(AUTH_ENTRY_POINT)) {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+        // skip jwt filter if request path is /api/common/v1/auth/** (login, signup, refresh, logout)
+        if (request.getServletPath().contains(COMMON_AUTH_ENTRY_POINT)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        final String authHeader = request.getHeader(AUTH_HEADER);
+        final String authHeader = request.getHeader(JwtTokenProvider.AUTH_HEADER);
         final String accessToken;
         final String username;
         final boolean isValidToken;
 
         // skip jwt filter if auth header is null or not start with "Bearer "
-        // this means that the request is not authenticated and would be handled by the
-        // AuthenticationEntryPoint
-        if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
+        // this means that the request is not authenticated and would be handled by the AuthenticationEntryPoint
+        if (authHeader == null || !authHeader.startsWith(JwtTokenProvider.TOKEN_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -76,18 +70,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             username = jwtTokenProvider.extractUsername(accessToken);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                // check if the incoming token is valid and the same token exists in the
-                // database
-                // because the user may have logged out and the token is deleted from the
-                // database
+                // check if the incoming token is valid and the same token exists in the database
+                // because the user may have logged out and the token is deleted from the database
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 UserToken userToken = userTokenMapper.findByUsername(username);
                 isValidToken = jwtTokenProvider.isTokenValid(accessToken, userDetails)
                         && !ObjectUtils.isEmpty(userToken);
 
                 if (isValidToken) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
-                            null, userDetails.getAuthorities());
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }

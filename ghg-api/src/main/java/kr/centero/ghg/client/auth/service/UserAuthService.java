@@ -1,6 +1,9 @@
 package kr.centero.ghg.client.auth.service;
 
 import jakarta.servlet.http.HttpServletResponse;
+import kr.centero.core.common.exception.BusinessErrorCode;
+import kr.centero.core.common.exception.BusinessException;
+import kr.centero.core.common.util.CookieUtil;
 import kr.centero.ghg.client.auth.domain.dto.UserAuthDto;
 import kr.centero.ghg.client.auth.domain.enums.ERole;
 import kr.centero.ghg.client.auth.domain.model.CenteroUserDetails;
@@ -11,10 +14,7 @@ import kr.centero.ghg.client.auth.mapper.UserAuthMapper;
 import kr.centero.ghg.client.auth.mapper.UserRoleMapper;
 import kr.centero.ghg.client.auth.mapper.UserTokenMapper;
 import kr.centero.ghg.client.auth.mapstruct.UserAuthMapstruct;
-import kr.centero.ghg.common.exception.BusinessErrorCode;
-import kr.centero.ghg.common.exception.BusinessException;
-import kr.centero.ghg.common.jwt.JwtTokenProvider;
-import kr.centero.ghg.common.util.CookieUtil;
+import kr.centero.ghg.common.security.jwt.JwtTokenProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;

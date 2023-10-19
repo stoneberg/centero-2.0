@@ -4,14 +4,14 @@
 
     <!-- 로그인 로그 기록 -->
     <insert id="insertLoginLog">
-        /* SQL_ID : kr.centero.ghg.auth.mapper.LoginLogMapper.insertLoginLog */
+        /* SQL_ID : kr.centero.ghg.client.auth.mapper.LoginLogMapper.insertLoginLog */
         INSERT INTO tb_login_logs(username, login_success, ip_address, failure_count)
         VALUES(#{username}, #{loginSuccess}, #{ipAddress}, #{failureCount})
     </insert>
 
     <!-- 사용자의 최근 실패한 로그인 횟수 얻기 -->
     <select id="findRecentFailureCount" resultType="Integer">
-        /* SQL_ID : kr.centero.ghg.auth.mapper.LoginLogMapper.findRecentFailureCount */
+        /* SQL_ID : kr.centero.ghg.client.auth.mapper.LoginLogMapper.findRecentFailureCount */
         SELECT failure_count
         FROM tb_login_logs
         WHERE username = #{username}

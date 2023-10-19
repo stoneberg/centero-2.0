@@ -1,7 +1,7 @@
 package kr.centero.ghg.client.user.service;
 
+import kr.centero.core.common.pagination.PageResponse;
 import kr.centero.ghg.client.user.domain.model.User;
-import kr.centero.ghg.common.mybatis.pagination.PageResponse;
 import kr.centero.ghg.client.user.domain.dto.UserDto;
 import kr.centero.ghg.client.user.mapper.UserMapper;
 import kr.centero.ghg.client.user.mapstruct.UserMapstruct;

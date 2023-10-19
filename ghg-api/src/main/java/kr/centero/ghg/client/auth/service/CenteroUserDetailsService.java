@@ -1,10 +1,10 @@
 package kr.centero.ghg.client.auth.service;
 
+import kr.centero.core.common.exception.ApplicationErrorCode;
+import kr.centero.core.common.exception.ApplicationException;
 import kr.centero.ghg.client.auth.domain.model.CenteroUserDetails;
 import kr.centero.ghg.client.auth.domain.model.UserRole;
 import kr.centero.ghg.client.auth.mapper.UserAuthMapper;
-import kr.centero.ghg.common.exception.ApplicationErrorCode;
-import kr.centero.ghg.common.exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,8 +27,6 @@ public class CenteroUserDetailsService implements UserDetailsService {
         List<UserRole> userRoles = userAuthMapper.findUserByUsername(username);
 
         if (CollectionUtils.isEmpty(userRoles)) {
-            // throw new
-            // UsernameNotFoundException(BusinessErrorCode.USER_NOT_FOUND.getMessage());
             throw new ApplicationException(ApplicationErrorCode.BAD_CREDENTIALS, HttpStatus.UNAUTHORIZED);
         }
 

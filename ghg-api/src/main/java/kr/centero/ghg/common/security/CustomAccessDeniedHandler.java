@@ -3,7 +3,7 @@ package kr.centero.ghg.common.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.centero.ghg.common.exception.ErrorResponse;
+import kr.centero.core.common.exception.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,16 +18,14 @@ import java.util.Objects;
 
 /**
  * AccessDeniedHandler:
- * Prevent authenticated users from accessing resources that they do not have
- * the authority to access.
+ * Prevent authenticated users from accessing resources that they do not have the authority to access.
  */
 @RequiredArgsConstructor
-public class CustomAccessDeniedHandler extends AccessDeniedHandlerImpl {
+public  class CustomAccessDeniedHandler extends AccessDeniedHandlerImpl {
     private final HttpRequestEndpointChecker endpointChecker;
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response,
-            AccessDeniedException accessDeniedException) throws IOException {
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         String path = new UrlPathHelper().getPathWithinApplication(request);
         if (endpointChecker.isNotExistingEndpoint(request)) {
             ErrorResponse errorResponse = this.getErrorResponse(path, HttpStatus.NOT_FOUND);

@@ -3,7 +3,7 @@ package kr.centero.ghg.common.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.centero.ghg.common.payload.ApiResponse;
+import kr.centero.core.common.payload.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -23,8 +23,7 @@ import java.util.Objects;
 @Component
 public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
-    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-            throws IOException {
+    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         ApiResponse logoutResponse = new ApiResponse();
         logoutResponse.setStatus(HttpStatus.OK.value());
         logoutResponse.setCode(HttpStatus.OK.name());
@@ -32,8 +31,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
         logoutResponse.setTimestamp(LocalDateTime.now().toString());
         logoutResponse.setData(null);
         this.sendLogoutResponse(response, logoutResponse);
-        // it's not necessary to call SecurityContextHolder.clearContext() because it's
-        // already called by LogoutFilter
+        // it's not necessary to call SecurityContextHolder.clearContext() because it's already called by LogoutFilter
     }
 
     private void sendLogoutResponse(HttpServletResponse response, ApiResponse logoutResponse) throws IOException {

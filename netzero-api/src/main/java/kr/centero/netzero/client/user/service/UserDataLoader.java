@@ -44,7 +44,7 @@ public class UserDataLoader implements CommandLineRunner {
         Faker faker = new Faker();
         for (int i = 1; i <= 21; i++) {
             User user = new User();
-            user.setUsername(faker.name().firstName());
+            user.setUsername(faker.basketball().players());
             user.setPassword(passwordEncoder.encode("pwd1"));
             user.setEmail(faker.internet().emailAddress());
             userMapper.save(user);

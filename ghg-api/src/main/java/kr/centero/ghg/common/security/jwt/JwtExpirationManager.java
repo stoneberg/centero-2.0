@@ -1,4 +1,4 @@
-package kr.centero.ghg.common.jwt;
+package kr.centero.ghg.common.security.jwt;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 /**
  * JwtExpirationManager:
  * This class is used to calculate the jwt token expiration time.
- * It will calculate the expiration time based on the duration value in the
- * application.yml file.
+ * It will calculate the expiration time based on the duration value in the application.yml file.
  * m: minutes, h: hours, d: days, w: weeks
  * example: 1m, 1h, 1d, 1w
  */

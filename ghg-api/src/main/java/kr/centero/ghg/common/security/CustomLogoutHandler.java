@@ -2,11 +2,11 @@ package kr.centero.ghg.common.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.centero.core.common.exception.ApplicationErrorCode;
+import kr.centero.core.common.exception.ApplicationException;
+import kr.centero.core.common.util.CookieUtil;
 import kr.centero.ghg.client.auth.mapper.UserTokenMapper;
-import kr.centero.ghg.common.exception.ApplicationErrorCode;
-import kr.centero.ghg.common.exception.ApplicationException;
-import kr.centero.ghg.common.jwt.JwtTokenProvider;
-import kr.centero.ghg.common.util.CookieUtil;
+import kr.centero.ghg.common.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -16,14 +16,14 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static kr.centero.ghg.common.jwt.JwtTokenProvider.AUTH_HEADER;
-import static kr.centero.ghg.common.jwt.JwtTokenProvider.TOKEN_PREFIX;
+import static kr.centero.ghg.common.security.jwt.JwtTokenProvider.AUTH_HEADER;
+import static kr.centero.ghg.common.security.jwt.JwtTokenProvider.TOKEN_PREFIX;
+
 
 /**
  * CustomLogoutHandler:
  * This class is used to handle logout requests.
- * It will delete the user's accessToken from the database and delete the
- * refreshToken cookie.
+ * It will delete the user's accessToken from the database and delete the refreshToken cookie.
  */
 @Slf4j
 @Service

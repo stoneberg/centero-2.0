@@ -4,7 +4,7 @@
 
     <!-- 사용자 토큰 등록 -->
     <insert id="save" parameterType="UserToken">
-        /* SQL_ID : kr.centero.ghg.auth.mapper.UserTokenMapper.save */
+        /* SQL_ID : kr.centero.ghg.client.auth.mapper.UserTokenMapper.save */
         INSERT INTO tb_token (
             token,
             username,
@@ -18,7 +18,7 @@
 
     <!-- 사용자 토큰 목록 조회 -->
     <select id="findByUsername" resultType="UserToken">
-        /* SQL_ID : kr.centero.ghg.auth.mapper.UserTokenMapper.findByUsername */
+        /* SQL_ID : kr.centero.ghg.client.auth.mapper.UserTokenMapper.findByUsername */
         SELECT
             id,
             token,
@@ -30,7 +30,7 @@
 
     <!-- 사용자 토큰 삭제 -->
     <delete id="deleteByUsername">
-        /* SQL_ID : kr.centero.ghg.auth.mapper.UserTokenMapper.deleteByUsername */
+        /* SQL_ID : kr.centero.ghg.client.auth.mapper.UserTokenMapper.deleteByUsername */
         DELETE
         FROM tb_token
         WHERE username = #{username}
