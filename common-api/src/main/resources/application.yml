@@ -3,7 +3,7 @@ server:
 
 spring:
   main:
-    allow-bean-definition-overriding: true
+    allow-bean-definition-overriding: true # resolve bean overriding issue
   application:
     name: Centero-Common
   profiles:
@@ -20,11 +20,14 @@ spring:
       idle-timeout: ${HIKARI_IDLE_TIMEOUT:100000} # maximum amount of time a connection is allowed to sit idle in the pool
   sql:
     init:
-      mode: always # script execution mode not only on embedded database (h2)  but also on a production one (mysql, postgresql, etc.)
+      mode: ${SQL_INIT_MODE} # run schema.sql and data.sql for test. always: always run, never: never run, embedded: run only embedded db
+
+logging:
+   config: classpath:logback-spring.xml
 
 # mybatis config
 mybatis:
-  type-handlers-package: kr.centero.common.common.mybatis.typehandler
+  type-handlers-package: kr.centero.common.common.typehandler # enum type handler package
   type-aliases-package: kr.centero.common.**.model
   mapper-locations: classpath:mapper/**/*.xml
   configuration:
@@ -45,3 +48,4 @@ token:
 
 refresh-cookie:
   duration: 1d # w(week), d(day), h(hour), m(minute)
+

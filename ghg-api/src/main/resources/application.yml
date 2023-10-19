@@ -3,16 +3,16 @@ server:
 
 spring:
   main:
-    allow-bean-definition-overriding: true
+    allow-bean-definition-overriding: true # resolve bean overriding issue
   application:
-    name: Centero-Ghg
+    name: Centero-GHG
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:h2}
   datasource:
-    driver-class-name: ${DRIVER_CLASS_NAME:net.sf.log4jdbc.sql.jdbcapi.DriverSpy} # default driver class name is org.h2.Driver
-    url: ${DATABASE_URL:jdbc:log4jdbc:mysql://unionplace.iptime.org:9308/centero?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true}
-    username: ${DATABASE_USERNAME:centero_dev}
-    password: ${DATABASE_PASSWORD:Union2030!}
+    driver-class-name: ${DRIVER_CLASS_NAME:org.h2.Driver} # default driver class name is org.h2.Driver
+    url: ${DATABASE_URL:jdbc:h2:mem:testdb}
+    username: ${DATABASE_USERNAME:sa}
+    password: ${DATABASE_PASSWORD:}
     hikari:
       minimum-idle: ${HIKARI_MINIMUM_IDLE:5} # minimum number of idle connections that HikariCP tries to maintain in the pool
       max-lifetime: ${HIKARI_MAX_LIFETIME:240000} # maximum lifetime of a connection in the pool
@@ -20,11 +20,14 @@ spring:
       idle-timeout: ${HIKARI_IDLE_TIMEOUT:100000} # maximum amount of time a connection is allowed to sit idle in the pool
   sql:
     init:
-      mode: always # script execution mode not only on embedded database (h2)  but also on a production one (mysql, postgresql, etc.)
+      mode: ${SQL_INIT_MODE} # run schema.sql and data.sql for test. always: always run, never: never run, embedded: run only embedded db
+
+logging:
+  config: classpath:logback-spring.xml
 
 # mybatis config
 mybatis:
-  type-handlers-package: kr.centero.ghg.common.mybatis.typehandler
+  type-handlers-package: kr.centero.ghg.common.typehandler # enum type handler package
   type-aliases-package: kr.centero.ghg.**.model
   mapper-locations: classpath:mapper/**/*.xml
   configuration:

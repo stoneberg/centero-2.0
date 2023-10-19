@@ -1,12 +1,12 @@
 package kr.centero.common.common.security;
 
 import jakarta.servlet.http.HttpServletRequest;
-import kr.centero.common.auth.domain.model.LoginLog;
-import kr.centero.common.auth.service.CenteroUserDetailsService;
-import kr.centero.common.auth.service.LoginLogService;
-import kr.centero.common.common.exception.ApplicationErrorCode;
-import kr.centero.common.common.exception.ApplicationException;
-import kr.centero.common.common.util.IpAddressUtil;
+import kr.centero.common.client.auth.domain.model.LoginLog;
+import kr.centero.common.client.auth.service.CenteroUserDetailsService;
+import kr.centero.common.client.auth.service.LoginLogService;
+import kr.centero.core.common.exception.ApplicationErrorCode;
+import kr.centero.core.common.exception.ApplicationException;
+import kr.centero.core.common.util.IpAddressUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
