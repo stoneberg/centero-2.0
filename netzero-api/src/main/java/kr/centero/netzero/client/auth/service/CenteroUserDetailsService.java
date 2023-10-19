@@ -1,10 +1,10 @@
 package kr.centero.netzero.client.auth.service;
 
+import kr.centero.core.common.exception.ApplicationErrorCode;
+import kr.centero.core.common.exception.ApplicationException;
 import kr.centero.netzero.client.auth.domain.model.CenteroUserDetails;
 import kr.centero.netzero.client.auth.domain.model.UserRole;
 import kr.centero.netzero.client.auth.mapper.UserAuthMapper;
-import kr.centero.netzero.common.exception.ApplicationErrorCode;
-import kr.centero.netzero.common.exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

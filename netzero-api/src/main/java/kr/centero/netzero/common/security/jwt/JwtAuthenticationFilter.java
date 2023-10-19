@@ -1,4 +1,4 @@
-package kr.centero.netzero.common.jwt;
+package kr.centero.netzero.common.security.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,9 +20,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
-import static kr.centero.netzero.common.jwt.JwtTokenProvider.AUTH_HEADER;
-import static kr.centero.netzero.common.jwt.JwtTokenProvider.TOKEN_PREFIX;
-
 
 /**
  * JwtAuthenticationFilter:
@@ -30,7 +27,7 @@ import static kr.centero.netzero.common.jwt.JwtTokenProvider.TOKEN_PREFIX;
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final String AUTH_ENTRY_POINT = "/api/common/v1/auth";
+    private static final String NETZERO_AUTH_ENTRY_POINT = "/api/netzero/v1/auth";
     private final JwtTokenProvider jwtTokenProvider;
     private final UserTokenMapper userTokenMapper;
     private final HandlerExceptionResolver exceptionResolver;
@@ -49,20 +46,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        // skip jwt filter if request path is /api/common/v1/auth/** (login, signup, refresh, logout)
-        if (request.getServletPath().contains(AUTH_ENTRY_POINT)) {
+        // skip jwt filter if request path is /api/netzero/v1/auth/** (login, signup, refresh, logout)
+        if (request.getServletPath().contains(NETZERO_AUTH_ENTRY_POINT)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        final String authHeader = request.getHeader(AUTH_HEADER);
+        final String authHeader = request.getHeader(JwtTokenProvider.AUTH_HEADER);
         final String accessToken;
         final String username;
         final boolean isValidToken;
 
         // skip jwt filter if auth header is null or not start with "Bearer "
         // this means that the request is not authenticated and would be handled by the AuthenticationEntryPoint
-        if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
+        if (authHeader == null || !authHeader.startsWith(JwtTokenProvider.TOKEN_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }

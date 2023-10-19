@@ -1,6 +1,6 @@
 package kr.centero.netzero.client.user.domain.model;
 
-import kr.centero.netzero.common.mybatis.pagination.PageInfo;
+import kr.centero.core.common.pagination.PageInfo;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

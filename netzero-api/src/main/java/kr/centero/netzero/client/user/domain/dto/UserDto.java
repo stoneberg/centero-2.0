@@ -2,10 +2,10 @@ package kr.centero.netzero.client.user.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import kr.centero.core.common.pagination.PageResponse;
+import kr.centero.core.common.payload.PageDtoResponse;
 import kr.centero.netzero.client.user.domain.model.User;
 import kr.centero.netzero.client.user.mapstruct.UserMapstruct;
-import kr.centero.netzero.common.mybatis.pagination.PageResponse;
-import kr.centero.netzero.common.payload.PageDtoResponse;
 import lombok.*;
 
 import java.util.List;

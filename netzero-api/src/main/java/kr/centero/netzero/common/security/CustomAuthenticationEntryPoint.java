@@ -3,7 +3,7 @@ package kr.centero.netzero.common.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.centero.netzero.common.exception.ErrorResponse;
+import kr.centero.core.common.exception.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

@@ -2,11 +2,11 @@ package kr.centero.netzero.common.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.centero.core.common.exception.ApplicationErrorCode;
+import kr.centero.core.common.exception.ApplicationException;
+import kr.centero.core.common.util.CookieUtil;
 import kr.centero.netzero.client.auth.mapper.UserTokenMapper;
-import kr.centero.netzero.common.exception.ApplicationErrorCode;
-import kr.centero.netzero.common.exception.ApplicationException;
-import kr.centero.netzero.common.jwt.JwtTokenProvider;
-import kr.centero.netzero.common.util.CookieUtil;
+import kr.centero.netzero.common.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -16,8 +16,8 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static kr.centero.netzero.common.jwt.JwtTokenProvider.AUTH_HEADER;
-import static kr.centero.netzero.common.jwt.JwtTokenProvider.TOKEN_PREFIX;
+import static kr.centero.netzero.common.security.jwt.JwtTokenProvider.AUTH_HEADER;
+import static kr.centero.netzero.common.security.jwt.JwtTokenProvider.TOKEN_PREFIX;
 
 
 /**

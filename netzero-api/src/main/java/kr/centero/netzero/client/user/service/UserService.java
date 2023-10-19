@@ -1,10 +1,10 @@
 package kr.centero.netzero.client.user.service;
 
+import kr.centero.core.common.pagination.PageResponse;
 import kr.centero.netzero.client.user.domain.dto.UserDto;
 import kr.centero.netzero.client.user.domain.model.User;
 import kr.centero.netzero.client.user.mapper.UserMapper;
 import kr.centero.netzero.client.user.mapstruct.UserMapstruct;
-import kr.centero.netzero.common.mybatis.pagination.PageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

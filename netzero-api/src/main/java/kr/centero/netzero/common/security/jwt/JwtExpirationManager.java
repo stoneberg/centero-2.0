@@ -1,4 +1,4 @@
-package kr.centero.netzero.common.jwt;
+package kr.centero.netzero.common.security.jwt;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,7 @@
 package kr.centero.netzero.config;
 
-import kr.centero.netzero.common.filter.IpBlacklistFilter;
-import kr.centero.netzero.common.jwt.JwtAuthenticationFilter;
 import kr.centero.netzero.common.security.*;
+import kr.centero.netzero.common.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -32,10 +31,10 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String LOGOUT_URL = "/api/common/v1/user/signout";
+    private static final String NETZERO_AUTH_ENTRY_POINTS = "/api/netzero/v1/auth/**";
+    private static final String NETZERO_LOGOUT_URL = "/api/netzero/v1/user/signout";
     private final HttpRequestEndpointChecker httpRequestEndpointChecker;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final IpBlacklistFilter ipBlacklistFilter;
     private final CustomLogoutHandler customLogoutHandler;
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
     private final AuthenticationProvider authenticationProvider;
@@ -59,7 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(mvcMatcherBuilder.pattern("/v3/api-docs/**")).permitAll()
                         .requestMatchers(mvcMatcherBuilder.pattern("/swagger-ui/**")).permitAll()
                         .requestMatchers(mvcMatcherBuilder.pattern("/swagger-resources/**")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern("/api/common/v1/auth/**")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern(NETZERO_AUTH_ENTRY_POINTS)).permitAll()
                         .anyRequest().authenticated()
         );
 
@@ -70,11 +69,10 @@ public class SecurityConfig {
 
         http.sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS));
 
-        http.addFilterBefore(ipBlacklistFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.logout(logoutConfig -> logoutConfig
-                .logoutUrl(LOGOUT_URL)
+                .logoutUrl(NETZERO_LOGOUT_URL)
                 .addLogoutHandler(customLogoutHandler)
                 .logoutSuccessHandler(customLogoutSuccessHandler));
 

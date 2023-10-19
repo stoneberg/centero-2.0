@@ -1,6 +1,9 @@
 package kr.centero.netzero.client.auth.service;
 
 import jakarta.servlet.http.HttpServletResponse;
+import kr.centero.core.common.exception.BusinessErrorCode;
+import kr.centero.core.common.exception.BusinessException;
+import kr.centero.core.common.util.CookieUtil;
 import kr.centero.netzero.client.auth.domain.dto.UserAuthDto;
 import kr.centero.netzero.client.auth.domain.enums.ERole;
 import kr.centero.netzero.client.auth.domain.model.CenteroUserDetails;
@@ -11,10 +14,7 @@ import kr.centero.netzero.client.auth.mapper.UserAuthMapper;
 import kr.centero.netzero.client.auth.mapper.UserRoleMapper;
 import kr.centero.netzero.client.auth.mapper.UserTokenMapper;
 import kr.centero.netzero.client.auth.mapstruct.UserAuthMapstruct;
-import kr.centero.netzero.common.exception.BusinessErrorCode;
-import kr.centero.netzero.common.exception.BusinessException;
-import kr.centero.netzero.common.jwt.JwtTokenProvider;
-import kr.centero.netzero.common.util.CookieUtil;
+import kr.centero.netzero.common.security.jwt.JwtTokenProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;

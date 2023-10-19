@@ -1,4 +1,4 @@
-package kr.centero.netzero.common.jwt;
+package kr.centero.netzero.common.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

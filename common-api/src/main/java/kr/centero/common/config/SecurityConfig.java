@@ -1,6 +1,5 @@
 package kr.centero.common.config;
 
-import kr.centero.common.common.security.filter.IpBlacklistFilter;
 import kr.centero.common.common.security.jwt.JwtAuthenticationFilter;
 import kr.centero.common.common.security.*;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,6 @@ public class SecurityConfig {
     private static final String LOGOUT_URL = "/api/common/v1/user/signout";
     private final HttpRequestEndpointChecker httpRequestEndpointChecker;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final IpBlacklistFilter ipBlacklistFilter;
     private final CustomLogoutHandler customLogoutHandler;
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
     private final AuthenticationProvider authenticationProvider;
@@ -70,7 +68,6 @@ public class SecurityConfig {
 
         http.sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS));
 
-        http.addFilterBefore(ipBlacklistFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.logout(logoutConfig -> logoutConfig

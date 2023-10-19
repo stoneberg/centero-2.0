@@ -12,7 +12,7 @@
 
     <!-- Console Appender -->
     <appender name="CONSOLE_LOG" class="ch.qos.logback.core.ConsoleAppender">
-        <filter class="kr.centero.netzero.common.filter.LogbackDenyFilter"/>
+        <filter class="kr.centero.core.common.filter.LogbackDenyFilter"/>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${LOG_PATTERN}</pattern>
         </encoder>
@@ -36,7 +36,7 @@
 
     <!-- 그외 모든 시스템 관련 로그를 위한 애펜더 -->
     <appender name="SYSTEM_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="kr.centero.netzero.common.filter.LogbackDenyFilter"/>
+        <filter class="kr.centero.core.common.filter.LogbackDenyFilter"/>
         <file>${SYSTEM_LOG_DIR}/${LOG_PREFIX}-system.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${LOG_PATTERN}</pattern>
