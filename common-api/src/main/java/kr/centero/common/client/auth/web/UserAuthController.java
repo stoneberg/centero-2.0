@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Tag(name = "Centero User Auth API", description = "Centero User Auth API")
 @Slf4j
 @RestController
@@ -48,4 +50,13 @@ public class UserAuthController {
     }
 
     // 로그아웃(/api/common/v1/auth/signout) -> SecurityConfig 에 정의된 CustomLogoutHandler를 통해 처리
+
+    // cookie burn test
+    @GetMapping("/burn")
+    public ResponseEntity<ApiResponse> burn(HttpServletRequest request, HttpServletResponse response) {
+        log.info("[ZET]BURN COOKIE===================>");
+        String accessToken = UUID.randomUUID().toString();
+        CookieUtil.createCookie(CookieUtil.ACCESS_TOKEN_COOKIE, accessToken, "7d", response);
+        return ApiResponse.ok(accessToken);
+    }
 }

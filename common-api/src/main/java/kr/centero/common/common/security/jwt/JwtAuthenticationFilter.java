@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import kr.centero.common.client.auth.domain.model.UserToken;
 import kr.centero.common.client.auth.mapper.UserTokenMapper;
 import kr.centero.common.client.auth.service.CenteroUserDetailsService;
-import kr.centero.core.common.util.JsonUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
