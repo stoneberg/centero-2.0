@@ -31,7 +31,8 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String LOGOUT_URL = "/api/common/v1/user/signout";
+    private static final String COMMON_AUTH_ENTRY_POINTS = "/api/common/v1/auth/**";
+    private static final String COMMON_LOGOUT_URL = "/api/common/v1/user/signout";
     private final HttpRequestEndpointChecker httpRequestEndpointChecker;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomLogoutHandler customLogoutHandler;
@@ -57,7 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(mvcMatcherBuilder.pattern("/v3/api-docs/**")).permitAll()
                         .requestMatchers(mvcMatcherBuilder.pattern("/swagger-ui/**")).permitAll()
                         .requestMatchers(mvcMatcherBuilder.pattern("/swagger-resources/**")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern("/api/common/v1/auth/**")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern(COMMON_AUTH_ENTRY_POINTS)).permitAll()
                         .anyRequest().authenticated()
         );
 
@@ -71,7 +72,7 @@ public class SecurityConfig {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.logout(logoutConfig -> logoutConfig
-                .logoutUrl(LOGOUT_URL)
+                .logoutUrl(COMMON_LOGOUT_URL)
                 .addLogoutHandler(customLogoutHandler)
                 .logoutSuccessHandler(customLogoutSuccessHandler));
 
