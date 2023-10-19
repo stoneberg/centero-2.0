@@ -24,7 +24,7 @@ public class CodeDto {
     @AllArgsConstructor
     public static class CodeRequest {
         private String searchText;
-        private String[] pCodeCd;
+        private String[] pcodeCd;
         private String[] period;
         private String useYn;
     }
@@ -38,7 +38,7 @@ public class CodeDto {
     @AllArgsConstructor
     public static class CodePageRequest {
         private String searchText;
-        private String[] pCodeCd;
+        private String[] pcodeCd;
         private String[] period;
         private String useYn;
         private Integer pageNo;
@@ -56,7 +56,8 @@ public class CodeDto {
         private String codeCd;
         private String codeNm;
         private String codeLvl;
-        private String pCodeCd;
+        private String pcodeCd;
+        private String pcodeNm;
         private String dspOrder;
         private String useYn;
         private String expFrDt;

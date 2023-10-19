@@ -13,7 +13,7 @@ public class Code {
     private String codeCd;
     private String codeNm;
     private String codeLvl;
-    private String pCodeCd;
+    private String pcodeCd;
     private String dspOrder;
     private String useYn;
     private String expFrDt;
