@@ -2,18 +2,20 @@ package kr.centero.common.common.security.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.centero.common.client.auth.domain.model.UserToken;
 import kr.centero.common.client.auth.mapper.UserTokenMapper;
-import kr.centero.common.client.auth.service.CenteroUserDetailsService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -34,15 +38,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserTokenMapper userTokenMapper;
     private final HandlerExceptionResolver exceptionResolver;
-    private final CenteroUserDetailsService userDetailsService;
 
     public JwtAuthenticationFilter(
             JwtTokenProvider jwtTokenProvider,
-            CenteroUserDetailsService userDetailsService,
             UserTokenMapper userTokenMapper,
             @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.userDetailsService = userDetailsService;
         this.userTokenMapper = userTokenMapper;
         this.exceptionResolver = exceptionResolver;
     }
@@ -50,35 +51,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         // skip jwt filter if request path is /api/common/v1/auth/** (login, signup, refresh, logout)
-        log.info("[ZET]COMMON ENTRY POINT CHECK============>{}", request.getServletPath());
         if (request.getServletPath().contains(COMMON_AUTH_ENTRY_POINT)) {
-            log.info("[ZET]COMMON ENTRY POINT SKIPPED===============>");
             filterChain.doFilter(request, response);
             return;
         }
 
-        final String authHeader = request.getHeader(JwtTokenProvider.AUTH_HEADER);
-        final String accessToken;
-        final String username;
-        final boolean isValidToken;
+        String accessToken = null;
+        String username;
+        boolean isValidToken;
+
+        // First try to get the access token from cookie
+        accessToken = this.getAccessToken(request, accessToken);
+
+        // If access token is not found in cookie, try go get it from header
+        if (accessToken == null) {
+            final String authHeader = request.getHeader(JwtTokenProvider.AUTH_HEADER);
+            if (authHeader != null && authHeader.startsWith(JwtTokenProvider.TOKEN_PREFIX)) {
+                accessToken = authHeader.substring(7);
+            }
+        }
 
         // skip jwt filter if auth header is null or not start with "Bearer "
         // this means that the request is not authenticated and would be handled by the AuthenticationEntryPoint
-        if (authHeader == null || !authHeader.startsWith(JwtTokenProvider.TOKEN_PREFIX)) {
+        if (accessToken == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
         // token validation, authentication, clean up
         try {
-            accessToken = authHeader.substring(7);
             username = jwtTokenProvider.extractUsername(accessToken);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 // check if the incoming token is valid and the same token exists in the database
                 // because the user may have logged out and the token is deleted from the database
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UserToken userToken = userTokenMapper.findByUsername(username);
+                UserToken userToken = userTokenMapper.findByUsername(username); // @todo : redis 에서 조회하도록 변경
+                log.info("[ZET]userToken===============>{}", userToken);
+                UserDetails userDetails = this.createUserDetails(userToken);
+                log.info("[ZET]userDetails=============>{}", userDetails);
+
                 isValidToken = jwtTokenProvider.isTokenValid(accessToken, userDetails)
                         && !ObjectUtils.isEmpty(userToken);
 
@@ -95,6 +106,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // delegate the exception to the global exception handler (ControllerAdvice)
             exceptionResolver.resolveException(request, response, null, e);
         }
+    }
+
+    private String getAccessToken(HttpServletRequest request, String accessToken) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("accessToken" .equals(cookie.getName())) {
+                    accessToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        return accessToken;
+    }
+
+    private UserDetails createUserDetails(UserToken userToken) {
+        List<SimpleGrantedAuthority> authorities = Arrays.stream(userToken.getRoles().split(","))
+                .map(SimpleGrantedAuthority::new)
+                .toList();
+
+        return new User(userToken.getUsername(), "", authorities);
     }
 
 }

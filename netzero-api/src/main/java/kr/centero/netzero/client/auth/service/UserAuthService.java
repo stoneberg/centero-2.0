@@ -16,7 +16,6 @@ import kr.centero.netzero.client.auth.mapper.UserTokenMapper;
 import kr.centero.netzero.client.auth.mapstruct.UserAuthMapstruct;
 import kr.centero.netzero.common.security.jwt.JwtTokenProvider;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -60,12 +59,12 @@ public class UserAuthService {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
         CenteroUserDetails userDetails = (CenteroUserDetails) authentication.getPrincipal();
-        String access = jwtTokenProvider.generateToken(userDetails);
-        String refresh = jwtTokenProvider.generateRefreshToken(userDetails);
-
         // ROLE_ADMIN, ROLE_USER 에서 ROLE_ 제거
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .map(role -> role.replace(ROLE_PREFIX, "")).toList();
+
+        String access = jwtTokenProvider.generateToken(username, roles);
+        String refresh = jwtTokenProvider.generateRefreshToken(username);
 
         // 1.delete the previously issued user's tokens
         userTokenMapper.deleteByUsername(username);
@@ -97,9 +96,9 @@ public class UserAuthService {
     public UserAuthDto.SigninResponse issueNewAccessToken(String refreshToken, HttpServletResponse httpServletResponse) {
         String username = jwtTokenProvider.extractUsername(refreshToken);
         CenteroUserDetails userDetails = (CenteroUserDetails) userDetailService.loadUserByUsername(username);
-        String newAccessToken = jwtTokenProvider.generateToken(userDetails);
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .map(role -> role.replace(ROLE_PREFIX, "")).toList();
+        String newAccessToken = jwtTokenProvider.generateToken(username, roles);
 
         // 1.delete the previously issued accessToken
         userTokenMapper.deleteByUsername(username);
@@ -150,8 +149,8 @@ public class UserAuthService {
         CenteroUserDetails userDetails = (CenteroUserDetails) userDetailService.loadUserByUsername(username);
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .map(role -> role.replace(ROLE_PREFIX, "")).toList();
-        String access = jwtTokenProvider.generateToken(userDetails);
-        String refresh = jwtTokenProvider.generateRefreshToken(userDetails);
+        String access = jwtTokenProvider.generateToken(username, roles);
+        String refresh = jwtTokenProvider.generateRefreshToken(username);
 
         // 1.save access token
         String userRole = StringUtils.join(roles, ",");
@@ -189,3 +188,4 @@ public class UserAuthService {
     }
 
 }
+
