@@ -44,14 +44,13 @@ token:
   signing:
     key: e147f935d2219326321bfc7b2ce4bccd8324e2fca4d03841e5ee8210da788bab
   expiration:
-    access: 10m # w(week), d(day), h(hour), m(minute), s(second)
-    refresh: 1h # w(week), d(day), h(hour), m(minute), s(second)
+    access: 1d # w(week), d(day), h(hour), m(minute), s(second)
+    refresh: 7d # w(week), d(day), h(hour), m(minute), s(second)
 
 cookie:
   access:
     name: access_token
-    duration: 10m # w(week), d(day), h(hour), m(minute)
+    duration: 1d # d(day), h(hour), m(minute)
   refresh:
     name: refresh_token
-    duration: 1h # w(week), d(day), h(hour), m(minute)
-
+    duration: 7d # d(day), h(hour), m(minute)

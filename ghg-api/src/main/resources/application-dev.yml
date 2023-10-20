@@ -1,5 +1,5 @@
 SERVER_PORT: 8081
-SERVER_ADDRESS: ghg.centero.co.kr
+# SERVER_ADDRESS: ghg.centero.co.kr
 # Current Active Profile
 spring:
   config:

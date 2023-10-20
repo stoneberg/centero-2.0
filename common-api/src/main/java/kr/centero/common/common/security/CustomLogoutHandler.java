@@ -53,11 +53,12 @@ public class CustomLogoutHandler implements LogoutHandler {
         }
 
         // check if the refreshToken cookie exists
+        boolean accessTokenFound = cookieUtil.doesCookieExist(request, CookieUtil.ACCESS_TOKEN_COOKIE);
         boolean refreshTokenFound = cookieUtil.doesCookieExist(request, CookieUtil.REFRESH_TOKEN_COOKIE);
 
-        // if refreshToken cookie not found, it means that user already logged out
-        if (!refreshTokenFound) {
-            throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED);
+        // if accessToken cookie or refreshToken cookie not found, it means that user already logged out
+        if (!accessTokenFound || !refreshTokenFound) {
+            throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.FORBIDDEN);
         }
 
     }

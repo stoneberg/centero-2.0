@@ -17,5 +17,6 @@ public class UserToken {
     private Long id;
     private String token;
     private String username;
+    private String roles;
     private LocalDateTime issuedAt;
 }

@@ -3,8 +3,6 @@ package kr.centero.core.common.util;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CookieUtil {
-    private static final Logger log = LoggerFactory.getLogger(CookieUtil.class);
     public static final String ACCESS_TOKEN_COOKIE = "access_token";
     public static final String REFRESH_TOKEN_COOKIE = "refresh_token";
 
@@ -48,7 +45,6 @@ public class CookieUtil {
         response.addCookie(cookie);
     }
 
-
     /**
      * write refresh cookie
      *
@@ -59,7 +55,6 @@ public class CookieUtil {
         Cookie cookie = this.burnCookie(REFRESH_TOKEN_COOKIE, value, refreshTokenCookieDuration);
         response.addCookie(cookie);
     }
-
 
     /**
      * create cookie with default duration of 1 day
@@ -92,8 +87,7 @@ public class CookieUtil {
         }
 
         cookie.setMaxAge(expiry);
-        // cookie.setHttpOnly(true);
-        cookie.setHttpOnly(false);
+        cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setDomain("centero.co.kr");
         // cookie.setSecure(true); // https에서만 쿠키 사용 가능
@@ -146,7 +140,7 @@ public class CookieUtil {
      * @return deleted cookie
      */
     public Cookie deleteCookie(String name) {
-        Cookie cookie = new Cookie(name, "");
+        Cookie cookie = new Cookie(name, null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         return cookie;
