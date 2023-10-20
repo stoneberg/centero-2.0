@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@Profile({ "default", "h2", "local" })
+@Profile({ "default", "h2" })
 public class UserDataLoader implements CommandLineRunner {
     private final UserRoleMapper userRoleMapper;
     private final RoleMapper roleMapper;

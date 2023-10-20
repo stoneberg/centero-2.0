@@ -14,6 +14,7 @@ public class Code {
     private String codeNm;
     private String codeLvl;
     private String pcodeCd;
+    private String pcodeNm;
     private String dspOrder;
     private String useYn;
     private String expFrDt;

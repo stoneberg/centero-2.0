@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.centero.ghg.admin.mdm.mapper.CodeMapper">
 
-        <select id="getCodeTreeList" resultType="map" parameterType="map"> 
+        <select id="findCodeForTree" resultType="Code"> 
         SELECT CODE_CD
              , LANG_CD CODE_NM
              , CODE_LVL

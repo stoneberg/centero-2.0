@@ -18,11 +18,15 @@ public class CodeController {
     private final CodeService service;
 
     // 코드정보 상세 조건 조회 (request param: searchText, useYn, period) : Mapping
-    // requestBody
-    // auto mapping
-    @Operation(summary = "코드 조회", description = "코드 정보를 조회한다. [PostMapping]")
+    @Operation(summary = "코드 조회", description = "코드 정보를 조회한다.")
     @PostMapping
     public ResponseEntity<ApiResponse> findAll(@RequestBody CodeDto.CodeRequest codeRequest) {
         return ApiResponse.ok(service.findAll(codeRequest));
+    }
+
+    @Operation(summary = "트리", description = "트리구성용 코드 정보를 조회한다.")
+    @PostMapping("/trees")
+    public ResponseEntity<ApiResponse> findAllCodesForTree() {
+        return ApiResponse.ok(service.findCodeForTree());
     }
 }
