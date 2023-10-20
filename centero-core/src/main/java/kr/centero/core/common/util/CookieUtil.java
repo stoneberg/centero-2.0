@@ -3,18 +3,63 @@ package kr.centero.core.common.util;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * CookieUtil:
  * This class is used to create, delete, and get cookie.
  */
+@Component
 public class CookieUtil {
-    public static final String ACCESS_TOKEN_COOKIE = "accessToken";
-    public static final String REFRESH_TOKEN_COOKIE = "refreshToken";
+    private static final Logger log = LoggerFactory.getLogger(CookieUtil.class);
+    public static final String ACCESS_TOKEN_COOKIE = "access_token";
+    public static final String REFRESH_TOKEN_COOKIE = "refresh_token";
 
-    private CookieUtil() {
-        throw new IllegalStateException("Utility class");
+    @Value("${cookie.access.duration}")
+    private String accessTokenCookieDuration;
+
+    @Value("${cookie.refresh.duration}")
+    private String refreshTokenCookieDuration;
+
+    /**
+     * write cookie
+     *
+     * @param name     cookie name
+     * @param value    cookie value
+     * @param duration   cookie max age
+     * @param response HttpServletResponse
+     */
+    public void writeCookie(String name, String value, String duration, HttpServletResponse response) {
+        Cookie cookie = this.burnCookie(name, value, duration);
+        response.addCookie(cookie);
     }
+
+    /**
+     * write access cookie
+     *
+     * @param value    cookie value
+     * @param response HttpServletResponse
+     */
+    public void writeAccessCookie(String value, HttpServletResponse response) {
+        Cookie cookie = this.burnCookie(ACCESS_TOKEN_COOKIE, value, accessTokenCookieDuration);
+        response.addCookie(cookie);
+    }
+
+
+    /**
+     * write refresh cookie
+     *
+     * @param value    cookie value
+     * @param response HttpServletResponse
+     */
+    public void writeRefreshCookie(String value, HttpServletResponse response) {
+        Cookie cookie = this.burnCookie(REFRESH_TOKEN_COOKIE, value, refreshTokenCookieDuration);
+        response.addCookie(cookie);
+    }
+
 
     /**
      * create cookie with default duration of 1 day
@@ -24,7 +69,7 @@ public class CookieUtil {
      * @param duration cookie duration (ex. 1d, 1h, 1m) [max-age]
      * @return created cookie
      */
-    public static Cookie burnCookie(String name, String value, String duration) {
+    public Cookie burnCookie(String name, String value, String duration) {
         Cookie cookie = new Cookie(name, value);
 
         // duration toLowerCase
@@ -50,22 +95,9 @@ public class CookieUtil {
         // cookie.setHttpOnly(true);
         cookie.setHttpOnly(false);
         cookie.setPath("/");
-        cookie.setDomain("centero.kr");
+        cookie.setDomain("centero.co.kr");
         // cookie.setSecure(true); // https에서만 쿠키 사용 가능
         return cookie;
-    }
-
-    /**
-     * create cookie
-     *
-     * @param name     cookie name
-     * @param value    cookie value
-     * @param duration   cookie max age
-     * @param response HttpServletResponse
-     */
-    public static void createCookie(String name, String value, String duration, HttpServletResponse response) {
-        Cookie cookie = CookieUtil.burnCookie(name, value, duration);
-        response.addCookie(cookie);
     }
 
     /**
@@ -74,7 +106,7 @@ public class CookieUtil {
      * @param request HttpServletRequest
      * @return cookie value
      */
-    public static String getCookieValueByName(HttpServletRequest request, String name) {
+    public String readCookieByName(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -93,7 +125,7 @@ public class CookieUtil {
      * @param cookieName cookie name
      * @return boolean
      */
-    public static boolean doesCookieExist(HttpServletRequest request, String cookieName) {
+    public boolean doesCookieExist(HttpServletRequest request, String cookieName) {
         boolean cookieExists = false;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -113,7 +145,7 @@ public class CookieUtil {
      * @param name cookie name
      * @return deleted cookie
      */
-    public static Cookie deleteCookie(String name) {
+    public Cookie deleteCookie(String name) {
         Cookie cookie = new Cookie(name, "");
         cookie.setMaxAge(0);
         cookie.setPath("/");
@@ -126,8 +158,8 @@ public class CookieUtil {
      * @param name     cookie name
      * @param response HttpServletResponse
      */
-    public static void cleanUpCookie(String name, HttpServletResponse response) {
-        Cookie cookie = CookieUtil.deleteCookie(name);
+    public void cleanUpCookie(String name, HttpServletResponse response) {
+        Cookie cookie = this.deleteCookie(name);
         response.addCookie(cookie);
     }
 

@@ -27,8 +27,9 @@ public class CenteroUserDetailsService implements UserDetailsService {
         List<UserRole> userRoles = userAuthMapper.findUserByUsername(username);
 
         if (CollectionUtils.isEmpty(userRoles)) {
-            // throw new UsernameNotFoundException(BusinessErrorCode.USER_NOT_FOUND.getMessage());
-            throw new ApplicationException(ApplicationErrorCode.BAD_CREDENTIALS, HttpStatus.UNAUTHORIZED);
+            // access token 만료시 Unauthorized[401] 처리하여 frontend에서 refresh 호출이 되도록 유도
+            // refresh token 만료시 Forbidden[403] 처리하여 frontend에서 refresh 순환 재요청 처리 방지
+            throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.FORBIDDEN);
         }
 
         return new CenteroUserDetails(userRoles);

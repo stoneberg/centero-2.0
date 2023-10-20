@@ -31,6 +31,7 @@ import static kr.centero.ghg.common.security.jwt.JwtTokenProvider.TOKEN_PREFIX;
 public class CustomLogoutHandler implements LogoutHandler {
     private final UserTokenMapper userTokenMapper;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CookieUtil cookieUtil;
 
     @Transactional
     @Override
@@ -46,12 +47,13 @@ public class CustomLogoutHandler implements LogoutHandler {
             // delete user's accessToken
             String username = jwtTokenProvider.extractUsername(accessToken);
             userTokenMapper.deleteByUsername(username);
-            // delete refresh token cookie
-            CookieUtil.cleanUpCookie(CookieUtil.REFRESH_TOKEN_COOKIE, response);
+            // delete access, refresh token cookie
+            cookieUtil.cleanUpCookie(CookieUtil.ACCESS_TOKEN_COOKIE, response);
+            cookieUtil.cleanUpCookie(CookieUtil.REFRESH_TOKEN_COOKIE, response);
         }
 
         // check if the refreshToken cookie exists
-        boolean refreshTokenFound = CookieUtil.doesCookieExist(request, CookieUtil.REFRESH_TOKEN_COOKIE);
+        boolean refreshTokenFound = cookieUtil.doesCookieExist(request, CookieUtil.REFRESH_TOKEN_COOKIE);
 
         // if refreshToken cookie not found, it means that user already logged out
         if (!refreshTokenFound) {

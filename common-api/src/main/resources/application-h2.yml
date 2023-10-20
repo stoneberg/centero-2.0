@@ -1,4 +1,5 @@
 SERVER_PORT: 8080
+SERVER_ADDRESS: common.centero.co.kr
 spring:
   h2:
     console:

@@ -18,7 +18,6 @@ import kr.centero.core.common.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,9 +43,7 @@ public class UserAuthService {
     private final UserRoleMapper userRoleMapper;
     private final UserAuthMapper userAuthMapper;
     private final RoleMapper roleMapper;
-
-    @Value("${refresh-cookie.duration}")
-    private String refreshCookieDuration;
+    private final CookieUtil cookieUtil;
 
     /**
      * 로그인: access, refresh 토큰 발급
@@ -74,9 +71,10 @@ public class UserAuthService {
 
         // 2.save accessToken
         this.registerAccessToken(access, username);
+        cookieUtil.writeAccessCookie(refresh, response);
 
         // 3.create refresh token cookie
-        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refresh, refreshCookieDuration, response);
+        cookieUtil.writeRefreshCookie(refresh, response);
 
         // 4.return jwt response
         return UserAuthDto.SigninResponse.builder()
@@ -106,9 +104,9 @@ public class UserAuthService {
 
         // 2.save new accessToken
         this.registerAccessToken(newAccessToken, username);
+        cookieUtil.writeAccessCookie(newAccessToken, httpServletResponse);
 
-        // 3.create refresh token cookie
-        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refreshToken, refreshCookieDuration, httpServletResponse);
+        // 3.reuse refresh token, so don't need to create new refresh token
 
         // 4.return jwt response
         return UserAuthDto.SigninResponse.builder()
@@ -152,9 +150,10 @@ public class UserAuthService {
 
         // 1.save access token
         this.registerAccessToken(access, username);
+        cookieUtil.writeAccessCookie(access, response);
 
         // 2.create refresh token cookie
-        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refresh, refreshCookieDuration, response);
+        cookieUtil.writeRefreshCookie(refresh, response);
 
         // 3.return jwt response
         return UserAuthDto.SigninResponse.builder()

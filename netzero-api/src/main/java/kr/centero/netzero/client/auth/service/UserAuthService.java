@@ -44,9 +44,7 @@ public class UserAuthService {
     private final UserRoleMapper userRoleMapper;
     private final UserAuthMapper userAuthMapper;
     private final RoleMapper roleMapper;
-
-    @Value("${refresh-cookie.duration}")
-    private String refreshCookieDuration;
+    private final CookieUtil cookieUtil;
 
     /**
      * 로그인: access, refresh 토큰 발급
@@ -74,9 +72,10 @@ public class UserAuthService {
 
         // 2.save accessToken
         this.registerAccessToken(access, username);
+        cookieUtil.writeAccessCookie(access, response);
 
         // 3.create refresh token cookie
-        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refresh, refreshCookieDuration, response);
+        cookieUtil.writeRefreshCookie(refresh, response);
 
         // 4.return jwt response
         return UserAuthDto.SigninResponse.builder()
@@ -108,7 +107,7 @@ public class UserAuthService {
         this.registerAccessToken(newAccessToken, username);
 
         // 3.create refresh token cookie
-        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refreshToken, refreshCookieDuration, httpServletResponse);
+        CookieUtil.writeCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refreshToken, refreshCookieDuration, httpServletResponse);
 
         // 4.return jwt response
         return UserAuthDto.SigninResponse.builder()
@@ -154,7 +153,7 @@ public class UserAuthService {
         this.registerAccessToken(access, username);
 
         // 2.create refresh token cookie
-        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refresh, refreshCookieDuration, response);
+        CookieUtil.writeCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refresh, refreshCookieDuration, response);
 
         // 3.return jwt response
         return UserAuthDto.SigninResponse.builder()

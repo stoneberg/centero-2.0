@@ -8,6 +8,8 @@ import kr.centero.netzero.client.auth.domain.model.UserToken;
 import kr.centero.netzero.client.auth.mapper.UserTokenMapper;
 import kr.centero.netzero.client.auth.service.CenteroUserDetailsService;
 import org.apache.commons.lang3.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +29,7 @@ import java.io.IOException;
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private static final String NETZERO_AUTH_ENTRY_POINT = "/api/netzero/v1/auth";
     private final JwtTokenProvider jwtTokenProvider;
     private final UserTokenMapper userTokenMapper;
@@ -47,7 +50,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         // skip jwt filter if request path is /api/netzero/v1/auth/** (login, signup, refresh, logout)
+        log.info("[ZET]NETZERO ENTRY POINT CHECK============>{}", request.getServletPath());
         if (request.getServletPath().contains(NETZERO_AUTH_ENTRY_POINT)) {
+            log.info("[ZET]NETZERO ENTRY POINT SKIPPED===============>");
             filterChain.doFilter(request, response);
             return;
         }
