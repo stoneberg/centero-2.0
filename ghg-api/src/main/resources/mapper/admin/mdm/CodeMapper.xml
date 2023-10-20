@@ -4,7 +4,7 @@
 
         <select id="findCodeForTree" resultType="Code"> 
         SELECT CODE_CD
-             , LANG_CD CODE_NM
+             , IFNULL(L.DSP_TEXT, C.LANG_CD) CODE_NM
              , CODE_LVL
              , P_CODE_CD
              , DSP_ORDER
@@ -21,14 +21,16 @@
              , ATTR8_JSON
              , ATTR9_JSON
              , ATTR10_JSON
-          FROM TB_CMM_CODE
+          FROM TB_CMM_CODE C
+               LEFT JOIN TB_CMM_LANG L ON (L.LOCALE_CD = IFNULL(#{localeCd}, "KO") AND L.LANG_CD = C.LANG_CD)
          ORDER BY P_CODE_CD, DSP_ORDER
     </select>
 
     <select id="findAll" parameterType="Code" resultType="Code">
         /* SQL_ID : kr.centero.ghg.admin.mdm.mapper.CodeMapper.findAll */
         SELECT A.CODE_CD
-             , A.LANG_CD CODE_NM
+             , A.LANG_CD
+             , IFNULL(L.DSP_TEXT, A.LANG_CD) CODE_NM
              , A.CODE_LVL
              , A.P_CODE_CD
              , B.LANG_CD P_CODE_NM
@@ -57,8 +59,9 @@
              , A.ATTR10_JSON
              , A.ATTR10_VAL
           FROM TB_CMM_CODE A
-             , TB_CMM_CODE B
-         WHERE B.CODE_CD = A.P_CODE_CD
+               JOIN TB_CMM_CODE B ON B.CODE_CD = A.P_CODE_CD
+               LEFT JOIN TB_CMM_LANG L ON (L.LOCALE_CD = IFNULL(#{localeCd}, "KO") AND L.LANG_CD = A.LANG_CD)
+         WHERE 1 = 1
          <if test='pcodeCd != null and pcodeCd.size() > 0'>
            AND A.P_CODE_CD IN <foreach collection="pcodeCd" item="item" open="(" close=")" separator=",">#{item}</foreach>
          </if>
@@ -68,21 +71,21 @@
          <if test='useYn != null and useYn != ""'>
            AND A.USE_YN = #{useYn}
          </if>
-         <if test='period != null and period.size() > 0'>
+         <if test='period != null and period.size > 0'>
            AND A.EXP_FR_DT <![CDATA[<=]]> STR_TO_DATE(#{period[1]}, '%Y-%m-%d')
            AND A.EXP_TO_DT <![CDATA[>=]]> STR_TO_DATE(#{period[0]}, '%Y-%m-%d')
          </if>
          ORDER BY A.CODE_LVL, A.P_CODE_CD, A.DSP_ORDER
     </select>
 
-    <update id="save" parameterType="java.util.List">
+    <update id="saveCodeList" parameterType="java.util.List">
         <foreach collection="list" item="item">
             <choose>
-            <when test='item.CRUD_FLAG == "C"'>
+            <when test='item.crudFlag == "C"'>
                 INSERT
-                  INTO CMN_CODE(
+                  INTO TB_CMM_CODE(
                       CODE_CD
-                    , CODE_NM
+                    , LANG_CD
                     , CODE_LVL
                     , P_CODE_CD
                     , DSP_ORDER
@@ -108,71 +111,77 @@
                     , ATTR9_JSON
                     , ATTR9_VAL
                     , ATTR10_JSON
-                    , ATTR10_VAL)
+                    , ATTR10_VAL
+                    , CRT_ID
+                    , UPD_ID)
                 VALUES (
-                      #{item.CODE_CD}
-                    , #{item.CODE_NM}
-                    , #{item.CODE_LVL}
-                    , #{item.P_CODE_CD}
-                    , #{item.DSP_ORDER}
-                    , #{item.USE_YN}
-                    , #{item.EXP_FR_DT}
-                    , #{item.EXP_TO_DT}
-                    , #{item.ATTR1_JSON}
-                    , #{item.ATTR1_VAL}
-                    , #{item.ATTR2_JSON}
-                    , #{item.ATTR2_VAL}
-                    , #{item.ATTR3_JSON}
-                    , #{item.ATTR3_VAL}
-                    , #{item.ATTR4_JSON}
-                    , #{item.ATTR4_VAL}
-                    , #{item.ATTR5_JSON}
-                    , #{item.ATTR5_VAL}
-                    , #{item.ATTR6_JSON}
-                    , #{item.ATTR6_VAL}
-                    , #{item.ATTR7_JSON}
-                    , #{item.ATTR7_VAL}
-                    , #{item.ATTR8_JSON}
-                    , #{item.ATTR8_VAL}
-                    , #{item.ATTR9_JSON}
-                    , #{item.ATTR9_VAL}
-                    , #{item.ATTR10_JSON}
-                    , #{item.ATTR10_VAL}               
+                      #{item.codeCd}
+                    , #{item.langCd}
+                    , #{item.codeLvl}
+                    , #{item.pcodeCd}
+                    , #{item.dspOrder}
+                    , #{item.useYn}
+                    , #{item.expFrDt}
+                    , #{item.expToDt}
+                    , #{item.attr1Json}
+                    , #{item.attr1Val}
+                    , #{item.attr2Json}
+                    , #{item.attr2Val}
+                    , #{item.attr3Json}
+                    , #{item.attr3Val}
+                    , #{item.attr4Json}
+                    , #{item.attr4Val}
+                    , #{item.attr5Json}
+                    , #{item.attr5Val}
+                    , #{item.attr6Json}
+                    , #{item.attr6Val}
+                    , #{item.attr7Json}
+                    , #{item.attr7Val}
+                    , #{item.attr8Json}
+                    , #{item.attr8Val}
+                    , #{item.attr9Json}
+                    , #{item.attr9Val}
+                    , #{item.attr10Json}
+                    , #{item.attr10Val}
+                    , 'admin'
+                    , 'admin'
                 );
             </when>
-             <!--<when test='item.CRUD_FLAG == "D"'>
-				DELETE FROM CMN_CODE WHERE CODE_CD = #{item.CODE_CD}; 
+             <!--<when test='item.crudFlag == "D"'>
+				DELETE FROM CMN_CODE WHERE CODE_CD = #{item.codeCd}; 
 			 </when>-->
             <otherwise>
-                UPDATE CMN_CODE
-                   SET CODE_NM = #{item.CODE_NM}
-                    , CODE_LVL = #{item.CODE_LVL}
-                    , P_CODE_CD = #{item.P_CODE_CD}
-                    , DSP_ORDER = #{item.DSP_ORDER}
-                    , USE_YN = #{item.USE_YN}
-                    , EXP_FR_DT = #{item.EXP_FR_DT}
-                    , EXP_TO_DT = #{item.EXP_TO_DT}
-                    , ATTR1_JSON = #{item.ATTR1_JSON}
-                    , ATTR1_VAL = #{item.ATTR1_VAL}
-                    , ATTR2_JSON = #{item.ATTR2_JSON}
-                    , ATTR2_VAL = #{item.ATTR2_VAL}
-                    , ATTR3_JSON = #{item.ATTR3_JSON}
-                    , ATTR3_VAL = #{item.ATTR3_VAL}
-                    , ATTR4_JSON = #{item.ATTR4_JSON}
-                    , ATTR4_VAL = #{item.ATTR4_VAL}
-                    , ATTR5_JSON = #{item.ATTR5_JSON}
-                    , ATTR5_VAL = #{item.ATTR5_VAL}
-                    , ATTR6_JSON = #{item.ATTR6_JSON}
-                    , ATTR6_VAL = #{item.ATTR6_VAL}
-                    , ATTR7_JSON = #{item.ATTR7_JSON}
-                    , ATTR7_VAL = #{item.ATTR7_VAL}
-                    , ATTR8_JSON = #{item.ATTR8_JSON}
-                    , ATTR8_VAL = #{item.ATTR8_VAL}
-                    , ATTR9_JSON = #{item.ATTR9_JSON}
-                    , ATTR9_VAL = #{item.ATTR9_VAL}
-                    , ATTR10_JSON = #{item.ATTR10_JSON}
-                    , ATTR10_VAL = #{item.ATTR10_VAL} 
-                WHERE CODE_CD = #{item.CODE_CD}
+                UPDATE TB_CMM_CODE
+                   SET LANG_CD = #{item.langCd}
+                    , CODE_LVL = #{item.codeLvl}
+                    , P_CODE_CD = #{item.pcodeCd}
+                    , DSP_ORDER = #{item.dspOrder}
+                    , USE_YN = #{item.useYn}
+                    , EXP_FR_DT = #{item.expFrDt}
+                    , EXP_TO_DT = #{item.expToDt}
+                    , ATTR1_JSON = #{item.attr1Json}
+                    , ATTR1_VAL = #{item.attr1Val}
+                    , ATTR2_JSON = #{item.attr2Json}
+                    , ATTR2_VAL = #{item.attr2Val}
+                    , ATTR3_JSON = #{item.attr3Json}
+                    , ATTR3_VAL = #{item.attr3Val}
+                    , ATTR4_JSON = #{item.attr4Json}
+                    , ATTR4_VAL = #{item.attr4Val}
+                    , ATTR5_JSON = #{item.attr5Json}
+                    , ATTR5_VAL = #{item.attr5Val}
+                    , ATTR6_JSON = #{item.attr6Json}
+                    , ATTR6_VAL = #{item.attr6Val}
+                    , ATTR7_JSON = #{item.attr7Json}
+                    , ATTR7_VAL = #{item.attr7Val}
+                    , ATTR8_JSON = #{item.attr8Json}
+                    , ATTR8_VAL = #{item.attr8Val}
+                    , ATTR9_JSON = #{item.attr9Json}
+                    , ATTR9_VAL = #{item.attr9Val}
+                    , ATTR10_JSON = #{item.attr10Json}
+                    , ATTR10_VAL = #{item.attr10Val}
+                    , UPD_ID = 'admin'
+                    , UPD_TM = CURRENT_TIMESTAMP
+                WHERE CODE_CD = #{item.codeCd}
                 ;
             </otherwise>
             </choose>

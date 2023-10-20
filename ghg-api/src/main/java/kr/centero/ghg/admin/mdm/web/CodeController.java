@@ -24,9 +24,16 @@ public class CodeController {
         return ApiResponse.ok(service.findAll(codeRequest));
     }
 
-    @Operation(summary = "트리", description = "트리구성용 코드 정보를 조회한다.")
-    @PostMapping("/trees")
+    @Operation(summary = "트리구성용 코드 조회", description = "트리구성용 코드 정보를 조회한다.")
+    @GetMapping("/trees")
     public ResponseEntity<ApiResponse> findAllCodesForTree() {
         return ApiResponse.ok(service.findCodeForTree());
+    }
+
+    @Operation(summary = "코드목록 저장", description = "변경된 코드목록 정보를 저장한다.")
+    @PostMapping("/save")
+    public ResponseEntity<ApiResponse> saveCodeList(@RequestBody CodeDto.CodeListRequest request) {
+        service.saveCodeList(request);
+        return ApiResponse.ok();
     }
 }

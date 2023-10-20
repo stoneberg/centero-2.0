@@ -24,9 +24,10 @@ public class CodeDto {
     @AllArgsConstructor
     public static class CodeRequest {
         private String searchText;
-        private String[] pcodeCd;
-        private String[] period;
+        private List<String> pcodeCd;
+        private List<String> period;
         private String useYn;
+        private String localeCd;
     }
 
     /**
@@ -38,11 +39,12 @@ public class CodeDto {
     @AllArgsConstructor
     public static class CodePageRequest {
         private String searchText;
-        private String[] pcodeCd;
-        private String[] period;
+        private List<String> pcodeCd;
+        private List<String> period;
         private String useYn;
         private Integer pageNo;
         private Integer pageSize;
+        private String localeCd;
     }
 
     /**
@@ -82,6 +84,14 @@ public class CodeDto {
         private String attr9Val;
         private String attr10Json;
         private String attr10Val;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CodeListRequest {
+        private List<Code> codeList;
     }
 
     @Data
