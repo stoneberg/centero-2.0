@@ -10,7 +10,9 @@
             tu.username,
             tu.password,
             tu.email,
-            tr.role_name
+            tr.role_name,
+            tu.created_at,
+            tu.updated_at
         FROM tb_user tu
          INNER JOIN tb_user_role tur ON tur.user_id = tu.user_id
          INNER JOIN tb_role tr ON tr.role_id = tur.role_id

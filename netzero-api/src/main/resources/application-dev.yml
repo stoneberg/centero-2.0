@@ -1,5 +1,5 @@
 SERVER_PORT: 8082
-# SERVER_ADDRESS: netzero.centero.co.kr
+SERVER_ADDRESS: netzero-api.centero.kr
 # Current Active Profile
 spring:
   config:
@@ -7,7 +7,7 @@ spring:
       on-profile: dev
 # Database Configuration
 DRIVER_CLASS_NAME: net.sf.log4jdbc.sql.jdbcapi.DriverSpy # com.mysql.cj.jdbc.Driver
-DATABASE_URL: jdbc:log4jdbc:mysql://unionplace.iptime.org:9308/netzero
+DATABASE_URL: jdbc:log4jdbc:mysql://unionplace.iptime.org:9308/netzero?serverTimezone=UTC&useLegacyDatetimeCode=false  # time_zone='+9:00' UTC
 DATABASE_USERNAME: centero_dev
 DATABASE_PASSWORD: Union2030!
 HIKARI_MINIMUM_IDLE: 5

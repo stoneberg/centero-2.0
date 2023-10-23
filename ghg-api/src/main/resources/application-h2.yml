@@ -1,5 +1,5 @@
 SERVER_PORT: 8081
-# SERVER_ADDRESS: ghg.centero.co.kr
+SERVER_ADDRESS: ghg-api.centero.kr
 spring:
   h2:
     console:

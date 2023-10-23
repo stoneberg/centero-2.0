@@ -1,5 +1,5 @@
 SERVER_PORT: 8080
-SERVER_ADDRESS: common.centero.co.kr
+SERVER_ADDRESS: common-api.centero.kr
 # Current Active Profile
 spring:
   config:
@@ -7,7 +7,7 @@ spring:
       on-profile: local
 # Database Configuration
 DRIVER_CLASS_NAME: net.sf.log4jdbc.sql.jdbcapi.DriverSpy # com.mysql.cj.jdbc.Driver
-DATABASE_URL: jdbc:log4jdbc:mysql://localhost:3306/common?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+DATABASE_URL: jdbc:log4jdbc:mysql://localhost:3306/common?useSSL=false&useUnicode=true&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
 DATABASE_USERNAME: root
 DATABASE_PASSWORD: pwd1234!
 HIKARI_MINIMUM_IDLE: 5
