@@ -64,6 +64,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth ->
                 auth
                         .requestMatchers(new MvcRequestMatcher(introspector, COMMON_AUTH_ENTRY_POINTS)).permitAll()
+                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methologies")).hasRole("ADMIN")
                         .anyRequest().authenticated()
         );
 
