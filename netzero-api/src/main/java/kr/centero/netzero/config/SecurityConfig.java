@@ -5,7 +5,6 @@ import kr.centero.netzero.common.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,7 +31,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@Profile({"local", "dev", "prod"})
 public class SecurityConfig {
     private static final String NETZERO_AUTH_ENTRY_POINTS = "/api/netzero/v1/auth/**";
     private static final String NETZERO_LOGOUT_URL = "/api/netzero/v1/user/signout";
