@@ -22,7 +22,7 @@
              , ATTR9_JSON
              , ATTR10_JSON
           FROM TB_CMM_CODE C
-               LEFT JOIN TB_CMM_LANG L ON (L.LOCALE_CD = IFNULL(#{localeCd}, "KO") AND L.LANG_CD = C.LANG_CD)
+               LEFT JOIN TB_CMM_LANG L ON (L.LOCALE_CD = IFNULL(#{localeCd}, "ko_KR") AND L.LANG_CD = C.LANG_CD)
          ORDER BY P_CODE_CD, DSP_ORDER
     </select>
 
@@ -33,7 +33,7 @@
              , IFNULL(L.DSP_TEXT, A.LANG_CD) CODE_NM
              , A.CODE_LVL
              , A.P_CODE_CD
-             , B.LANG_CD P_CODE_NM
+             , IFNULL(LP.DSP_TEXT, B.LANG_CD) P_CODE_NM
              , A.DSP_ORDER
              , A.USE_YN
              , A.EXP_FR_DT
@@ -60,7 +60,8 @@
              , A.ATTR10_VAL
           FROM TB_CMM_CODE A
                JOIN TB_CMM_CODE B ON B.CODE_CD = A.P_CODE_CD
-               LEFT JOIN TB_CMM_LANG L ON (L.LOCALE_CD = IFNULL(#{localeCd}, "KO") AND L.LANG_CD = A.LANG_CD)
+               LEFT JOIN TB_CMM_LANG L ON (L.LOCALE_CD = IFNULL(#{localeCd}, "ko_KR") AND L.LANG_CD = A.LANG_CD)
+               LEFT JOIN TB_CMM_LANG LP ON (LP.LOCALE_CD = IFNULL(#{localeCd}, "ko_KR") AND LP.LANG_CD = B.LANG_CD)
          WHERE 1 = 1
          <if test='pcodeCd != null and pcodeCd.size() > 0'>
            AND A.P_CODE_CD IN <foreach collection="pcodeCd" item="item" open="(" close=")" separator=",">#{item}</foreach>
