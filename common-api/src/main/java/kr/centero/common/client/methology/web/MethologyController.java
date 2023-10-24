@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/common/v1/methologies")
 public class MethologyController {
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole({'ROLE_ADMIN', 'ROLE_USER'})")
     @GetMapping("/find-all")
     public ResponseEntity<ApiResponse> findAll() {
         return ApiResponse.ok("fetch all user info");

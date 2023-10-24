@@ -1,15 +1,13 @@
 package kr.centero.common.client.auth.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.ibatis.type.Alias;
 
 import java.time.LocalDateTime;
 
 @Data
 @Builder
+@ToString
 @Alias("UserToken")
 @NoArgsConstructor
 @AllArgsConstructor
