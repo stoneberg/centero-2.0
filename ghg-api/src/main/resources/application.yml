@@ -22,6 +22,10 @@ spring:
   sql:
     init:
       mode: ${SQL_INIT_MODE} # run schema.sql and data.sql for test. always: always run, never: never run, embedded: run only embedded db
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
 
 logging:
   config: classpath:logback-spring.xml
