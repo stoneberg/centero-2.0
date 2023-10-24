@@ -24,6 +24,10 @@ public class UserAuthDto {
         private String password;
         @Schema(title = "이메일", example = "somebody@centero.com")
         private String email;
+        @Schema(title = "centero", example = "true")
+        private Boolean centero;
+        @Schema(title = "netzero", example = "false")
+        private Boolean netzero;
         @Schema(title = "사용자 권한", example = "USER")
         private String role;
     }

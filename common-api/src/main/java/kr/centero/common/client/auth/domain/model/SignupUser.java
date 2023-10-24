@@ -14,5 +14,6 @@ public class SignupUser {
     private String username;
     private String password;
     private String email;
+    private String domain;
     private String roleName;
 }

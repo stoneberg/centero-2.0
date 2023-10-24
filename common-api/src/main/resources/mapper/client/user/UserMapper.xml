@@ -36,8 +36,8 @@
     <!-- 사용자 등록 -->
     <insert id="save" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
         /* SQL_ID : kr.centero.common.user.mapper.UserMapper.save */
-        INSERT INTO tb_user (username, password, email)
-        VALUES (#{username}, #{password}, #{email})
+        INSERT INTO tb_user (username, password, email, domain)
+        VALUES (#{username}, #{password}, #{email}, #{domain})
     </insert>
 
     <!-- 사용자 수정 -->

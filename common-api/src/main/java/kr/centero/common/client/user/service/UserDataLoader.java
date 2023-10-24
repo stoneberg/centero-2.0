@@ -23,6 +23,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Profile({"default", "h2", "local"})
 public class UserDataLoader implements CommandLineRunner {
+    private static final String CENTERO = "CENTERO";
+    private static final String NETZERO = "NETZERO";
+    private static final String PASSWORD = "pwd1";
     private final UserRoleMapper userRoleMapper;
     private final RoleMapper roleMapper;
     private final UserMapper userMapper;
@@ -68,82 +71,128 @@ public class UserDataLoader implements CommandLineRunner {
         for (int i = 1; i <= 21; i++) {
             User user = new User();
             user.setUsername(faker.name().firstName() + " " + faker.name().lastName());
-            user.setPassword(passwordEncoder.encode("pwd1"));
+            user.setPassword(passwordEncoder.encode(PASSWORD));
             user.setEmail(faker.internet().emailAddress());
+
+            if (i % 2 == 0) {
+                user.setDomain(CENTERO);
+            } else {
+                user.setDomain(NETZERO);
+            }
+
             userMapper.save(user);
 
-            // USER ROLE 부여
-//            if (i % 3 == 0) {
-//                userRoleMapper.save(user.getUserId(), adminRole.getRoleId());
-//                userRoleMapper.save(user.getUserId(), userRole.getRoleId());
-//            } else
-
-            if (i % 5 == 0) {
-                userRoleMapper.save(user.getUserId(), ctrAdminRole.getRoleId());
+            // ROLE 부여
+            if (i % 2 == 0) {
                 userRoleMapper.save(user.getUserId(), ctrUserRole.getRoleId());
-            } else if (i % 7 == 0) {
-                userRoleMapper.save(user.getUserId(), nzrAdminRole.getRoleId());
+                if (i % 4 == 0) {
+                    userRoleMapper.save(user.getUserId(), ctrAdminRole.getRoleId());
+                }
+            }  else {
                 userRoleMapper.save(user.getUserId(), nzrUserRole.getRoleId());
-            } else {
-                userRoleMapper.save(user.getUserId(), ctrUserRole.getRoleId());
-                userRoleMapper.save(user.getUserId(), nzrUserRole.getRoleId());
+                if (i % 7 == 0) {
+                    userRoleMapper.save(user.getUserId(), nzrAdminRole.getRoleId());
+                }
             }
         }
 
         this.createSpecificNameMasterRole("Lee", faker, roleMap);
         this.createSpecificNameAdminRole("Hong", faker, roleMap);
         this.createSpecificNameUserRole("Park", faker, roleMap);
-        this.createSpecificDomainUserRole("Kim", faker, "CENTERO", roleMap);
-        this.createSpecificDomainUserRole("Choi", faker, "NETZERO", roleMap);
+        this.createSpecificDomainUserRole("Kim", faker, CENTERO, roleMap);
+        this.createSpecificDomainUserRole("Choi", faker, NETZERO, roleMap);
     }
 
     public void createSpecificNameMasterRole(String specificName, Faker faker, Map<String, Role> roleMap) {
-        User master = new User();
-        master.setUsername(specificName);
-        master.setPassword(passwordEncoder.encode("pwd1"));
-        master.setEmail(faker.internet().emailAddress());
-        userMapper.save(master);
+        String email = faker.internet().emailAddress();
+
+        User master1 = new User();
+        master1.setUsername(specificName);
+        master1.setPassword(passwordEncoder.encode(PASSWORD));
+        master1.setEmail(email);
+        master1.setDomain(CENTERO);
+        userMapper.save(master1);
+
+        userRoleMapper.save(master1.getUserId(), roleMap.get(ERole.CENTERO_ADMIN.name()).getRoleId());
+        userRoleMapper.save(master1.getUserId(), roleMap.get(ERole.CENTERO_USER.name()).getRoleId());
+
+        User master2 = new User();
+        master2.setUsername(specificName);
+        master2.setPassword(passwordEncoder.encode(PASSWORD));
+        master2.setEmail(email);
+        master2.setDomain(NETZERO);
+        userMapper.save(master2);
+
+        userRoleMapper.save(master2.getUserId(), roleMap.get(ERole.NETZERO_ADMIN.name()).getRoleId());
+        userRoleMapper.save(master2.getUserId(), roleMap.get(ERole.NETZERO_USER.name()).getRoleId());
 
 //        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.ADMIN.name()).getRoleId());
-        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.CENTERO_ADMIN.name()).getRoleId());
-        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.NETZERO_ADMIN.name()).getRoleId());
 //        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.USER.name()).getRoleId());
-        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.CENTERO_USER.name()).getRoleId());
-        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.NETZERO_USER.name()).getRoleId());
     }
 
     public void createSpecificNameAdminRole(String specificName, Faker faker, Map<String, Role> roleMap) {
-        User admin = new User();
-        admin.setUsername(specificName);
-        admin.setPassword(passwordEncoder.encode("pwd1"));
-        admin.setEmail(faker.internet().emailAddress());
-        userMapper.save(admin);
+        String email = faker.internet().emailAddress();
+
+        User admin1 = new User();
+        admin1.setUsername(specificName);
+        admin1.setPassword(passwordEncoder.encode(PASSWORD));
+        admin1.setEmail(email);
+        admin1.setDomain(CENTERO);
+        userMapper.save(admin1);
+
+        userRoleMapper.save(admin1.getUserId(), roleMap.get(ERole.CENTERO_ADMIN.name()).getRoleId());
+
+        User admin2 = new User();
+        admin2.setUsername(specificName);
+        admin2.setPassword(passwordEncoder.encode(PASSWORD));
+        admin2.setEmail(email);
+        admin2.setDomain(NETZERO);
+        userMapper.save(admin2);
+
+        userRoleMapper.save(admin2.getUserId(), roleMap.get(ERole.NETZERO_ADMIN.name()).getRoleId());
+
 //        userRoleMapper.save(admin.getUserId(), roleMap.get(ERole.ADMIN.name()).getRoleId());
-        userRoleMapper.save(admin.getUserId(), roleMap.get(ERole.CENTERO_ADMIN.name()).getRoleId());
-        userRoleMapper.save(admin.getUserId(), roleMap.get(ERole.NETZERO_ADMIN.name()).getRoleId());
     }
 
     public void createSpecificNameUserRole(String specificName, Faker faker, Map<String, Role> roleMap) {
-        User user = new User();
-        user.setUsername(specificName);
-        user.setPassword(passwordEncoder.encode("pwd1"));
-        user.setEmail(faker.internet().emailAddress());
-        userMapper.save(user);
+        User user1 = new User();
+        user1.setUsername(specificName);
+        user1.setPassword(passwordEncoder.encode(PASSWORD));
+        user1.setEmail(faker.internet().emailAddress());
+        user1.setDomain(CENTERO);
+        userMapper.save(user1);
+
+        userRoleMapper.save(user1.getUserId(), roleMap.get(ERole.CENTERO_USER.name()).getRoleId());
+
+        User user2 = new User();
+        user2.setUsername(specificName);
+        user2.setPassword(passwordEncoder.encode(PASSWORD));
+        user2.setEmail(faker.internet().emailAddress());
+        user2.setDomain(NETZERO);
+        userMapper.save(user2);
+
+
+        userRoleMapper.save(user2.getUserId(), roleMap.get(ERole.NETZERO_USER.name()).getRoleId());
 //        userRoleMapper.save(user.getUserId(), roleMap.get(ERole.USER.name()).getRoleId());
-        userRoleMapper.save(user.getUserId(), roleMap.get(ERole.CENTERO_USER.name()).getRoleId());
-        userRoleMapper.save(user.getUserId(), roleMap.get(ERole.NETZERO_USER.name()).getRoleId());
     }
 
     public void createSpecificDomainUserRole(String specificName, Faker faker, String domain, Map<String, Role> roleMap) {
         User user = new User();
         user.setUsername(specificName);
-        user.setPassword(passwordEncoder.encode("pwd1"));
+        user.setPassword(passwordEncoder.encode(PASSWORD));
         user.setEmail(faker.internet().emailAddress());
+
+        if (CENTERO.equals(domain)) {
+            user.setDomain(CENTERO);
+        } else if (NETZERO.equals(domain)) {
+            user.setDomain(NETZERO);
+        }
+
         userMapper.save(user);
 
-        if ("CENTERO".equals(domain)) {
+        if (CENTERO.equals(domain)) {
             userRoleMapper.save(user.getUserId(), roleMap.get(ERole.CENTERO_USER.name()).getRoleId());
-        } else if ("NETZERO".equals(domain)) {
+        } else if (NETZERO.equals(domain)) {
             userRoleMapper.save(user.getUserId(), roleMap.get(ERole.NETZERO_USER.name()).getRoleId());
         }
 

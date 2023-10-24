@@ -10,14 +10,15 @@
             u.username,
             u.password,
             u.email,
+            u.domain,
             r.role_id,
             r.role_name
         FROM tb_user u inner join tb_user_role ur on u.user_id = ur.user_id
         inner join tb_role r on ur.role_id = r.role_id
         WHERE
-            username = #{username}
+            u.username = #{username}
         ORDER BY
-            u.user_id, u.username
+            u.user_id, u.username, u.domain
     </select>
 
     <!-- 등록된 사용자 확인 -->
@@ -33,8 +34,8 @@
     <!-- 사용자 등록 -->
     <insert id="save" parameterType="SignupUser" useGeneratedKeys="true" keyProperty="userId">
         /* SQL_ID : kr.centero.common.user.mapper.UserAuthMapper.save */
-        INSERT INTO tb_user (username, password, email)
-        VALUES (#{username}, #{password}, #{email})
+        INSERT INTO tb_user (username, password, email, domain)
+        VALUES (#{username}, #{password}, #{email}, #{domain})
     </insert>
 
 </mapper>

@@ -13,6 +13,7 @@ public class SignupUser {
     private Long userId;
     private String username;
     private String password;
+    private String domain;
     private String email;
     private String roleName;
 }

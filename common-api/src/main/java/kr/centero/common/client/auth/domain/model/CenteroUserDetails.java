@@ -22,6 +22,7 @@ public class CenteroUserDetails implements UserDetails {
     private final String username;
     private final String password;
     private final String email;
+    private final  String domain;
 
     public CenteroUserDetails(List<UserRole> userRoles) {
         authorities = new ArrayList<>();
@@ -48,6 +49,11 @@ public class CenteroUserDetails implements UserDetails {
                 .map(UserRole::getEmail)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("email is null"));
+
+        this.domain = userRoles.stream()
+                .map(UserRole::getDomain)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("domain is null"));
     }
 
     @Override

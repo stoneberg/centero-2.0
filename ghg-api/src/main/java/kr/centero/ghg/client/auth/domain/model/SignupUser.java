@@ -14,5 +14,7 @@ public class SignupUser {
     private String username;
     private String password;
     private String email;
+    private Boolean centero;
+    private Boolean netzero;
     private String roleName;
 }

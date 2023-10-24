@@ -15,6 +15,7 @@ public class UserRole {
     private String username;
     private String password;
     private String email;
+    private String domain;
     private Long roleId;
     private ERole roleName;
 }
