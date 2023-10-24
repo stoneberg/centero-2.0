@@ -1,4 +1,4 @@
-package kr.centero.common.client.methology.domain.dto;
+package kr.centero.common.client.methodology.domain.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -7,7 +7,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 @Data
-public class MethologyDto {
+public class MethodologyDto {
     @NotBlank
     private String name;
 

@@ -19,6 +19,7 @@ public class User extends PageInfo {
     private String password;
     private String email;
     private String roleName;
+    private Boolean active;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

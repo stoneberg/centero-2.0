@@ -39,27 +39,27 @@ public class UserDataLoader implements CommandLineRunner {
         Map<String, Role> roleMap = new HashMap<>();
 
         // ROLE("ADMIN", "USER") 생성
-        Role adminRole = new Role(ERole.ADMIN);
-        roleMapper.save(adminRole);
-        roleMap.put(adminRole.getRoleName().name(), adminRole);
+//        Role adminRole = new Role(ERole.ADMIN);
+//        roleMapper.save(adminRole);
+//        roleMap.put(adminRole.getRoleName().name(), adminRole);
 
-        Role ctrAdminRole = new Role(ERole.CTRADMIN);
+        Role ctrAdminRole = new Role(ERole.CENTERO_ADMIN);
         roleMapper.save(ctrAdminRole);
         roleMap.put(ctrAdminRole.getRoleName().name(), ctrAdminRole);
 
-        Role nzrAdminRole = new Role(ERole.NZRADMIN);
+        Role nzrAdminRole = new Role(ERole.NETZERO_ADMIN);
         roleMapper.save(nzrAdminRole);
         roleMap.put(nzrAdminRole.getRoleName().name(), nzrAdminRole);
 
-        Role userRole = new Role(ERole.USER);
-        roleMapper.save(userRole);
-        roleMap.put(userRole.getRoleName().name(), userRole);
+//        Role userRole = new Role(ERole.USER);
+//        roleMapper.save(userRole);
+//        roleMap.put(userRole.getRoleName().name(), userRole);
 
-        Role ctrUserRole = new Role(ERole.CTRUSER);
+        Role ctrUserRole = new Role(ERole.CENTERO_USER);
         roleMapper.save(ctrUserRole);
         roleMap.put(ctrUserRole.getRoleName().name(), ctrUserRole);
 
-        Role nzrUserRole = new Role(ERole.NZRUSER);
+        Role nzrUserRole = new Role(ERole.NETZERO_USER);
         roleMapper.save(nzrUserRole);
         roleMap.put(nzrUserRole.getRoleName().name(), nzrUserRole);
 
@@ -73,23 +73,28 @@ public class UserDataLoader implements CommandLineRunner {
             userMapper.save(user);
 
             // USER ROLE 부여
-            if (i % 3 == 0) {
-                userRoleMapper.save(user.getUserId(), adminRole.getRoleId());
-                userRoleMapper.save(user.getUserId(), userRole.getRoleId());
-            } else if (i % 5 == 0) {
+//            if (i % 3 == 0) {
+//                userRoleMapper.save(user.getUserId(), adminRole.getRoleId());
+//                userRoleMapper.save(user.getUserId(), userRole.getRoleId());
+//            } else
+
+            if (i % 5 == 0) {
                 userRoleMapper.save(user.getUserId(), ctrAdminRole.getRoleId());
                 userRoleMapper.save(user.getUserId(), ctrUserRole.getRoleId());
             } else if (i % 7 == 0) {
                 userRoleMapper.save(user.getUserId(), nzrAdminRole.getRoleId());
                 userRoleMapper.save(user.getUserId(), nzrUserRole.getRoleId());
             } else {
-                userRoleMapper.save(user.getUserId(), userRole.getRoleId());
+                userRoleMapper.save(user.getUserId(), ctrUserRole.getRoleId());
+                userRoleMapper.save(user.getUserId(), nzrUserRole.getRoleId());
             }
         }
 
         this.createSpecificNameMasterRole("Lee", faker, roleMap);
         this.createSpecificNameAdminRole("Hong", faker, roleMap);
         this.createSpecificNameUserRole("Park", faker, roleMap);
+        this.createSpecificDomainUserRole("Kim", faker, "CENTERO", roleMap);
+        this.createSpecificDomainUserRole("Choi", faker, "NETZERO", roleMap);
     }
 
     public void createSpecificNameMasterRole(String specificName, Faker faker, Map<String, Role> roleMap) {
@@ -99,12 +104,12 @@ public class UserDataLoader implements CommandLineRunner {
         master.setEmail(faker.internet().emailAddress());
         userMapper.save(master);
 
-        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.ADMIN.name()).getRoleId());
-        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.CTRADMIN.name()).getRoleId());
-        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.NZRADMIN.name()).getRoleId());
-        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.USER.name()).getRoleId());
-        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.CTRUSER.name()).getRoleId());
-        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.NZRUSER.name()).getRoleId());
+//        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.ADMIN.name()).getRoleId());
+        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.CENTERO_ADMIN.name()).getRoleId());
+        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.NETZERO_ADMIN.name()).getRoleId());
+//        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.USER.name()).getRoleId());
+        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.CENTERO_USER.name()).getRoleId());
+        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.NETZERO_USER.name()).getRoleId());
     }
 
     public void createSpecificNameAdminRole(String specificName, Faker faker, Map<String, Role> roleMap) {
@@ -113,9 +118,9 @@ public class UserDataLoader implements CommandLineRunner {
         admin.setPassword(passwordEncoder.encode("pwd1"));
         admin.setEmail(faker.internet().emailAddress());
         userMapper.save(admin);
-        userRoleMapper.save(admin.getUserId(), roleMap.get(ERole.ADMIN.name()).getRoleId());
-        userRoleMapper.save(admin.getUserId(), roleMap.get(ERole.CTRADMIN.name()).getRoleId());
-        userRoleMapper.save(admin.getUserId(), roleMap.get(ERole.NZRADMIN.name()).getRoleId());
+//        userRoleMapper.save(admin.getUserId(), roleMap.get(ERole.ADMIN.name()).getRoleId());
+        userRoleMapper.save(admin.getUserId(), roleMap.get(ERole.CENTERO_ADMIN.name()).getRoleId());
+        userRoleMapper.save(admin.getUserId(), roleMap.get(ERole.NETZERO_ADMIN.name()).getRoleId());
     }
 
     public void createSpecificNameUserRole(String specificName, Faker faker, Map<String, Role> roleMap) {
@@ -124,9 +129,25 @@ public class UserDataLoader implements CommandLineRunner {
         user.setPassword(passwordEncoder.encode("pwd1"));
         user.setEmail(faker.internet().emailAddress());
         userMapper.save(user);
-        userRoleMapper.save(user.getUserId(), roleMap.get(ERole.USER.name()).getRoleId());
-        userRoleMapper.save(user.getUserId(), roleMap.get(ERole.CTRUSER.name()).getRoleId());
-        userRoleMapper.save(user.getUserId(), roleMap.get(ERole.NZRUSER.name()).getRoleId());
+//        userRoleMapper.save(user.getUserId(), roleMap.get(ERole.USER.name()).getRoleId());
+        userRoleMapper.save(user.getUserId(), roleMap.get(ERole.CENTERO_USER.name()).getRoleId());
+        userRoleMapper.save(user.getUserId(), roleMap.get(ERole.NETZERO_USER.name()).getRoleId());
+    }
+
+    public void createSpecificDomainUserRole(String specificName, Faker faker, String domain, Map<String, Role> roleMap) {
+        User user = new User();
+        user.setUsername(specificName);
+        user.setPassword(passwordEncoder.encode("pwd1"));
+        user.setEmail(faker.internet().emailAddress());
+        userMapper.save(user);
+
+        if ("CENTERO".equals(domain)) {
+            userRoleMapper.save(user.getUserId(), roleMap.get(ERole.CENTERO_USER.name()).getRoleId());
+        } else if ("NETZERO".equals(domain)) {
+            userRoleMapper.save(user.getUserId(), roleMap.get(ERole.NETZERO_USER.name()).getRoleId());
+        }
+
+//        userRoleMapper.save(user.getUserId(), roleMap.get(ERole.USER.name()).getRoleId());
     }
 
 }

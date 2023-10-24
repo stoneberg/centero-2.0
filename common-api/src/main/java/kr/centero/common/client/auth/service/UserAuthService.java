@@ -139,7 +139,7 @@ public class UserAuthService {
         userAuthMapper.save(signupUser);
 
         // if role is empty, set default "USER" role to user
-        String baseRole = StringUtils.isBlank(signupRequest.getRole()) ? ERole.USER.name() : signupRequest.getRole();
+        String baseRole = StringUtils.isBlank(signupRequest.getRole()) ? ERole.CENTERO_USER.name() : signupRequest.getRole();
         Long roleId = roleMapper.findByRoleName(baseRole);
         Long userId = signupUser.getUserId();
         String username = signupUser.getUsername();

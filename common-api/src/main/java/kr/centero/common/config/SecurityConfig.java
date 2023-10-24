@@ -1,6 +1,5 @@
 package kr.centero.common.config;
 
-import kr.centero.common.client.auth.domain.enums.ERole;
 import kr.centero.common.common.security.*;
 import kr.centero.common.common.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -67,8 +66,12 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth ->
                 auth
                         .requestMatchers(new MvcRequestMatcher(introspector, COMMON_AUTH_ENTRY_POINTS)).permitAll()
-//                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methologies/find-all")).hasRole(ERole.ADMIN.name())
-//                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methologies/find-one/**")).hasRole(ERole.USER.name())
+//                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methodologies/find-all")).hasRole(ERole.ADMIN.name())
+//                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methodologies/find-one/**")).hasRole(ERole.USER.name())
+//                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methodologies/find-all"))
+//                            .hasAnyRole(ERole.CENTERO_ADMIN.name(), ERole.NETZERO_ADMIN.name())
+//                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methodologies/find-one/**"))
+//                            .hasAnyRole(ERole.CENTERO_USER.name(), ERole..NETZERO_USER.name())
                         .anyRequest().authenticated()
         );
 
