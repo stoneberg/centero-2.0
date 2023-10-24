@@ -1,6 +1,8 @@
 package kr.centero.ghg.admin.mdm.service;
 
 import kr.centero.ghg.admin.mdm.domain.dto.CodeDto;
+import kr.centero.ghg.admin.mdm.domain.dto.CodeDto.CodeListRequest;
+import kr.centero.ghg.admin.mdm.domain.dto.CodeDto.CodeRequest;
 import kr.centero.ghg.admin.mdm.mapper.CodeMapper;
 import kr.centero.ghg.admin.mdm.mapstruct.CodeMapstruct;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,16 @@ public class CodeService {
     public List<CodeDto.CodeResponse> findAll(CodeDto.CodeRequest codeRequest) {
         return codeMapper.findAll(codeRequest).stream()
                 .map(CodeMapstruct.INSTANCE::toCodeDto).toList();
+    }
+
+    public List<CodeDto.CodeResponse> findCodeForTree() {
+        return codeMapper.findCodeForTree().stream()
+                .map(CodeMapstruct.INSTANCE::toCodeDto).toList();
+    }
+
+    @Transactional
+    public void saveCodeList(CodeListRequest request) {
+        codeMapper.saveCodeList(request.getCodeList());
     }
 
 }

@@ -1,9 +1,12 @@
 package kr.centero.ghg.admin.mdm.domain.model;
 
+import java.util.List;
+
+import org.apache.ibatis.type.Alias;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.ibatis.type.Alias;
 
 @Data
 @Alias("Code")
@@ -12,9 +15,11 @@ import org.apache.ibatis.type.Alias;
 public class Code {
     private String codeCd;
     private String codeNm;
-    private String codeLvl;
-    private String pCodeCd;
-    private String dspOrder;
+    private String langCd;
+    private int codeLvl;
+    private String pcodeCd;
+    private String pcodeNm;
+    private int dspOrder;
     private String useYn;
     private String expFrDt;
     private String expToDt;
@@ -38,4 +43,5 @@ public class Code {
     private String attr9Val;
     private String attr10Json;
     private String attr10Val;
+    private String crudFlag;
 }

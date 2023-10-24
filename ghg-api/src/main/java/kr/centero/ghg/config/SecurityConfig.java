@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -30,6 +31,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private static final String GHG_AUTH_ENTRY_POINTS = "/api/ghg/v1/auth/**";
@@ -44,11 +46,10 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().
                 requestMatchers(new AntPathRequestMatcher("/h2-console/**"))
-                .requestMatchers(new AntPathRequestMatcher( "/v3/api-docs/**"))
-                .requestMatchers(new AntPathRequestMatcher( "/swagger-ui/**"))
-                .requestMatchers(new AntPathRequestMatcher( "/swagger-resources/**"));
+                .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**"))
+                .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**"))
+                .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**"));
     }
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
@@ -65,9 +66,9 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth ->
                 auth
                         .requestMatchers(new MvcRequestMatcher(introspector, GHG_AUTH_ENTRY_POINTS)).permitAll()
+                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/ghg/v1/admin/codes/**")).permitAll()
                         .anyRequest().authenticated()
         );
-
 
         http.exceptionHandling(exceptionHandlingConfigurer ->
                 exceptionHandlingConfigurer
@@ -105,3 +106,4 @@ public class SecurityConfig {
         return source;
     }
 }
+
