@@ -1,5 +1,6 @@
 package kr.centero.common.config;
 
+import kr.centero.common.client.auth.domain.enums.ERole;
 import kr.centero.common.common.security.*;
 import kr.centero.common.common.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -30,6 +32,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private static final String COMMON_AUTH_ENTRY_POINTS = "/api/common/v1/auth/**";
@@ -64,7 +67,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth ->
                 auth
                         .requestMatchers(new MvcRequestMatcher(introspector, COMMON_AUTH_ENTRY_POINTS)).permitAll()
-                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methologies")).hasRole("ADMIN")
+//                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methologies/find-all")).hasRole(ERole.ADMIN.name())
+//                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methologies/find-one/**")).hasRole(ERole.USER.name())
                         .anyRequest().authenticated()
         );
 

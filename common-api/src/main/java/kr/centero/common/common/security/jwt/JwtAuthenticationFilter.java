@@ -38,6 +38,7 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    private static final String ROLE_PREFIX = "ROLE_";
     private static final String COMMON_AUTH_ENTRY_POINT = "/api/common/v1/auth";
     private final JwtTokenProvider jwtTokenProvider;
     private final UserTokenMapper userTokenMapper;
@@ -113,6 +114,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
+    /**
+     * Get access token from cookie
+     *
+     * @param request
+     * @param accessToken
+     * @return
+     */
     private String getAccessToken(HttpServletRequest request, String accessToken) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -126,11 +134,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return accessToken;
     }
 
+    /**
+     * Create user details object from user token info
+     *
+     * @param userToken
+     * @return
+     */
     private UserDetails createUserDetails(UserToken userToken) {
+        // ROLE_ + ADMIN, USER
         List<SimpleGrantedAuthority> authorities = Arrays.stream(userToken.getRoles().split(","))
-                .map(SimpleGrantedAuthority::new)
+                .map(role -> new SimpleGrantedAuthority(ROLE_PREFIX + role))
                 .toList();
-
         return new User(userToken.getUsername(), "", authorities);
     }
 
