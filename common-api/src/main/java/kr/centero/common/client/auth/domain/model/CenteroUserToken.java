@@ -8,14 +8,14 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @ToString
-@Alias("UserToken")
+@Alias("CenteroUserToken")
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserToken {
+public class CenteroUserToken {
     private Long id;
-    private String token;
     private String username;
-    private String domain;
     private String roles;
+    private String accessToken;
+    private String refreshToken;
     private LocalDateTime issuedAt;
 }

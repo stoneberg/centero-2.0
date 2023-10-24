@@ -5,7 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.centero.common.client.auth.domain.model.UserToken;
+import kr.centero.common.client.auth.domain.model.CenteroUserToken;
 import kr.centero.common.client.auth.mapper.UserTokenMapper;
 import kr.centero.core.common.exception.ApplicationErrorCode;
 import kr.centero.core.common.exception.ApplicationException;
@@ -18,10 +18,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -91,15 +89,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 // check if the incoming token is valid and the same token exists in the database
                 // because the user may have logged out then the token is deleted from the database
-                UserToken userToken = userTokenMapper.findByUsername(username); // @todo : redis 에서 조회하도록 변경
-                System.out.println("[USER ROLE]userToken = " + userToken);
+                CenteroUserToken centeroUserToken = userTokenMapper.findByUsername(username);
+                System.out.println("[USER ROLE]userToken = " + centeroUserToken);
                 // if (userToken == null) throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED);
-                log.info("[ZET]userToken===============>{}", userToken);
-                UserDetails userDetails = this.createUserDetails(userToken);
+                log.info("[ZET]userToken===============>{}", centeroUserToken);
+                UserDetails userDetails = this.createUserDetails(centeroUserToken);
                 log.info("[ZET]userDetails=============>{}", userDetails);
 
                 isValidToken = jwtTokenProvider.isTokenValid(accessToken, userDetails)
-                        && !ObjectUtils.isEmpty(userToken);
+                        && !ObjectUtils.isEmpty(centeroUserToken);
 
                 if (isValidToken) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -139,15 +137,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /**
      * Create user details object from user token info
      *
-     * @param userToken
+     * @param centeroUserToken
      * @return
      */
-    private UserDetails createUserDetails(UserToken userToken) {
+    private UserDetails createUserDetails(CenteroUserToken centeroUserToken) {
         try {
-            List<SimpleGrantedAuthority> authorities = Arrays.stream(userToken.getRoles().split(","))
+            List<SimpleGrantedAuthority> authorities = Arrays.stream(centeroUserToken.getRoles().split(","))
                     .map(role -> new SimpleGrantedAuthority(ROLE_PREFIX + role))
                     .toList();
-            return new User(userToken.getUsername(), "", authorities);
+            return new User(centeroUserToken.getUsername(), "", authorities);
         } catch (Exception e) {
             throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED);
         }

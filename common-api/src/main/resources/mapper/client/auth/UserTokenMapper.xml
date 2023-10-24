@@ -3,28 +3,31 @@
 <mapper namespace="kr.centero.common.client.auth.mapper.UserTokenMapper">
 
     <!-- 사용자 토큰 등록 -->
-    <insert id="save" parameterType="UserToken">
+    <insert id="save" parameterType="CenteroUserToken">
         /* SQL_ID : kr.centero.common.auth.mapper.UserTokenMapper.save */
         INSERT INTO tb_token (
-            token,
             username,
+            access_token,
+            refresh_token,
             roles,
             issued_at
         ) VALUES (
-            #{token},
             #{username},
+            #{accessToken},
+            #{refreshToken},
             #{roles},
             #{issuedAt}
         )
     </insert>
 
     <!-- 사용자 토큰 목록 조회 -->
-    <select id="findByUsername" resultType="UserToken">
+    <select id="findByUsername" resultType="CenteroUserToken">
         /* SQL_ID : kr.centero.common.auth.mapper.UserTokenMapper.findByUsername */
         SELECT
             id,
-            token,
             username,
+            access_token,
+            refresh_token,
             roles,
             issued_at
         FROM tb_token

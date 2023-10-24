@@ -57,8 +57,6 @@ public class UserAuthDto {
     public static class SigninResponse {
         private String username;
         private String accessToken;
-        @JsonIgnore
-        private String refreshToken;
         private List<String> roles;
     }
 }
