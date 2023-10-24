@@ -2,7 +2,12 @@ package kr.centero.common.client.auth.domain.enums;
 
 public enum ERole {
     ADMIN,
-    USER;
+    USER,
+
+    CTRADMIN,
+    NZRADMIN,
+    CTRUSER,
+    NZRUSER;
 
     public String getRoleName() {
         return "ROLE_" + name();

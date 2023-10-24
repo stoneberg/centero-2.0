@@ -15,6 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -33,12 +36,32 @@ public class UserDataLoader implements CommandLineRunner {
         roleMapper.deleteAll();
         userMapper.deleteAll();
 
+        Map<String, Role> roleMap = new HashMap<>();
+
         // ROLE("ADMIN", "USER") 생성
         Role adminRole = new Role(ERole.ADMIN);
         roleMapper.save(adminRole);
+        roleMap.put(adminRole.getRoleName().name(), adminRole);
+
+        Role ctrAdminRole = new Role(ERole.CTRADMIN);
+        roleMapper.save(ctrAdminRole);
+        roleMap.put(ctrAdminRole.getRoleName().name(), ctrAdminRole);
+
+        Role nzrAdminRole = new Role(ERole.NZRADMIN);
+        roleMapper.save(nzrAdminRole);
+        roleMap.put(nzrAdminRole.getRoleName().name(), nzrAdminRole);
 
         Role userRole = new Role(ERole.USER);
         roleMapper.save(userRole);
+        roleMap.put(userRole.getRoleName().name(), userRole);
+
+        Role ctrUserRole = new Role(ERole.CTRUSER);
+        roleMapper.save(ctrUserRole);
+        roleMap.put(ctrUserRole.getRoleName().name(), ctrUserRole);
+
+        Role nzrUserRole = new Role(ERole.NZRUSER);
+        roleMapper.save(nzrUserRole);
+        roleMap.put(nzrUserRole.getRoleName().name(), nzrUserRole);
 
         // USER 생성
         Faker faker = new Faker();
@@ -50,46 +73,60 @@ public class UserDataLoader implements CommandLineRunner {
             userMapper.save(user);
 
             // USER ROLE 부여
-            // 3의 배수는 ADMIN, USER ROLE 부여, 그 외는 USER ROLE 부여
             if (i % 3 == 0) {
                 userRoleMapper.save(user.getUserId(), adminRole.getRoleId());
                 userRoleMapper.save(user.getUserId(), userRole.getRoleId());
+            } else if (i % 5 == 0) {
+                userRoleMapper.save(user.getUserId(), ctrAdminRole.getRoleId());
+                userRoleMapper.save(user.getUserId(), ctrUserRole.getRoleId());
+            } else if (i % 7 == 0) {
+                userRoleMapper.save(user.getUserId(), nzrAdminRole.getRoleId());
+                userRoleMapper.save(user.getUserId(), nzrUserRole.getRoleId());
             } else {
                 userRoleMapper.save(user.getUserId(), userRole.getRoleId());
             }
         }
 
-        this.createSpecificNameMasterRole("Lee", faker, adminRole, userRole);
-        this.createSpecificNameAdminRole("Hong", faker, adminRole);
-        this.createSpecificNameUserRole("Park", faker, userRole);
+        this.createSpecificNameMasterRole("Lee", faker, roleMap);
+        this.createSpecificNameAdminRole("Hong", faker, roleMap);
+        this.createSpecificNameUserRole("Park", faker, roleMap);
     }
 
-    public void createSpecificNameMasterRole(String specificName, Faker faker, Role adminRole, Role userRole) {
+    public void createSpecificNameMasterRole(String specificName, Faker faker, Map<String, Role> roleMap) {
+        User master = new User();
+        master.setUsername(specificName);
+        master.setPassword(passwordEncoder.encode("pwd1"));
+        master.setEmail(faker.internet().emailAddress());
+        userMapper.save(master);
+
+        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.ADMIN.name()).getRoleId());
+        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.CTRADMIN.name()).getRoleId());
+        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.NZRADMIN.name()).getRoleId());
+        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.USER.name()).getRoleId());
+        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.CTRUSER.name()).getRoleId());
+        userRoleMapper.save(master.getUserId(), roleMap.get(ERole.NZRUSER.name()).getRoleId());
+    }
+
+    public void createSpecificNameAdminRole(String specificName, Faker faker, Map<String, Role> roleMap) {
+        User admin = new User();
+        admin.setUsername(specificName);
+        admin.setPassword(passwordEncoder.encode("pwd1"));
+        admin.setEmail(faker.internet().emailAddress());
+        userMapper.save(admin);
+        userRoleMapper.save(admin.getUserId(), roleMap.get(ERole.ADMIN.name()).getRoleId());
+        userRoleMapper.save(admin.getUserId(), roleMap.get(ERole.CTRADMIN.name()).getRoleId());
+        userRoleMapper.save(admin.getUserId(), roleMap.get(ERole.NZRADMIN.name()).getRoleId());
+    }
+
+    public void createSpecificNameUserRole(String specificName, Faker faker, Map<String, Role> roleMap) {
         User user = new User();
         user.setUsername(specificName);
         user.setPassword(passwordEncoder.encode("pwd1"));
         user.setEmail(faker.internet().emailAddress());
         userMapper.save(user);
-        userRoleMapper.save(user.getUserId(), adminRole.getRoleId());
-        userRoleMapper.save(user.getUserId(), userRole.getRoleId());
-    }
-
-    public void createSpecificNameAdminRole(String specificName, Faker faker, Role adminRole) {
-        User user = new User();
-        user.setUsername(specificName);
-        user.setPassword(passwordEncoder.encode("pwd1"));
-        user.setEmail(faker.internet().emailAddress());
-        userMapper.save(user);
-        userRoleMapper.save(user.getUserId(), adminRole.getRoleId());
-    }
-
-    public void createSpecificNameUserRole(String specificName, Faker faker, Role userRole) {
-        User user = new User();
-        user.setUsername(specificName);
-        user.setPassword(passwordEncoder.encode("pwd1"));
-        user.setEmail(faker.internet().emailAddress());
-        userMapper.save(user);
-        userRoleMapper.save(user.getUserId(), userRole.getRoleId());
+        userRoleMapper.save(user.getUserId(), roleMap.get(ERole.USER.name()).getRoleId());
+        userRoleMapper.save(user.getUserId(), roleMap.get(ERole.CTRUSER.name()).getRoleId());
+        userRoleMapper.save(user.getUserId(), roleMap.get(ERole.NZRUSER.name()).getRoleId());
     }
 
 }

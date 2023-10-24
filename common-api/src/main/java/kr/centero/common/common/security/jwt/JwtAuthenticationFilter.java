@@ -18,6 +18,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -142,11 +143,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @return
      */
     private UserDetails createUserDetails(UserToken userToken) {
-        // ROLE_ + ADMIN, USER
-        List<SimpleGrantedAuthority> authorities = Arrays.stream(userToken.getRoles().split(","))
-                .map(role -> new SimpleGrantedAuthority(ROLE_PREFIX + role))
-                .toList();
-        return new User(userToken.getUsername(), "", authorities);
+        try {
+            List<SimpleGrantedAuthority> authorities = Arrays.stream(userToken.getRoles().split(","))
+                    .map(role -> new SimpleGrantedAuthority(ROLE_PREFIX + role))
+                    .toList();
+            return new User(userToken.getUsername(), "", authorities);
+        } catch (Exception e) {
+            throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED);
+        }
     }
 
 }
