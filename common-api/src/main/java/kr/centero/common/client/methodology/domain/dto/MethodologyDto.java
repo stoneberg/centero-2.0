@@ -15,10 +15,10 @@ public class MethodologyDto {
     private String email;
 
     @NotBlank
-    private String password;
+    private String address;
 
     @NotNull
-    @Range(min = 10, max = 50)
-    private Integer age;
+    @Range(min = 1000, max = 10000)
+    private Integer cost;
 }
 
