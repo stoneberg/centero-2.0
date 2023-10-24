@@ -71,7 +71,14 @@ public class UserAuthService {
         // 2.save accessToken
         String authorities = StringUtils.join(roles, ",");
         this.registerAccessToken(access, refresh, username, authorities);
-        cookieUtil.writeAccessCookie(access, response);
+        try {
+            cookieUtil.writeAccessCookie(access, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 3.cookie check if issued
+        // cookieUtil.readCookieByName(CookieUtil.ACCESS_TOKEN_COOKIE);
 
         // 4.return jwt response
         return UserAuthDto.SigninResponse.builder()

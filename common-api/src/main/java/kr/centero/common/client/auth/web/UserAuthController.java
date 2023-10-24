@@ -2,6 +2,7 @@ package kr.centero.common.client.auth.web;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.centero.common.client.auth.domain.dto.UserAuthDto;
 import kr.centero.common.client.auth.service.UserAuthService;
@@ -39,6 +40,15 @@ public class UserAuthController {
         UserAuthDto.SigninResponse signinResponse = userTokenService.issueUserToken(signinRequest, response);
         return ApiResponse.ok(signinResponse);
     }
+
+    // refresh token 처리 -> access 토큰 재발급, refresh 토큰 재사용
+//    @Operation(summary = "Centero User 토큰 재발급", description = "Centero User 만료된 토큰을 재발급한다.")
+//    @GetMapping("/refresh")
+//    public ResponseEntity<ApiResponse> refresh(HttpServletRequest request, HttpServletResponse response) {
+//        String refreshToken = cookieUtil.readCookieByName(request, CookieUtil.REFRESH_TOKEN_COOKIE);
+//        UserAuthDto.SigninResponse signinResponse = userTokenService.issueNewAccessToken(refreshToken, response);
+//        return ApiResponse.ok(signinResponse);
+//    }
 
     // 로그아웃(/api/common/v1/auth/signout) -> SecurityConfig 에 정의된 CustomLogoutHandler를 통해 처리
 

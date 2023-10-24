@@ -3,6 +3,7 @@ package kr.centero.core.common.util;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
  * CookieUtil:
  * This class is used to create, delete, and get cookie.
  */
+@Slf4j
 @Component
 public class CookieUtil {
     public static final String ACCESS_TOKEN_COOKIE = "access_token";
@@ -42,6 +44,7 @@ public class CookieUtil {
      */
     public void writeAccessCookie(String value, HttpServletResponse response) {
         Cookie cookie = this.burnCookie(ACCESS_TOKEN_COOKIE, value, accessTokenCookieDuration);
+        // log.info("[ZET]writeAccessCookie============>{}", cookie);
         response.addCookie(cookie);
     }
 
