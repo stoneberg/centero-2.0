@@ -72,6 +72,7 @@ public class UserDto {
         private String password;
         private String email;
         private String role;
+        private String domain;
         private Boolean active;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;

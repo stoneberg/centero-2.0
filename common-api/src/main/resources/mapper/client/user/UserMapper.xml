@@ -10,6 +10,8 @@
             tu.username,
             tu.password,
             tu.email,
+            tu.active,
+            tu.domain,
             tr.role_name,
             tu.created_at,
             tu.updated_at

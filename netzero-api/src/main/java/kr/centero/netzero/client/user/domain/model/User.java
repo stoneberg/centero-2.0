@@ -17,6 +17,8 @@ public class User extends PageInfo {
     private String username;
     private String password;
     private String email;
+    private String domain;
+    private Boolean active;
     private String roleName;
 
     public User() {
