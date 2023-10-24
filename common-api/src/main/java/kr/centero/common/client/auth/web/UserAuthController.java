@@ -2,6 +2,7 @@ package kr.centero.common.client.auth.web;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.centero.common.client.auth.domain.dto.UserAuthDto;
@@ -60,4 +61,37 @@ public class UserAuthController {
         cookieUtil.writeAccessCookie(accessToken, response);
         return ApiResponse.ok(accessToken);
     }
+
+    @GetMapping("/createCookie")
+    public String createCookie(HttpServletResponse response) {
+        // 쿠키 값으로 사용할 랜덤 UUID 생성
+        String tokenValue = UUID.randomUUID().toString();
+
+        try {
+            Cookie cookie = new Cookie("access_token", tokenValue);
+            cookie.setMaxAge(30 * 60); // 30분
+            cookie.setHttpOnly(true);
+            cookie.setDomain("centero.kr");
+            cookie.setPath("/"); // 모든 경로에 대해 쿠키를 사용 가능하게 설정
+            response.addCookie(cookie);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "쿠키가 생성되었습니다.";
+    }
+
+    @GetMapping("/readCookie")
+    public String readCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies(); // 요청에서 모든 쿠키 가져오기
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("access_token".equals(cookie.getName())) {
+                    return "쿠키 값: " + cookie.getValue();
+                }
+            }
+        }
+        return "access_token 쿠키를 찾을 수 없습니다.";
+    }
+
 }

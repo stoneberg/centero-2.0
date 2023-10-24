@@ -56,6 +56,7 @@ public class UserAuthController {
     public ResponseEntity<ApiResponse> readCookie(HttpServletRequest request) {
         log.info("[ZET]Read Cookie===================>");
         String accessToken = cookieUtil.readCookieByName(request, CookieUtil.ACCESS_TOKEN_COOKIE);
+        log.info("[ZET]Read Cookie===============>{}", accessToken);
         return ApiResponse.ok(accessToken);
     }
 
