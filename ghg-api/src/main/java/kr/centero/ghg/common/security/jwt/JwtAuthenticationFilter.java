@@ -5,12 +5,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.centero.core.common.exception.ApplicationErrorCode;
+import kr.centero.core.common.exception.ApplicationException;
 import kr.centero.ghg.client.auth.domain.model.UserToken;
 import kr.centero.ghg.client.auth.mapper.UserTokenMapper;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,6 +37,7 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    private static final String ROLE_PREFIX = "ROLE_";
     private static final String GHG_AUTH_ENTRY_POINT = "/api/ghg/v1/auth";
     private final JwtTokenProvider jwtTokenProvider;
     private final UserTokenMapper userTokenMapper;
@@ -84,8 +88,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 // check if the incoming token is valid and the same token exists in the database
-                // because the user may have logged out and the token is deleted from the database
+                // because the user may have logged out then the token is deleted from the database
                 UserToken userToken = userTokenMapper.findByUsername(username); // @todo : redis 에서 조회하도록 변경
+                System.out.println("[USER ROLE]userToken = " + userToken);
+                // if (userToken == null) throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED);
                 log.info("[ZET]userToken===============>{}", userToken);
                 UserDetails userDetails = this.createUserDetails(userToken);
                 log.info("[ZET]userDetails=============>{}", userDetails);
@@ -122,11 +128,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private UserDetails createUserDetails(UserToken userToken) {
-        List<SimpleGrantedAuthority> authorities = Arrays.stream(userToken.getRoles().split(","))
-                .map(SimpleGrantedAuthority::new)
-                .toList();
-
-        return new User(userToken.getUsername(), "", authorities);
+        try {
+            List<SimpleGrantedAuthority> authorities = Arrays.stream(userToken.getRoles().split(","))
+                    .map(role -> new SimpleGrantedAuthority(ROLE_PREFIX + role))
+                    .toList();
+            return new User(userToken.getUsername(), "", authorities);
+        } catch (Exception e) {
+            throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED);
+        }
     }
 
 }

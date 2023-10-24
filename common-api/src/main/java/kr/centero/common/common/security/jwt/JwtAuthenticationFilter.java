@@ -90,7 +90,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 // check if the incoming token is valid and the same token exists in the database
-                // because the user may have logged out and the token is deleted from the database
+                // because the user may have logged out then the token is deleted from the database
                 UserToken userToken = userTokenMapper.findByUsername(username); // @todo : redis 에서 조회하도록 변경
                 System.out.println("[USER ROLE]userToken = " + userToken);
                 // if (userToken == null) throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED);
