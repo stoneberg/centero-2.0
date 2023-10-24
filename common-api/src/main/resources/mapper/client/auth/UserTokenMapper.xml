@@ -8,10 +8,12 @@
         INSERT INTO tb_token (
             token,
             username,
+            roles,
             issued_at
         ) VALUES (
             #{token},
             #{username},
+            #{roles},
             #{issuedAt}
         )
     </insert>
@@ -23,6 +25,7 @@
             id,
             token,
             username,
+            roles,
             issued_at
         FROM tb_token
         WHERE username = #{username}

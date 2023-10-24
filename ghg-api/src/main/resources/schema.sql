@@ -12,9 +12,11 @@ DROP TABLE IF EXISTS CMN_LANG;
 CREATE TABLE TB_USER
 (
     USER_ID  BIGINT AUTO_INCREMENT PRIMARY KEY,
-    EMAIL    VARCHAR(45)    NOT NULL UNIQUE,
-    USERNAME VARCHAR(45)    NOT NULL UNIQUE,
-    PASSWORD VARBINARY(255) NOT NULL -- 비밀번호를 VARBINARY 형태로 변경
+    EMAIL    VARCHAR(45) NOT NULL UNIQUE,
+    USERNAME VARCHAR(45) NOT NULL UNIQUE,
+    PASSWORD VARBINARY(255) NOT NULL, -- 비밀번호를 VARBINARY 형태로 변경
+    CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UPDATED_AT  TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- TB_ROLE 테이블 생성
@@ -42,7 +44,8 @@ CREATE TABLE TB_TOKEN
     ID        BIGINT AUTO_INCREMENT PRIMARY KEY,
     TOKEN     VARCHAR(255)       NOT NULL,
     USERNAME  VARCHAR(45) UNIQUE NOT NULL,
-    ISSUED_AT TIMESTAMP          NOT NULL -- 토큰 발급 시간
+    ROLES     VARCHAR(255)       NOT NULL, -- 사용자의 권한 정보를 저장
+    ISSUED_AT TIMESTAMP          NOT NULL  -- 토큰 발급 시간
 );
 -- CREATE AN INDEX ON THE "USERNAME" COLUMN
 CREATE INDEX TB_TOKEN_USERNAME_IDX ON TB_TOKEN (USERNAME);
@@ -62,34 +65,34 @@ CREATE UNIQUE INDEX TB_LOGIN_LOGS_USERNAME_LOGIN_TIME_IDX ON TB_LOGIN_LOGS (USER
 -- 공통코드 테이블
 CREATE TABLE CMN_CODE
 (
-    CODE_CD     VARCHAR(255) NOT NULL, -- '코드아이디',
-    CODE_NM     VARCHAR(255) NOT NULL, -- '코드명칭',
-    CODE_LVL    SMALLINT     NOT NULL, -- '코드레벨',
-    P_CODE_CD   VARCHAR(255), -- '상위코드아이디',
-    DSP_ORDER   SMALLINT DEFAULT 1, -- '출력순서',
-    USE_YN      CHAR(1)  DEFAULT 'Y', -- '사용여부',
-    EXP_FR_DT   DATE, -- '유효기간 시작일자',
-    EXP_TO_DT   DATE, -- '유효기간 종료일자',
-    ATTR1_JSON  VARCHAR(1000), -- '속성1JSON',
-    ATTR1_VAL   VARCHAR(255), -- '속성1값',
-    ATTR2_JSON  VARCHAR(1000), -- '속성2JSON',
-    ATTR2_VAL   VARCHAR(255), -- '속성2값',
-    ATTR3_JSON  VARCHAR(1000), -- '속성3JSON',
-    ATTR3_VAL   VARCHAR(255), -- '속성3값',
-    ATTR4_JSON  VARCHAR(1000), -- '속성4JSON',
-    ATTR4_VAL   VARCHAR(255), -- '속성4값',
-    ATTR5_JSON  VARCHAR(1000), -- '속성5JSON',
-    ATTR5_VAL   VARCHAR(255), -- '속성5값',
-    ATTR6_JSON  VARCHAR(1000), -- '속성6JSON',
-    ATTR6_VAL   VARCHAR(255), -- '속성6값',
-    ATTR7_JSON  VARCHAR(1000), -- '속성7JSON',
-    ATTR7_VAL   VARCHAR(255), -- '속성7값',
-    ATTR8_JSON  VARCHAR(1000), -- '속성8JSON',
-    ATTR8_VAL   VARCHAR(255), -- '속성8값',
-    ATTR9_JSON  VARCHAR(1000), -- '속성9JSON',
-    ATTR9_VAL   VARCHAR(255), -- '속성9값',
-    ATTR10_JSON VARCHAR(1000), -- '속성10JSON',
-    ATTR10_VAL  VARCHAR(255), -- '속성10값',
+    CODE_CD     VARCHAR(255) NOT NULL,              -- '코드아이디',
+    CODE_NM     VARCHAR(255) NOT NULL,              -- '코드명칭',
+    CODE_LVL    SMALLINT     NOT NULL,              -- '코드레벨',
+    P_CODE_CD   VARCHAR(255),                       -- '상위코드아이디',
+    DSP_ORDER   SMALLINT DEFAULT 1,                 -- '출력순서',
+    USE_YN      CHAR(1)  DEFAULT 'Y',               -- '사용여부',
+    EXP_FR_DT   DATE,                               -- '유효기간 시작일자',
+    EXP_TO_DT   DATE,                               -- '유효기간 종료일자',
+    ATTR1_JSON  VARCHAR(1000),                      -- '속성1JSON',
+    ATTR1_VAL   VARCHAR(255),                       -- '속성1값',
+    ATTR2_JSON  VARCHAR(1000),                      -- '속성2JSON',
+    ATTR2_VAL   VARCHAR(255),                       -- '속성2값',
+    ATTR3_JSON  VARCHAR(1000),                      -- '속성3JSON',
+    ATTR3_VAL   VARCHAR(255),                       -- '속성3값',
+    ATTR4_JSON  VARCHAR(1000),                      -- '속성4JSON',
+    ATTR4_VAL   VARCHAR(255),                       -- '속성4값',
+    ATTR5_JSON  VARCHAR(1000),                      -- '속성5JSON',
+    ATTR5_VAL   VARCHAR(255),                       -- '속성5값',
+    ATTR6_JSON  VARCHAR(1000),                      -- '속성6JSON',
+    ATTR6_VAL   VARCHAR(255),                       -- '속성6값',
+    ATTR7_JSON  VARCHAR(1000),                      -- '속성7JSON',
+    ATTR7_VAL   VARCHAR(255),                       -- '속성7값',
+    ATTR8_JSON  VARCHAR(1000),                      -- '속성8JSON',
+    ATTR8_VAL   VARCHAR(255),                       -- '속성8값',
+    ATTR9_JSON  VARCHAR(1000),                      -- '속성9JSON',
+    ATTR9_VAL   VARCHAR(255),                       -- '속성9값',
+    ATTR10_JSON VARCHAR(1000),                      -- '속성10JSON',
+    ATTR10_VAL  VARCHAR(255),                       -- '속성10값',
     CRT_TM      DATETIME DEFAULT CURRENT_TIMESTAMP, -- H2에서는 DATETIME 대신 TIMESTAMP 사용
     CRT_ID      VARCHAR(50),
     UPD_TM      DATETIME DEFAULT CURRENT_TIMESTAMP, -- H2에서는 DATETIME 대신 TIMESTAMP 사용
@@ -104,10 +107,10 @@ ALTER TABLE CMN_CODE
 -- 다국어 테이블
 CREATE TABLE CMN_LANG
 (
-    CODE_CD   VARCHAR(255) NOT NULL, -- '코드아이디',
-    LANG_CD   VARCHAR(255) NOT NULL, -- '언어코드',
-    DSP_TEXT  VARCHAR(255) NOT NULL, -- '출력텍스트',
-    CODE_DESC VARCHAR(1000), -- '코드설명',
+    CODE_CD   VARCHAR(255) NOT NULL,              -- '코드아이디',
+    LANG_CD   VARCHAR(255) NOT NULL,              -- '언어코드',
+    DSP_TEXT  VARCHAR(255) NOT NULL,              -- '출력텍스트',
+    CODE_DESC VARCHAR(1000),                      -- '코드설명',
     CRT_TM    DATETIME DEFAULT CURRENT_TIMESTAMP, -- H2에서는 DATETIME 대신 TIMESTAMP 사용
     CRT_ID    VARCHAR(50),
     UPD_TM    DATETIME DEFAULT CURRENT_TIMESTAMP, -- H2에서는 DATETIME 대신 TIMESTAMP 사용

@@ -1,21 +1,23 @@
 package kr.centero.common.config;
 
-import kr.centero.common.common.security.jwt.JwtAuthenticationFilter;
 import kr.centero.common.common.security.*;
+import kr.centero.common.common.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -29,6 +31,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private static final String COMMON_AUTH_ENTRY_POINTS = "/api/common/v1/auth/**";
@@ -40,8 +43,16 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().
+                requestMatchers(new AntPathRequestMatcher("/h2-console/**"))
+                .requestMatchers(new AntPathRequestMatcher( "/v3/api-docs/**"))
+                .requestMatchers(new AntPathRequestMatcher( "/swagger-ui/**"))
+                .requestMatchers(new AntPathRequestMatcher( "/swagger-resources/**"));
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
-        MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
 
         http.cors(withDefaults());
 
@@ -54,11 +65,13 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth ->
                 auth
-                        .requestMatchers(PathRequest.toH2Console()).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern("/v3/api-docs/**")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern("/swagger-ui/**")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern("/swagger-resources/**")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern(COMMON_AUTH_ENTRY_POINTS)).permitAll()
+                        .requestMatchers(new MvcRequestMatcher(introspector, COMMON_AUTH_ENTRY_POINTS)).permitAll()
+//                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methodologies/find-all")).hasRole(ERole.ADMIN.name())
+//                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methodologies/find-one/**")).hasRole(ERole.USER.name())
+//                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methodologies/find-all"))
+//                            .hasAnyRole(ERole.CENTERO_ADMIN.name(), ERole.NETZERO_ADMIN.name())
+//                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methodologies/find-one/**"))
+//                            .hasAnyRole(ERole.CENTERO_USER.name(), ERole..NETZERO_USER.name())
                         .anyRequest().authenticated()
         );
 

@@ -10,6 +10,7 @@
             tu.username,
             tu.password,
             tu.email,
+            tu.active,
             tr.role_name
         FROM tb_user tu
          INNER JOIN tb_user_role tur ON tur.user_id = tu.user_id

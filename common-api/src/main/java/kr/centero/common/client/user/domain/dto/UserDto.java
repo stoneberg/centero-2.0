@@ -7,7 +7,9 @@ import kr.centero.common.client.user.domain.model.User;
 import kr.centero.core.common.pagination.PageResponse;
 import kr.centero.core.common.payload.PageDtoResponse;
 import lombok.*;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -70,6 +72,9 @@ public class UserDto {
         private String password;
         private String email;
         private String role;
+        private Boolean active;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
     }
 
     @Data

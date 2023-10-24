@@ -55,7 +55,7 @@ public class JsonUtil {
         try {
             String jsonStr = getCustomObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(object);
             if (log.isInfoEnabled() && jsonStr != null) {
-                log.info("\n ▶️ ResponseBody = {} \n", jsonStr);
+                log.info("\n \uD83D\uDFE2 RequestBody = {} \n", jsonStr);
             }
         } catch (Exception ex) {
             log.error("Exception : {} \n", ExceptionUtils.getMessage(ex));
@@ -67,9 +67,9 @@ public class JsonUtil {
             String jsonStr = getCustomObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(object);
             if (log.isInfoEnabled() && jsonStr != null) {
                 if (jsonStr.length() <= LIMIT_LENGTH) {
-                    log.info("\n ◀️️️ ResponseBody = {} \n", jsonStr);
+                    log.info("\n \uD83D\uDFE1 ResponseBody = {} \n", jsonStr);
                 } else {
-                    log.info("\n ◀️️️ ResponseBody = {} \n", StringUtils.truncate(jsonStr, LIMIT_LENGTH).concat("... (truncated)"));
+                    log.info("\n \uD83D\uDFE1 ResponseBody = {} \n", StringUtils.truncate(jsonStr, LIMIT_LENGTH).concat("... (truncated)"));
                 }
             }
         } catch (Exception ex) {

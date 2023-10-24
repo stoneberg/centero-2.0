@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Tag(name = "Centero User Auth API", description = "Centero User Auth API")
 @Slf4j
 @RestController
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserAuthController {
 
     private final UserAuthService userTokenService;
+    private final CookieUtil cookieUtil;
 
     // 사용자 회원 가입 처리 -> 사용자 등록 후, access, refresh 토큰 발급(가입 시 자동 로그인 상태)
     @Operation(summary = "Centero User 회원 가입", description = "Centero User 회원 가입을 처리하고 토큰을 발급한다.")
@@ -42,10 +45,19 @@ public class UserAuthController {
     @Operation(summary = "Centero User 토큰 재발급", description = "Centero User 만료된 토큰을 재발급한다.")
     @GetMapping("/refresh")
     public ResponseEntity<ApiResponse> refresh(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = CookieUtil.getCookieValueByName(request, CookieUtil.REFRESH_TOKEN_COOKIE);
+        String refreshToken = cookieUtil.readCookieByName(request, CookieUtil.REFRESH_TOKEN_COOKIE);
         UserAuthDto.SigninResponse signinResponse = userTokenService.issueNewAccessToken(refreshToken, response);
         return ApiResponse.ok(signinResponse);
     }
 
     // 로그아웃(/api/common/v1/auth/signout) -> SecurityConfig 에 정의된 CustomLogoutHandler를 통해 처리
+
+    // test cookie writing
+    @GetMapping("/write-cookie")
+    public ResponseEntity<ApiResponse> writeAccessCookie(HttpServletResponse response) {
+        log.info("[ZET]Write Cookie===================>");
+        String accessToken = UUID.randomUUID().toString();
+        cookieUtil.writeAccessCookie(accessToken, response);
+        return ApiResponse.ok(accessToken);
+    }
 }

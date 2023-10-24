@@ -37,9 +37,9 @@ public class UserAuthDto {
     @AllArgsConstructor
     @Schema(title = "사용자 인증 정보", description = "사용자 인증 정보 DTO")
     public static class SigninRequest {
-        @Schema(title = "사용자 아이디", example = "Cornelius")
+        @Schema(title = "사용자 아이디", example = "Lee")
         private String username;
-        @Schema(title = "비밀번호", example = "pwd1234!")
+        @Schema(title = "비밀번호", example = "pwd1")
         private String password;
     }
 

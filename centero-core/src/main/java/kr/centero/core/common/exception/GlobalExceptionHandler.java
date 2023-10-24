@@ -12,8 +12,8 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -109,7 +109,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, WebRequest request) {
         log.error("[Exception]MethodArgumentNotValidException: {}", ExceptionUtils.getMessage(ex));
         log.error("[Exception]MethodArgumentNotValidException: {}", ExceptionUtils.getStackTrace(ex));
-        String errorMsg = ex.getBindingResult().getFieldErrors().stream()
+        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
                 .map(fieldError -> {
                     String message = fieldError.getDefaultMessage();
                     return message != null ? message : "Unknown error";
@@ -120,7 +120,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .code(ApplicationErrorCode.BAD_REQUEST.getCode())
-                .message(errorMsg)
+                .message(errorMessage)
                 .path(request.getDescription(false))
                 .timestamp(LocalDateTime.now().toString())
                 .build();
@@ -128,6 +128,29 @@ public class GlobalExceptionHandler {
 //        Locale locale = getLocaleFromHeader(request);
 //        String message = this.getMessage("database.error", new Object[]{LocalDateTime.now().toString(), "SK Corp Ltd."}, locale);
 //        log.info("[ZET]message: {}", message);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BindException.class)
+    protected ResponseEntity<ErrorResponse> handleBindException(BindException ex, WebRequest request) {
+        log.error("[Exception]BindException: {}", ExceptionUtils.getMessage(ex));
+        log.error("[Exception]BindException: {}", ExceptionUtils.getStackTrace(ex));
+        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
+                .map(fieldError -> {
+                    String message = fieldError.getDefaultMessage();
+                    return message != null ? message : "Unknown error";
+                })
+                .findFirst()
+                .orElse(ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .code(ApplicationErrorCode.BAD_REQUEST.getCode())
+                .message(errorMessage)
+                .path(request.getDescription(false))
+                .timestamp(LocalDateTime.now().toString())
+                .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
@@ -147,35 +170,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(BindException.class)
-    protected ResponseEntity<ErrorResponse> handleBindException(BindException ex, WebRequest request) {
-        log.error("[Exception]BindException: {}", ExceptionUtils.getMessage(ex));
-        log.error("[Exception]BindException: {}", ExceptionUtils.getStackTrace(ex));
-        String errorMessage = this.getFirstBindException(ex);
-
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
-                .code(ApplicationErrorCode.BAD_REQUEST.getCode())
-                .message(errorMessage)
-                .path(request.getDescription(false))
-                .timestamp(LocalDateTime.now().toString())
-                .build();
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
-
-    private String getFirstBindException(BindException bindException) {
-        // 필드 오류 목록에서 첫 번째 오류 가져오기
-        FieldError firstFieldError = bindException.getFieldError();
-
-        // 첫 번째 오류가 존재하는 경우, 해당 에러 메시지 반환
-        if (firstFieldError != null) {
-            return String.format("%s: %s", firstFieldError.getField(), firstFieldError.getDefaultMessage());
-        }
-
-        // 오류가 없는 경우, 빈 문자열 또는 적절한 메시지 반환
-        return "No errors found.";
-    }
 
     @ExceptionHandler(ConstraintViolationException.class)
     protected ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
@@ -224,6 +218,21 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+        log.error("[Exception]AccessDeniedException: {}", ExceptionUtils.getMessage(ex));
+        log.error("[Exception]AccessDeniedException: {}", ExceptionUtils.getStackTrace(ex));
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.FORBIDDEN.value())
+                .code(ApplicationErrorCode.FORBIDDEN_ACCESS.getCode())
+                .message(ApplicationErrorCode.FORBIDDEN_ACCESS.getMessage())
+                .path(request.getDescription(false))
+                .timestamp(LocalDateTime.now().toString())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
     /**

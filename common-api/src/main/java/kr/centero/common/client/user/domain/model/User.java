@@ -4,6 +4,9 @@ import kr.centero.core.common.pagination.PageInfo;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.apache.ibatis.type.Alias;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -16,6 +19,9 @@ public class User extends PageInfo {
     private String password;
     private String email;
     private String roleName;
+    private Boolean active;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public User() {
         // SuperBuilder를 사용하면 기본 생성자가 필요하다.

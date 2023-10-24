@@ -16,7 +16,6 @@ import kr.centero.netzero.client.auth.mapper.UserTokenMapper;
 import kr.centero.netzero.client.auth.mapstruct.UserAuthMapstruct;
 import kr.centero.netzero.common.security.jwt.JwtTokenProvider;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,9 +43,7 @@ public class UserAuthService {
     private final UserRoleMapper userRoleMapper;
     private final UserAuthMapper userAuthMapper;
     private final RoleMapper roleMapper;
-
-    @Value("${refresh-cookie.duration}")
-    private String refreshCookieDuration;
+    private final CookieUtil cookieUtil;
 
     /**
      * 로그인: access, refresh 토큰 발급
@@ -62,21 +59,23 @@ public class UserAuthService {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
         CenteroUserDetails userDetails = (CenteroUserDetails) authentication.getPrincipal();
-        String access = jwtTokenProvider.generateToken(userDetails);
-        String refresh = jwtTokenProvider.generateRefreshToken(userDetails);
-
         // ROLE_ADMIN, ROLE_USER 에서 ROLE_ 제거
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .map(role -> role.replace(ROLE_PREFIX, "")).toList();
+
+        String access = jwtTokenProvider.generateToken(username, roles);
+        String refresh = jwtTokenProvider.generateRefreshToken(username);
 
         // 1.delete the previously issued user's tokens
         userTokenMapper.deleteByUsername(username);
 
         // 2.save accessToken
-        this.registerAccessToken(access, username);
+        String userRole = StringUtils.join(roles, ",");
+        this.registerAccessToken(access, username, userRole); // @todo : redis 에 저장하도록 변경
+        cookieUtil.writeAccessCookie(access, response);
 
         // 3.create refresh token cookie
-        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refresh, refreshCookieDuration, response);
+        cookieUtil.writeRefreshCookie(refresh, response);
 
         // 4.return jwt response
         return UserAuthDto.SigninResponse.builder()
@@ -97,18 +96,19 @@ public class UserAuthService {
     public UserAuthDto.SigninResponse issueNewAccessToken(String refreshToken, HttpServletResponse httpServletResponse) {
         String username = jwtTokenProvider.extractUsername(refreshToken);
         CenteroUserDetails userDetails = (CenteroUserDetails) userDetailService.loadUserByUsername(username);
-        String newAccessToken = jwtTokenProvider.generateToken(userDetails);
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .map(role -> role.replace(ROLE_PREFIX, "")).toList();
+        String newAccessToken = jwtTokenProvider.generateToken(username, roles);
 
         // 1.delete the previously issued accessToken
         userTokenMapper.deleteByUsername(username);
 
         // 2.save new accessToken
-        this.registerAccessToken(newAccessToken, username);
+        String userRole = StringUtils.join(roles, ",");
+        this.registerAccessToken(newAccessToken, username, userRole); // @todo : redis 에 저장하도록 변경
+        cookieUtil.writeAccessCookie(newAccessToken, httpServletResponse);
 
-        // 3.create refresh token cookie
-        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refreshToken, refreshCookieDuration, httpServletResponse);
+        // 3.reuse refresh token, so don't need to create new refresh token
 
         // 4.return jwt response
         return UserAuthDto.SigninResponse.builder()
@@ -138,30 +138,34 @@ public class UserAuthService {
         signupUser.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         userAuthMapper.save(signupUser);
 
-        // no role set default role to user
-        String role = StringUtils.isBlank(signupRequest.getRole()) ? ERole.USER.name() : signupRequest.getRole();
-        Long roleId = roleMapper.findByRoleName(role);
+        // if role is empty, set default "USER" role to user
+        String baseRole = StringUtils.isBlank(signupRequest.getRole()) ? ERole.USER.name() : signupRequest.getRole();
+        Long roleId = roleMapper.findByRoleName(baseRole);
         Long userId = signupUser.getUserId();
         String username = signupUser.getUsername();
         userRoleMapper.save(userId, roleId);
 
         // after user registration, issue access, refresh token
         CenteroUserDetails userDetails = (CenteroUserDetails) userDetailService.loadUserByUsername(username);
-        String access = jwtTokenProvider.generateToken(userDetails);
-        String refresh = jwtTokenProvider.generateRefreshToken(userDetails);
+        List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .map(role -> role.replace(ROLE_PREFIX, "")).toList();
+        String access = jwtTokenProvider.generateToken(username, roles);
+        String refresh = jwtTokenProvider.generateRefreshToken(username);
 
         // 1.save access token
-        this.registerAccessToken(access, username);
+        String userRole = StringUtils.join(roles, ",");
+        this.registerAccessToken(access, username, userRole);  // @todo : redis 에 저장하도록 변경
+        cookieUtil.writeAccessCookie(access, response);
 
         // 2.create refresh token cookie
-        CookieUtil.createCookie(CookieUtil.REFRESH_TOKEN_COOKIE, refresh, refreshCookieDuration, response);
+        cookieUtil.writeRefreshCookie(refresh, response);
 
         // 3.return jwt response
         return UserAuthDto.SigninResponse.builder()
                 .username(username)
                 .accessToken(access)
                 .refreshToken(refresh)
-                .roles(List.of(role))
+                .roles(roles)
                 .build();
     }
 
@@ -170,11 +174,13 @@ public class UserAuthService {
      *
      * @param access   access token
      * @param username username
+     * @param roles    roles (comma separated string)
      */
-    public void registerAccessToken(String access, String username) {
+    public void registerAccessToken(String access, String username, String roles) {
         UserToken accessToken = UserToken.builder()
                 .token(access)
                 .username(username)
+                .roles(roles)
                 .issuedAt(LocalDateTime.now())
                 .build();
 
@@ -182,3 +188,4 @@ public class UserAuthService {
     }
 
 }
+
