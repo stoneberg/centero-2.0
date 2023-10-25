@@ -7,9 +7,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.centero.common.client.auth.domain.model.CenteroUserToken;
 import kr.centero.common.client.auth.mapper.UserTokenMapper;
+import kr.centero.common.client.auth.service.RefreshTokenService;
 import kr.centero.core.common.exception.ApplicationErrorCode;
 import kr.centero.core.common.exception.ApplicationException;
-import org.apache.commons.lang3.ObjectUtils;
+import kr.centero.core.common.util.CookieUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,14 +42,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String COMMON_AUTH_ENTRY_POINT = "/api/common/v1/auth";
     private final JwtTokenProvider jwtTokenProvider;
     private final UserTokenMapper userTokenMapper;
+    private final RefreshTokenService refreshTokenService;
     private final HandlerExceptionResolver exceptionResolver;
 
     public JwtAuthenticationFilter(
             JwtTokenProvider jwtTokenProvider,
             UserTokenMapper userTokenMapper,
+            RefreshTokenService refreshTokenService,
             @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userTokenMapper = userTokenMapper;
+        this.refreshTokenService = refreshTokenService;
         this.exceptionResolver = exceptionResolver;
     }
 
@@ -62,10 +66,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String accessToken = null;
         String username;
-        boolean isValidToken;
+        boolean isValidAccessToken;
 
         // First try to get the access token from cookie
         accessToken = this.getAccessToken(request, accessToken);
+        log.info("[ZET]accessToken from cookie===============>{}", accessToken);
 
         // If access token is not found in cookie, try go get it from header
         if (accessToken == null) {
@@ -82,28 +87,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // token validation, authentication, clean up
+        // User auth validation: forged token, expired token is thrown as exception by library
+        // we don't want to handle auth service logic in catch block depending on the exception type
+        // we have to get username from the storage at first to check if the user is authenticated or not
         try {
-            username = jwtTokenProvider.extractUsername(accessToken);
 
+            log.info("[ZET]accessToken==============================>{}", accessToken);
+            CenteroUserToken centeroUserToken = userTokenMapper.findByAccessToken(accessToken);
+
+            // 1.if user token is not found, throw exception. this means that the user was logged out already
+            if (centeroUserToken == null) {
+                throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED);
+            }
+
+            username = centeroUserToken.getUsername();
+            log.info("[ZET]username==============================>{}", username);
+
+            // 2.check if the token is valid and the user is not authenticated yet
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                // check if the incoming token is valid and the same token exists in the database
-                // because the user may have logged out then the token is deleted from the database
-                CenteroUserToken centeroUserToken = userTokenMapper.findByUsername(username);
-                System.out.println("[USER ROLE]userToken = " + centeroUserToken);
-                // if (userToken == null) throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED);
-                log.info("[ZET]userToken===============>{}", centeroUserToken);
-                UserDetails userDetails = this.createUserDetails(centeroUserToken);
-                log.info("[ZET]userDetails=============>{}", userDetails);
 
-                isValidToken = jwtTokenProvider.isTokenValid(accessToken, userDetails)
-                        && !ObjectUtils.isEmpty(centeroUserToken);
+                // 3.check if the token is valid
+                isValidAccessToken = jwtTokenProvider.isTokenValid(accessToken, username);
+                log.info("[ZET]isValidAccessToken===============>{}", isValidAccessToken);
 
-                if (isValidToken) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                if (isValidAccessToken) {
+                    // 4.if the token is valid, create authentication object and set it in SecurityContextHolder
+                    this.authenticateUser(request, centeroUserToken);
+                } else {
+                    // 5. if access token expired, create new access token and save it to database and cookie using refresh token
+                    this.refreshToken(request, response, centeroUserToken);
                 }
+
             }
 
             filterChain.doFilter(request, response);
@@ -115,30 +129,69 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
+     * Create new access token and save it to database and cookie using refresh token
+     *
+     * @param response         http response
+     * @param centeroUserToken user token
+     */
+    private void refreshToken(HttpServletRequest request, HttpServletResponse response, CenteroUserToken centeroUserToken) {
+        String refreshToken = centeroUserToken.getRefreshToken();
+        String username = centeroUserToken.getUsername();
+        List<String> roles = Arrays.asList(centeroUserToken.getRoles().split(","));
+        boolean isValidRefreshToken = jwtTokenProvider.isTokenValid(refreshToken, username);
+        log.info("[ZET]isValidRefreshToken==============>{}", isValidRefreshToken);
+
+        if (!isValidRefreshToken) {
+            throw new ApplicationException(ApplicationErrorCode.REFRESH_TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED);
+        }
+
+        // if refresh token is valid, generate new access token and save it to database and cookie
+        refreshTokenService.issueNewUserToken(refreshToken, username, roles, response);
+
+        // if refresh token is valid, authenticate user
+        this.authenticateUser(request, centeroUserToken);
+    }
+
+    /**
+     * Authenticate user
+     *
+     * @param request          http request
+     * @param centeroUserToken user token
+     */
+    private void authenticateUser(HttpServletRequest request, CenteroUserToken centeroUserToken) {
+        // create authentication object and set it in SecurityContextHolder
+        UserDetails userDetails = this.createUserDetails(centeroUserToken);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+    }
+
+    /**
      * Get access token from cookie
      *
-     * @param request
-     * @param accessToken
-     * @return
+     * @param request     http request
+     * @param accessToken access token
+     * @return access token
      */
     private String getAccessToken(HttpServletRequest request, String accessToken) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("accessToken" .equals(cookie.getName())) {
+                if (CookieUtil.ACCESS_TOKEN_COOKIE.equals(cookie.getName())) {
                     accessToken = cookie.getValue();
                     break;
                 }
             }
         }
+
         return accessToken;
     }
 
     /**
      * Create user details object from user token info
      *
-     * @param centeroUserToken
-     * @return
+     * @param centeroUserToken user token
+     * @return user details
      */
     private UserDetails createUserDetails(CenteroUserToken centeroUserToken) {
         try {

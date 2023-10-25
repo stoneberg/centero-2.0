@@ -84,4 +84,13 @@ public class UserService {
         userMapper.update(user);
     }
 
+    /**
+     * delete user
+     *
+     * @param userId user sequence id
+     */
+    @Transactional
+    public void deleteUser(Long userId) {
+        userMapper.delete(userId);
+    }
 }

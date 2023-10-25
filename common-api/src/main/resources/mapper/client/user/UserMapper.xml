@@ -60,6 +60,13 @@
         WHERE user_id = #{userId}
     </update>
 
+    <!-- 사용자 삭제 -->
+    <delete id="delete" parameterType="Long">
+        /* SQL_ID : kr.centero.common.user.mapper.UserMapper.delete */
+        DELETE FROM tb_user
+        WHERE user_id = #{userId}
+    </delete>
+
     <!-- 사용자 전체 삭제 -->
     <delete id="deleteAll">
         /* SQL_ID : kr.centero.common.user.mapper.UserMapper.UserMapper.deleteAll */

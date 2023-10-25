@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import kr.centero.common.client.auth.domain.dto.UserAuthDto;
 import kr.centero.common.client.auth.service.UserAuthService;
 import kr.centero.core.common.payload.ApiResponse;
@@ -29,7 +30,7 @@ public class UserAuthController {
     // 사용자 회원 가입 처리 -> 사용자 등록 후, access, refresh 토큰 발급(가입 시 자동 로그인 상태)
     @Operation(summary = "Centero User 회원 가입", description = "Centero User 회원 가입을 처리하고 토큰을 발급한다.")
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse> signup(@RequestBody UserAuthDto.SignupRequest signupRequest, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse> signup(@RequestBody @Valid UserAuthDto.SignupRequest signupRequest, HttpServletResponse response) {
         UserAuthDto.SigninResponse signinResponse = userTokenService.registerUser(signupRequest, response);
         return ApiResponse.ok(signinResponse);
     }
@@ -37,7 +38,7 @@ public class UserAuthController {
     // 로그인 처리 -> access, refresh 토큰 발급
     @Operation(summary = "Centero User 로그인", description = "Centero User 로그인을 처리하고 토큰을 발급한다.")
     @PostMapping("/signin")
-    public ResponseEntity<ApiResponse> signin(@RequestBody UserAuthDto.SigninRequest signinRequest, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse> signin(@RequestBody @Valid UserAuthDto.SigninRequest signinRequest, HttpServletResponse response) {
         UserAuthDto.SigninResponse signinResponse = userTokenService.issueUserToken(signinRequest, response);
         return ApiResponse.ok(signinResponse);
     }

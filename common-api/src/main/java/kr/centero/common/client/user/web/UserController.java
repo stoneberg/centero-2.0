@@ -65,4 +65,12 @@ public class UserController {
         return ApiResponse.ok();
     }
 
+    // 사용자 삭제
+    @Operation(summary = "Centero User 삭제", description = "Centero User 정보를 삭제한다.")
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
+        return ApiResponse.ok();
+    }
+
 }

@@ -4,8 +4,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import kr.centero.common.client.auth.domain.dto.UserAuthDto;
 import kr.centero.common.client.auth.domain.enums.ERole;
 import kr.centero.common.client.auth.domain.model.CenteroUserDetails;
-import kr.centero.common.client.auth.domain.model.SignupUser;
 import kr.centero.common.client.auth.domain.model.CenteroUserToken;
+import kr.centero.common.client.auth.domain.model.SignupUser;
 import kr.centero.common.client.auth.mapper.RoleMapper;
 import kr.centero.common.client.auth.mapper.UserAuthMapper;
 import kr.centero.common.client.auth.mapper.UserRoleMapper;
@@ -68,19 +68,12 @@ public class UserAuthService {
         // 1.delete the previously issued user's tokens
         userTokenMapper.deleteByUsername(username);
 
-        // 2.save accessToken
+        // 2.save issued tonkens
         String authorities = StringUtils.join(roles, ",");
         this.registerAccessToken(access, refresh, username, authorities);
-        try {
-            cookieUtil.writeAccessCookie(access, response);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        cookieUtil.writeAccessCookie(access, response);
 
-        // 3.cookie check if issued
-        // cookieUtil.readCookieByName(CookieUtil.ACCESS_TOKEN_COOKIE);
-
-        // 4.return jwt response
+        // 3.return jwt response
         return UserAuthDto.SigninResponse.builder()
                 .username(username)
                 .accessToken(access)
@@ -121,12 +114,12 @@ public class UserAuthService {
         String access = jwtTokenProvider.generateToken(username, roles);
         String refresh = jwtTokenProvider.generateRefreshToken(username);
 
-        // 1.save access token
+        // save access token
         String userRole = StringUtils.join(roles, ",");
         this.registerAccessToken(access, refresh, username, userRole);
         cookieUtil.writeAccessCookie(access, response);
 
-        // 3.return jwt response
+        // return jwt response
         return UserAuthDto.SigninResponse.builder()
                 .username(username)
                 .accessToken(access)
