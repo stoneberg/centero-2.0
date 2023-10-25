@@ -73,4 +73,6 @@ public class UserController {
         return ApiResponse.ok();
     }
 
+    // 사용자 등록은 UserAuthController.signup 참조
+
 }
