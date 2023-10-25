@@ -117,15 +117,69 @@ from TB_CMM_PROGRAM
 where use_yn = 'Y';
 
 -- 메뉴
-INSERT into TB_CMM_CODE(DSP_ORDER, CODE_LVL, P_CODE_CD, CODE_CD, LANG_CD, CODE_DESC, USE_YN, ATTR1_VAL, EXP_FR_DT, EXP_TO_DT, CRT_ID, UPD_ID)
-select sort_order , 99 lvl, IF(Parent_Menu_ID='Centero', 'SD01', Parent_Menu_ID) ddd, menu_id, menu_NM, menu_desc, use_yn, Display_YN, '2001-01-01' fr, '9999-12-31'  tto, Create_ID , Update_ID
-from TB_CMM_MENU m
-where Use_YN = 'Y'
-and Parent_Menu_ID <> '-'
-and Menu_ID not in (
-select menu_id from (
-select menu_id, count(1) cnt from TB_CMM_MENU
-group by menu_id
-having count(1) > 1) ddd
-) 
+-- 메뉴 중복을 위한 PK 조정작업
+-- 중복행 등록 후, PK 수기조정 필요
+insert into PJW_MENU(Menu_ID, Parent_Menu_ID, Menu_NM, Menu_KOR_NM, Menu_ENG_NM, Program_ID, Menu_DESC, Display_YN, Use_YN, Sort_Order, Create_ID, Create_DT, Update_ID, Update_DT)
+select t.Menu_ID, Parent_Menu_ID, Menu_NM, Menu_KOR_NM, Menu_ENG_NM, Program_ID, Menu_DESC, Display_YN, Use_YN, Sort_Order, Create_ID, Create_DT, Update_ID, Update_DT
+from TB_CMM_MENU t,
+  (select Menu_ID, count(1) cnt from TB_CMM_MENU group by Menu_ID having count(1) > 1) i
+where t.Menu_ID = i.Menu_ID
+order by t.Parent_Menu_ID, t.Menu_ID
 ;
+-- 중복행 제외 등록
+insert into PJW_MENU(Menu_ID, Parent_Menu_ID, Menu_NM, Menu_KOR_NM, Menu_ENG_NM, Program_ID, Menu_DESC, Display_YN, Use_YN, Sort_Order, Create_ID, Create_DT, Update_ID, Update_DT)
+select t.Menu_ID, Parent_Menu_ID, Menu_NM, Menu_KOR_NM, Menu_ENG_NM, Program_ID, Menu_DESC, Display_YN, Use_YN, Sort_Order, Create_ID, Create_DT, Update_ID, Update_DT
+from TB_CMM_MENU t
+     left join (select Menu_ID, count(1) cnt from TB_CMM_MENU group by Menu_ID having count(1) > 1) m on m.Menu_ID = t.Menu_ID
+ where m.Menu_ID is null
+order by t.Parent_Menu_ID, t.Menu_ID
+;
+
+-- 메뉴 테이블내 다국어
+insert into TB_CMM_LANG(LANG_CD, LOCALE_CD, DSP_TEXT, CODE_DESC, CRT_ID, UPD_ID)
+select CONCAT('@MNU_', LPAD(@ROWNUM:= @ROWNUM+1, 3, '0')) langCd, 'ko_KR', m.Menu_kor_nm dspText, m.Menu_NM codeDesc, 'mig', 'mig'
+  from (select distinct Menu_NM, Menu_kor_nm, Menu_eng_nm from PJW_MENU) m
+where ( @ROWNUM:=0 ) = 0
+;
+
+insert into TB_CMM_LANG(LANG_CD, LOCALE_CD, DSP_TEXT, CODE_DESC, CRT_ID, UPD_ID)
+select CONCAT('@MNU_', LPAD(@ROWNUM:= @ROWNUM+1, 3, '0')) langCd, 'en_US', m.Menu_eng_nm dspText, m.Menu_NM codeDesc, 'mig', 'mig'
+  from (select distinct Menu_NM, Menu_kor_nm, Menu_eng_nm from PJW_MENU) m
+where ( @ROWNUM:=0 ) = 0
+;
+-- 1:path 2:create 3:Read 4:Update 5:Delete 6:프로그 7:표시여부 
+INSERT into TB_CMM_CODE(DSP_ORDER, CODE_LVL, P_CODE_CD, CODE_CD, LANG_CD, CODE_DESC, USE_YN
+, ATTR1_VAL, ATTR2_VAL, ATTR3_VAL, ATTR4_VAL, ATTR5_VAL, ATTR6_VAL, ATTR7_VAL
+, ATTR1_JSON, ATTR2_JSON, ATTR3_JSON, ATTR4_JSON, ATTR5_JSON, ATTR6_JSON, ATTR7_JSON
+, EXP_FR_DT, EXP_TO_DT, CRT_ID, UPD_ID)
+select sort_order , 99 lvl, IF(Parent_Menu_ID='Centero', 'SD01', Parent_Menu_ID) pcodeCd, m.menu_id code_cd, l.lang_cd, m.menu_desc codeDesc, m.use_yn useYn
+, null attr1, r.cc attr2, r.rr attr3, r.uu attr4, r.dd attr5, m.Program_ID attr6, m.Display_YN attr7
+, '{"name":"Path","type":"Text"}' json1, '{"name":"create","type":"MultiSelect","code":"SD02"}' json2
+, '{"name":"Read","type":"MultiSelect","code":"SD02"}' json3, '{"name":"Update","type":"MultiSelect","code":"SD02"}' json4
+, '{"name":"Delete","type":"MultiSelect","code":"SD02"}' json5, '{"name":"프로그램","type":"MultiSelect","code":"SD04"}' json6
+, '{"name":"표시여부","type":"Checkbox"}' json7
+, '2001-01-01' frDt, '9999-12-31'  toDt, Create_ID , Update_ID
+from PJW_MENU m 
+join TB_CMM_LANG l on l.locale_cd = 'ko_KR' and l.LANG_CD like '@MNU%' and l.DSP_TEXT = m.Menu_KOR_NM
+left join (
+		select Menu_ID, Menu_Parent_ID
+			 , GROUP_CONCAT(IF(`CREATE`>0, Role_ID, null) order by Role_ID asc SEPARATOR ',') cc
+			 , GROUP_CONCAT(IF(`READ`>0, Role_ID, null) order by Role_ID asc SEPARATOR ',') rr
+			 , GROUP_CONCAT(IF(`UPDATE`>0, Role_ID, null) order by Role_ID asc SEPARATOR ',') uu
+			 , GROUP_CONCAT(IF(`DELETE`>0, Role_ID, null) order by Role_ID asc SEPARATOR ',') dd
+		from TB_CMM_ROLE_MENU_MAPPING tcrmm
+		group by Menu_ID, Menu_Parent_ID
+	 ) r on r.Menu_ID = m.old_Menu_id and r.Menu_Parent_ID = m.Parent_Menu_ID
+;
+-- 메뉴관리 초기화
+with recursive rec (CODE_CD, P_CODE_CD, LVL) as
+( select CODE_CD, P_CODE_CD, 1
+  from TB_CMM_CODE
+  where P_CODE_CD = 'SD01'
+  union all
+  select t.CODE_CD, t.P_CODE_CD
+, LVL + 1
+  from TB_CMM_CODE t, rec r
+  where t.P_CODE_CD = r.CODE_CD
+)
+delete from TB_CMM_CODE m where m.CODE_CD in (select code_cd from rec);
