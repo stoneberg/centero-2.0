@@ -15,6 +15,8 @@ import kr.centero.netzero.client.auth.mapper.UserRoleMapper;
 import kr.centero.netzero.client.auth.mapper.UserTokenMapper;
 import kr.centero.netzero.client.auth.mapstruct.UserAuthMapstruct;
 import kr.centero.netzero.common.security.jwt.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,8 +25,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -73,9 +73,6 @@ public class UserAuthService {
         String userRole = StringUtils.join(roles, ",");
         this.registerAccessToken(access, username, userRole); // @todo : redis 에 저장하도록 변경
         cookieUtil.writeAccessCookie(access, response);
-
-        // 3.create refresh token cookie
-        cookieUtil.writeRefreshCookie(refresh, response);
 
         // 4.return jwt response
         return UserAuthDto.SigninResponse.builder()
@@ -156,9 +153,6 @@ public class UserAuthService {
         String userRole = StringUtils.join(roles, ",");
         this.registerAccessToken(access, username, userRole);  // @todo : redis 에 저장하도록 변경
         cookieUtil.writeAccessCookie(access, response);
-
-        // 2.create refresh token cookie
-        cookieUtil.writeRefreshCookie(refresh, response);
 
         // 3.return jwt response
         return UserAuthDto.SigninResponse.builder()

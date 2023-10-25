@@ -74,9 +74,6 @@ public class UserAuthService {
         this.registerAccessToken(access, username, userRole); // @todo : redis 에 저장하도록 변경
         cookieUtil.writeAccessCookie(access, response);
 
-        // 3.create refresh token cookie
-        cookieUtil.writeRefreshCookie(refresh, response);
-
         // 4.return jwt response
         return UserAuthDto.SigninResponse.builder()
                 .username(username)
@@ -156,9 +153,6 @@ public class UserAuthService {
         String userRole = StringUtils.join(roles, ",");
         this.registerAccessToken(access, username, userRole);  // @todo : redis 에 저장하도록 변경
         cookieUtil.writeAccessCookie(access, response);
-
-        // 2.create refresh token cookie
-        cookieUtil.writeRefreshCookie(refresh, response);
 
         // 3.return jwt response
         return UserAuthDto.SigninResponse.builder()

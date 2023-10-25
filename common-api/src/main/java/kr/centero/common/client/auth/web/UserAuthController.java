@@ -42,42 +42,15 @@ public class UserAuthController {
         return ApiResponse.ok(signinResponse);
     }
 
-    // refresh token 처리 -> access 토큰 재발급, refresh 토큰 재사용
-//    @Operation(summary = "Centero User 토큰 재발급", description = "Centero User 만료된 토큰을 재발급한다.")
-//    @GetMapping("/refresh")
-//    public ResponseEntity<ApiResponse> refresh(HttpServletRequest request, HttpServletResponse response) {
-//        String refreshToken = cookieUtil.readCookieByName(request, CookieUtil.REFRESH_TOKEN_COOKIE);
-//        UserAuthDto.SigninResponse signinResponse = userTokenService.issueNewAccessToken(refreshToken, response);
-//        return ApiResponse.ok(signinResponse);
-//    }
+    // 로그아웃(/api/common/v1/auth/signout) -> SecurityConfig 에 정의된 CustomLogoutHandler를 통해 처리됨
 
-    // 로그아웃(/api/common/v1/auth/signout) -> SecurityConfig 에 정의된 CustomLogoutHandler를 통해 처리
 
-    // test cookie writing
-    @GetMapping("/write-cookie")
-    public ResponseEntity<ApiResponse> writeAccessCookie(HttpServletResponse response) {
-        log.info("[ZET]Write Cookie===================>");
-        String accessToken = UUID.randomUUID().toString();
-        cookieUtil.writeAccessCookie(accessToken, response);
-        return ApiResponse.ok(accessToken);
-    }
-
+    // @todo: remove this test code
     @GetMapping("/createCookie")
     public String createCookie(HttpServletResponse response) {
         // 쿠키 값으로 사용할 랜덤 UUID 생성
         String tokenValue = UUID.randomUUID().toString();
-
-        try {
-            Cookie cookie = new Cookie("access_token", tokenValue);
-            cookie.setMaxAge(30 * 60); // 30분
-            cookie.setHttpOnly(true);
-            cookie.setDomain("centero.kr");
-            cookie.setPath("/"); // 모든 경로에 대해 쿠키를 사용 가능하게 설정
-            response.addCookie(cookie);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        cookieUtil.writeAccessCookie(tokenValue, response);
         return "쿠키가 생성되었습니다.";
     }
 
@@ -86,7 +59,7 @@ public class UserAuthController {
         Cookie[] cookies = request.getCookies(); // 요청에서 모든 쿠키 가져오기
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("access_token".equals(cookie.getName())) {
+                if (CookieUtil.ACCESS_TOKEN_COOKIE.equals(cookie.getName())) {
                     return "쿠키 값: " + cookie.getValue();
                 }
             }

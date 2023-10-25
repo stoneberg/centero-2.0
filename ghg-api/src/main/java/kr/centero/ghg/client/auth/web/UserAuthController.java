@@ -2,7 +2,6 @@ package kr.centero.ghg.client.auth.web;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.centero.core.common.payload.ApiResponse;
 import kr.centero.core.common.util.CookieUtil;
@@ -11,7 +10,10 @@ import kr.centero.ghg.client.auth.service.UserAuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "GHG User Auth API", description = "GHG User Auth API")
 @Slf4j
@@ -38,15 +40,6 @@ public class UserAuthController {
     public ResponseEntity<ApiResponse> signin(@RequestBody UserAuthDto.SigninRequest signinRequest,
             HttpServletResponse response) {
         UserAuthDto.SigninResponse signinResponse = userTokenService.issueUserToken(signinRequest, response);
-        return ApiResponse.ok(signinResponse);
-    }
-
-    // refresh token 처리 -> access 토큰 재발급, refresh 토큰 재사용
-    @Operation(summary = "GHG User 토큰 재발급", description = "GHG User 만료된 토큰을 재발급한다.")
-    @GetMapping("/refresh")
-    public ResponseEntity<ApiResponse> refresh(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = cookieUtil.readCookieByName(request, CookieUtil.REFRESH_TOKEN_COOKIE);
-        UserAuthDto.SigninResponse signinResponse = userTokenService.issueNewAccessToken(refreshToken, response);
         return ApiResponse.ok(signinResponse);
     }
 

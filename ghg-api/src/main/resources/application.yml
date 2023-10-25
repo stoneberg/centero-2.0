@@ -46,15 +46,15 @@ mybatis:
 
 token:
   signing:
-    key: e147f935d2219326321bfc7b2ce4bccd8324e2fca4d03841e5ee8210da788bab
+    key: ${TOKEN_SIGNING_KEY}
   expiration:
-    access: 1d # w(week), d(day), h(hour), m(minute), s(second)
-    refresh: 7d # w(week), d(day), h(hour), m(minute), s(second)
+    access: ${TOKEN_EXPIRATION_ACCESS:30m} # d(day), h(hour), m(minute)
+    refresh: ${TOKEN_EXPIRATION_REFRESH:1d} # d(day), h(hour), m(minute)
 
 cookie:
-  access:
-    name: access_token
-    duration: 1d # d(day), h(hour), m(minute)
-  refresh:
-    name: refresh_token
-    duration: 7d # d(day), h(hour), m(minute)
+  access-token:
+    name: ${COOKIE_NAME:accessToken}
+    duration: ${COOKIE_DURATION:1h} # d(day), h(hour), m(minute)
+    domain: ${COOKIE_DOMAIN:localhost}
+    secure: ${COOKIE_SECURE:false}
+    same-site: ${COOKIE_SAME_SITE:None}

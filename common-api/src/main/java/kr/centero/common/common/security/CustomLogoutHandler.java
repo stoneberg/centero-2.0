@@ -49,15 +49,13 @@ public class CustomLogoutHandler implements LogoutHandler {
             userTokenMapper.deleteByUsername(username);
             // delete access, refresh token cookie
             cookieUtil.cleanUpCookie(CookieUtil.ACCESS_TOKEN_COOKIE, response);
-            cookieUtil.cleanUpCookie(CookieUtil.REFRESH_TOKEN_COOKIE, response);
         }
 
         // check if the refreshToken cookie exists
         boolean accessTokenFound = cookieUtil.doesCookieExist(request, CookieUtil.ACCESS_TOKEN_COOKIE);
-        boolean refreshTokenFound = cookieUtil.doesCookieExist(request, CookieUtil.REFRESH_TOKEN_COOKIE);
 
         // if accessToken cookie or refreshToken cookie not found, it means that user already logged out
-        if (!accessTokenFound || !refreshTokenFound) {
+        if (!accessTokenFound) {
             throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.FORBIDDEN);
         }
 
