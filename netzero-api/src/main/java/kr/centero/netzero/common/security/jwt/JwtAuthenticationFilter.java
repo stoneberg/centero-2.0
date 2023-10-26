@@ -141,14 +141,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         // refresh token is valid, generate new access token and save it and burn it as cookie
-        CenteroUserToken oldUserTokenInfo = CenteroUserToken.builder()
+        CenteroUserToken currentTokenInfo = CenteroUserToken.builder()
                 .accessToken(oldAccessToken)
                 .refreshToken(refreshToken)
                 .username(username)
                 .roles(authorities)
                 .build();
 
-        String newAccessToken = userAuthFeignClient.refreshUserToken(oldUserTokenInfo); // call common auth api
+        String newAccessToken = userAuthFeignClient.refreshUserToken(currentTokenInfo); // call common auth api
         log.info("[ZET]New AccessToken Issued By RefreshToken==============>{}", newAccessToken);
 
         // refresh token is valid, authenticate user

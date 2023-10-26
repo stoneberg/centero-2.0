@@ -14,8 +14,8 @@ public interface UserAuthFeignClient {
     CenteroUserTokenEntity findByAccessToken(@RequestParam String accessToken);
 
     @PostMapping("/api/common/v1/auth/refresh-token")
-    String refreshUserToken(@RequestBody CenteroUserToken oldUserTokenInfo);
+    String refreshUserToken(@RequestBody CenteroUserToken centeroUserToken);
 
-    @GetMapping("/api/common/v1/auth/signout")
+    @GetMapping("/api/common/v1/users/signout")
     void signout();
 }

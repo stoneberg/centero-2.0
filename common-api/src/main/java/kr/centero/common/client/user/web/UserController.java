@@ -2,11 +2,15 @@ package kr.centero.common.client.user.web;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import kr.centero.common.client.user.domain.dto.UserDto;
 import kr.centero.common.client.user.service.UserService;
+import kr.centero.common.common.security.CustomLogoutHandler;
 import kr.centero.core.common.payload.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/common/v1/users")
 public class UserController {
 
+    private final CustomLogoutHandler customLogoutHandler;
     private final UserService userService;
+
 
     // 사용자 목록 조회
     @Operation(summary = "Centero User 조회", description = "전체 Centero User 정보를 조회한다.")
@@ -74,5 +80,13 @@ public class UserController {
     }
 
     // 사용자 등록은 UserAuthController.signup 참조
+
+
+    // ghg, netzero 에 로그아웃 요청 처리
+    @GetMapping("/logout")
+    public ResponseEntity<HttpStatus> logout(HttpServletRequest request, HttpServletResponse response) {
+        customLogoutHandler.deleteJwtLoginSession(request, response);
+        return ResponseEntity.ok().build();
+    }
 
 }
