@@ -5,9 +5,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.centero.common.client.auth.domain.entity.CenteroUserTokenEntity;
 import kr.centero.common.client.auth.domain.model.CenteroUserToken;
 import kr.centero.common.client.auth.mapper.UserTokenMapper;
+import kr.centero.common.client.auth.repository.UserTokenRedisRepository;
 import kr.centero.common.client.auth.service.RefreshTokenService;
+import kr.centero.common.client.auth.service.UserTokenRedisService;
 import kr.centero.core.common.exception.ApplicationErrorCode;
 import kr.centero.core.common.exception.ApplicationException;
 import kr.centero.core.common.util.CookieUtil;
@@ -42,16 +45,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String COMMON_AUTH_ENTRY_POINT = "/api/common/v1/auth";
     private final JwtTokenProvider jwtTokenProvider;
     private final UserTokenMapper userTokenMapper;
+    private final UserTokenRedisService userTokenRedisService;
     private final RefreshTokenService refreshTokenService;
     private final HandlerExceptionResolver exceptionResolver;
 
     public JwtAuthenticationFilter(
             JwtTokenProvider jwtTokenProvider,
             UserTokenMapper userTokenMapper,
+            UserTokenRedisService userTokenRedisService,
             RefreshTokenService refreshTokenService,
             @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userTokenMapper = userTokenMapper;
+        this.userTokenRedisService = userTokenRedisService;
         this.refreshTokenService = refreshTokenService;
         this.exceptionResolver = exceptionResolver;
     }
@@ -93,7 +99,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
 
             log.info("[ZET]accessToken==============================>{}", accessToken);
-            CenteroUserToken centeroUserToken = userTokenMapper.findByAccessToken(accessToken);
+            // CenteroUserToken centeroUserToken = userTokenMapper.findByAccessToken(accessToken);
+            CenteroUserTokenEntity centeroUserToken = userTokenRedisService.findByAccessToken(accessToken);
+            log.info("[ZET]centeroUserToken=========================>{}", centeroUserToken);
 
             // 1.if user token is not found, throw exception. this means that the user was logged out already
             if (centeroUserToken == null) {
@@ -134,7 +142,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @param response         http response
      * @param centeroUserToken user token
      */
-    private void refreshToken(HttpServletRequest request, HttpServletResponse response, CenteroUserToken centeroUserToken) {
+    private void refreshToken(HttpServletRequest request, HttpServletResponse response, CenteroUserTokenEntity centeroUserToken) {
         String refreshToken = centeroUserToken.getRefreshToken();
         String username = centeroUserToken.getUsername();
         List<String> roles = Arrays.asList(centeroUserToken.getRoles().split(","));
@@ -158,7 +166,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @param request          http request
      * @param centeroUserToken user token
      */
-    private void authenticateUser(HttpServletRequest request, CenteroUserToken centeroUserToken) {
+    private void authenticateUser(HttpServletRequest request, CenteroUserTokenEntity centeroUserToken) {
         // create authentication object and set it in SecurityContextHolder
         UserDetails userDetails = this.createUserDetails(centeroUserToken);
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -193,7 +201,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @param centeroUserToken user token
      * @return user details
      */
-    private UserDetails createUserDetails(CenteroUserToken centeroUserToken) {
+    private UserDetails createUserDetails(CenteroUserTokenEntity centeroUserToken) {
         try {
             List<SimpleGrantedAuthority> authorities = Arrays.stream(centeroUserToken.getRoles().split(","))
                     .map(role -> new SimpleGrantedAuthority(ROLE_PREFIX + role))

@@ -2,6 +2,7 @@ package kr.centero.common.client.auth.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import kr.centero.common.client.auth.domain.dto.UserAuthDto;
+import kr.centero.common.client.auth.domain.entity.CenteroUserTokenEntity;
 import kr.centero.common.client.auth.domain.enums.ERole;
 import kr.centero.common.client.auth.domain.model.CenteroUserDetails;
 import kr.centero.common.client.auth.domain.model.CenteroUserToken;
@@ -37,6 +38,7 @@ public class UserAuthService {
     private static final String ROLE_PREFIX = "ROLE_";
     private final AuthenticationManager authenticationManager;
     private final CenteroUserDetailsService userDetailService;
+    private final UserTokenRedisService userTokenRedisService;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserTokenMapper userTokenMapper;
     private final PasswordEncoder passwordEncoder;
@@ -67,10 +69,12 @@ public class UserAuthService {
 
         // 1.delete the previously issued user's tokens
         userTokenMapper.deleteByUsername(username);
+        userTokenRedisService.deleteByUsername(username);
 
         // 2.save issued tonkens
         String authorities = StringUtils.join(roles, ",");
         this.registerAccessToken(access, refresh, username, authorities);
+        this.registerAccessTokenRedis(access, refresh, username, authorities);
         cookieUtil.writeAccessCookie(access, response);
 
         // 3.return jwt response
@@ -115,8 +119,9 @@ public class UserAuthService {
         String refresh = jwtTokenProvider.generateRefreshToken(username);
 
         // save access token
-        String userRole = StringUtils.join(roles, ",");
-        this.registerAccessToken(access, refresh, username, userRole);
+        String authorities = StringUtils.join(roles, ",");
+        this.registerAccessToken(access, refresh, username, authorities);
+        this.registerAccessTokenRedis(access, refresh, username, authorities);
         cookieUtil.writeAccessCookie(access, response);
 
         // return jwt response
@@ -136,6 +141,7 @@ public class UserAuthService {
      * @param roles    roles (comma separated string)
      */
     public void registerAccessToken(String access, String refresh, String username, String roles) {
+        log.info("1.[ZET]registerAccessToken=============================>");
         CenteroUserToken accessToken = CenteroUserToken.builder()
                 .accessToken(access)
                 .refreshToken(refresh)
@@ -145,6 +151,27 @@ public class UserAuthService {
                 .build();
 
         userTokenMapper.save(accessToken);
+    }
+
+    /**
+     * access token 등록
+     *
+     * @param access      access token
+     * @param refresh     refresh token
+     * @param username    username
+     * @param authorities roles (comma separated string)
+     */
+    public void registerAccessTokenRedis(String access, String refresh, String username, String authorities) {
+        log.info("1.[ZET]registerAccessTokenRedis=============================>");
+        CenteroUserTokenEntity accessToken = CenteroUserTokenEntity.builder()
+                .accessToken(access)
+                .refreshToken(refresh)
+                .username(username)
+                .roles(authorities)
+                .issuedAt(LocalDateTime.now())
+                .build();
+
+        userTokenRedisService.save(accessToken);
     }
 
 }
