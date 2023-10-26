@@ -2,6 +2,7 @@ package kr.centero.common.client.auth.web;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import kr.centero.common.client.auth.domain.dto.UserAuthDto;
@@ -10,9 +11,11 @@ import kr.centero.common.client.auth.domain.model.CenteroUserToken;
 import kr.centero.common.client.auth.service.RefreshTokenService;
 import kr.centero.common.client.auth.service.UserAuthService;
 import kr.centero.common.client.auth.service.UserTokenRedisService;
+import kr.centero.common.common.security.CustomLogoutHandler;
 import kr.centero.core.common.payload.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +29,7 @@ public class UserAuthController {
     private final UserAuthService userTokenService;
     private final UserTokenRedisService userTokenRedisService;
     private final RefreshTokenService refreshTokenService;
+    private final CustomLogoutHandler customLogoutHandler;
 
 
     // 사용자 회원 가입 처리 -> 사용자 등록 후, access, refresh 토큰 발급(가입 시 자동 로그인 상태)
@@ -47,7 +51,7 @@ public class UserAuthController {
     // 로그아웃(/api/common/v1/auth/signout) -> SecurityConfig 에 정의된 CustomLogoutHandler를 통해 처리됨
 
 
-    // ghg, netzero 에 auth service 제공
+    // ghg, netzero 에 access token 정보 요청 처리
     @GetMapping("/access-token")
     public ResponseEntity<CenteroUserTokenEntity> findByAccessToken(@RequestParam String accessToken) {
         CenteroUserTokenEntity tokenEntity = userTokenRedisService.findByAccessToken(accessToken);
@@ -58,11 +62,18 @@ public class UserAuthController {
         }
     }
 
-    // ghg, netzero 에 auth service 제공
+    // ghg, netzero 에 새로운 access token 발급 요청 처리
     @PostMapping("/refresh-token")
     public ResponseEntity<String> refresh(@RequestBody CenteroUserToken oldUserToken, HttpServletResponse response) {
         String newAccessToken = refreshTokenService.issueNewUserToken(oldUserToken, response);
         return ResponseEntity.ok(newAccessToken);
+    }
+
+    // ghg, netzero 에 로그아웃 요청 처리
+    @GetMapping("/logout")
+    public ResponseEntity<HttpStatus> logout(HttpServletRequest request, HttpServletResponse response) {
+        customLogoutHandler.deleteJwtLoginSession(request, response);
+        return ResponseEntity.ok().build();
     }
 
 }

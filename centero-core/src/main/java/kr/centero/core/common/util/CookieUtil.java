@@ -145,9 +145,11 @@ public class CookieUtil {
      * @return deleted cookie
      */
     public Cookie deleteCookie(String name) {
+        log.info("[LOGOUT]CookieName=======>{}", name);
         Cookie cookie = new Cookie(name, null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
+        cookie.setDomain(cookieDomain);
         return cookie;
     }
 
@@ -184,6 +186,7 @@ public class CookieUtil {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (ACCESS_TOKEN_COOKIE.equals(cookie.getName())) {
+                    log.info("[LOGOUT]CookieValue=======>{}", cookie.getValue());
                     cookieExists = true;
                     break;
                 }

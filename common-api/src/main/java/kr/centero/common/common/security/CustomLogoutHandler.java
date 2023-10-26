@@ -33,6 +33,17 @@ public class CustomLogoutHandler implements LogoutHandler {
     @Transactional
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        this.deleteJwtLoginSession(request, response);
+    }
+
+    /**
+     * Delete jwt login session
+     * delete access token in redis and delete access cookie
+     *
+     * @param request  http request
+     * @param response http response
+     */
+    public void deleteJwtLoginSession(HttpServletRequest request, HttpServletResponse response) {
         final String accessToken = getAccessTokenFromRequest(request);
 
         if (!StringUtils.isEmpty(accessToken)) {
@@ -42,15 +53,13 @@ public class CustomLogoutHandler implements LogoutHandler {
             cookieUtil.deleteAccessCookie(response);
         }
 
-        // check if the refreshToken cookie exists
+        // check access cookie exists
         boolean accessCookieExist = cookieUtil.doesAccessCookieExist(request);
-        log.info("[LOGOUT]accessCookieExist===============>{}", accessCookieExist);
 
         // if accessToken cookie or refreshToken cookie not found, it means that user already logged out
         if (!accessCookieExist) {
-            throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.FORBIDDEN);
+            throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED);
         }
-
     }
 
     /**
