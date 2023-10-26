@@ -13,30 +13,54 @@ import org.springframework.stereotype.Service;
 public class UserTokenRedisService {
     private final UserTokenRedisRepository userTokenRepository;
 
-    public void save(CenteroUserTokenEntity userToken) {
-        userTokenRepository.save(userToken);
+    public void save(CenteroUserTokenEntity userTokenEntity) {
+        userTokenRepository.findByAccessToken(userTokenEntity.getAccessToken()).ifPresentOrElse(
+                existUserToken -> {
+                    log.info("[ZET]existUserToken: {}", existUserToken);
+                    userTokenRepository.delete(existUserToken);
+                    userTokenRepository.save(userTokenEntity);
+                },
+                () -> {
+                    log.info("[ZET]userTokenEntity: {}", userTokenEntity);
+                    userTokenRepository.save(userTokenEntity);
+                });
     }
 
-    // in redis 'update' is 'save'
-    public void update(CenteroUserTokenEntity userToken) {
-        userTokenRepository.save(userToken);
+    public void update(String accessToken, CenteroUserTokenEntity userTokenEntity) {
+        userTokenRepository.findByAccessToken(accessToken).ifPresentOrElse(
+                existUserToken -> {
+                    log.info("[ZET]existUserToken: {}", existUserToken);
+                    userTokenRepository.delete(existUserToken);
+                    userTokenRepository.save(userTokenEntity);
+                },
+                () -> {
+                    log.info("[ZET]userTokenEntity: {}", userTokenEntity);
+                    userTokenRepository.save(userTokenEntity);
+                });
     }
 
     public CenteroUserTokenEntity findByUsername(String username) {
-        return userTokenRepository.findByUsername(username);
+        return userTokenRepository.findByUsername(username).orElse(null);
     }
 
     public CenteroUserTokenEntity findByAccessToken(String accessToken) {
         log.info("[ZET]findByAccessToken===================>{}", accessToken);
-        CenteroUserTokenEntity userToken = userTokenRepository.findByAccessToken(accessToken);
+        CenteroUserTokenEntity userToken = userTokenRepository.findByAccessToken(accessToken).orElse(null);
         log.info("[ZET]findByAccessToken===================>{}", userToken);
         return userToken;
     }
 
+    public void deleteByAccessToken(String accessToken) {
+        userTokenRepository.findByAccessToken(accessToken).ifPresent(existUserToken -> {
+            log.info("[ZET]existUserToken: {}", existUserToken);
+            userTokenRepository.delete(existUserToken);
+        });
+    }
+
     public void deleteByUsername(String username) {
-        CenteroUserTokenEntity token = userTokenRepository.findByUsername(username);
-        if (token != null) {
-            userTokenRepository.deleteById(token.getAccessToken());
-        }
+        userTokenRepository.findByUsername(username).ifPresent(existUserToken -> {
+            log.info("[ZET]existUserToken: {}", existUserToken);
+            userTokenRepository.delete(existUserToken);
+        });
     }
 }

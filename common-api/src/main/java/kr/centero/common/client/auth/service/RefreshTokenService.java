@@ -67,22 +67,22 @@ public class RefreshTokenService {
     /**
      * access token 갱신
      *
-     * @param access  access token
+     * @param newAccessToken  new access token
      * @param refresh refresh token
      * @param username username
      * @param authorities authorities
      */
-    public void updateAccessTokenRedis(String access, String refresh, String username, String authorities) {
+    public void updateAccessTokenRedis(String newAccessToken, String refresh, String username, String authorities) {
         log.info("2.[ZET]updateAccessTokenRedis===============================>");
         CenteroUserTokenEntity accessToken = CenteroUserTokenEntity.builder()
-                .accessToken(access)
+                .accessToken(newAccessToken)
                 .refreshToken(refresh)
                 .username(username)
                 .roles(authorities)
                 .issuedAt(LocalDateTime.now())
                 .build();
 
-        userTokenRedisService.update(accessToken);
+        userTokenRedisService.save(accessToken);
     }
 
 }

@@ -26,10 +26,4 @@ public class Member implements Serializable {
     private String password;
 
     private String email;
-
-    public Member(String memberId, String password, String email) {
-        this.memberId = memberId;
-        this.password = password;
-        this.email = email;
-    }
 }

@@ -6,9 +6,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.centero.common.client.auth.domain.entity.CenteroUserTokenEntity;
-import kr.centero.common.client.auth.domain.model.CenteroUserToken;
 import kr.centero.common.client.auth.mapper.UserTokenMapper;
-import kr.centero.common.client.auth.repository.UserTokenRedisRepository;
 import kr.centero.common.client.auth.service.RefreshTokenService;
 import kr.centero.common.client.auth.service.UserTokenRedisService;
 import kr.centero.core.common.exception.ApplicationErrorCode;
@@ -44,6 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String ROLE_PREFIX = "ROLE_";
     private static final String COMMON_AUTH_ENTRY_POINT = "/api/common/v1/auth";
     private static final String COMMON_AUTH_ENTRY_POINT2 = "/api/common/v1/members";
+    private static final String COMMON_AUTH_ENTRY_POINT3 = "/api/common/v1/tokens";
     private final JwtTokenProvider jwtTokenProvider;
     private final UserTokenMapper userTokenMapper;
     private final UserTokenRedisService userTokenRedisService;
@@ -66,7 +65,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         // skip jwt filter if request path is /api/common/v1/auth/** (login, signup, refresh, logout)
-        if (request.getServletPath().contains(COMMON_AUTH_ENTRY_POINT) || request.getServletPath().contains(COMMON_AUTH_ENTRY_POINT2)) {
+        if (request.getServletPath().contains(COMMON_AUTH_ENTRY_POINT)
+                || request.getServletPath().contains(COMMON_AUTH_ENTRY_POINT2)
+                || request.getServletPath().contains(COMMON_AUTH_ENTRY_POINT3)
+        ) {
             filterChain.doFilter(request, response);
             return;
         }

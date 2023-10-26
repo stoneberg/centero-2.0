@@ -67,10 +67,14 @@ public class MemberService {
     }
 
     public void remove(String memberId) {
-        Optional<Member> member = Optional.ofNullable(memberRepository.findMemberByMemberId(memberId)
-                .orElseThrow(() -> new BusinessException(BusinessErrorCode.USER_NOT_FOUND)));
+//        Optional<Member> member = Optional.ofNullable(memberRepository.findMemberByMemberId(memberId)
+//                .orElseThrow(() -> new BusinessException(BusinessErrorCode.USER_NOT_FOUND)));
+//
+//        log.info("[ZET]delete member: {}", member.get());
+//        memberRepository.delete(member.get());
 
-        log.info("[ZET]delete member: {}", member.get());
-        memberRepository.delete(member.get());
+        // delete if exist
+        memberRepository.findMemberByMemberId(memberId).ifPresent(memberRepository::delete);
+
     }
 }
