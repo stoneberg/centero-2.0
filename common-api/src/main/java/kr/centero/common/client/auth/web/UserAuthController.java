@@ -47,7 +47,7 @@ public class UserAuthController {
     // 로그아웃(/api/common/v1/auth/signout) -> SecurityConfig 에 정의된 CustomLogoutHandler를 통해 처리됨
 
 
-    // ghg, netzero 에 auth service 제공
+    // ghg, netzero 에 access token 정보 요청 처리
     @GetMapping("/access-token")
     public ResponseEntity<CenteroUserTokenEntity> findByAccessToken(@RequestParam String accessToken) {
         CenteroUserTokenEntity tokenEntity = userTokenRedisService.findByAccessToken(accessToken);
@@ -58,7 +58,7 @@ public class UserAuthController {
         }
     }
 
-    // ghg, netzero 에 auth service 제공
+    // ghg, netzero 에 새로운 access token 발급 요청 처리
     @PostMapping("/refresh-token")
     public ResponseEntity<String> refresh(@RequestBody CenteroUserToken oldUserToken, HttpServletResponse response) {
         String newAccessToken = refreshTokenService.issueNewUserToken(oldUserToken, response);
