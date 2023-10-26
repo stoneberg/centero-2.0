@@ -1,8 +1,9 @@
 package kr.centero.common.common.security;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.centero.common.client.auth.mapper.UserTokenMapper;
+import kr.centero.common.client.auth.service.UserTokenRedisService;
 import kr.centero.common.common.security.jwt.JwtTokenProvider;
 import kr.centero.core.common.exception.ApplicationErrorCode;
 import kr.centero.core.common.exception.ApplicationException;
@@ -16,9 +17,6 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static kr.centero.common.common.security.jwt.JwtTokenProvider.AUTH_HEADER;
-import static kr.centero.common.common.security.jwt.JwtTokenProvider.TOKEN_PREFIX;
-
 
 /**
  * CustomLogoutHandler:
@@ -29,36 +27,60 @@ import static kr.centero.common.common.security.jwt.JwtTokenProvider.TOKEN_PREFI
 @Service
 @RequiredArgsConstructor
 public class CustomLogoutHandler implements LogoutHandler {
-    private final UserTokenMapper userTokenMapper;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final UserTokenRedisService userTokenRedisService;
     private final CookieUtil cookieUtil;
 
     @Transactional
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        final String authHeader = request.getHeader(AUTH_HEADER);
-        if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
-            return;
-        }
-
-        final String accessToken = authHeader.substring(7);
+        final String accessToken = getAccessTokenFromRequest(request);
 
         if (!StringUtils.isEmpty(accessToken)) {
-            // delete user's accessToken
-            String username = jwtTokenProvider.extractUsername(accessToken);
-            userTokenMapper.deleteByUsername(username);
-            // delete access, refresh token cookie
-            cookieUtil.cleanUpCookie(CookieUtil.ACCESS_TOKEN_COOKIE, response);
+            // delete access token in redis
+            userTokenRedisService.deleteByAccessToken(accessToken);
+            // delete access cookie
+            cookieUtil.deleteAccessCookie(response);
         }
 
         // check if the refreshToken cookie exists
-        boolean accessTokenFound = cookieUtil.doesCookieExist(request, CookieUtil.ACCESS_TOKEN_COOKIE);
+        boolean accessCookieExist = cookieUtil.doesAccessCookieExist(request);
+        log.info("[LOGOUT]accessCookieExist===============>{}", accessCookieExist);
 
         // if accessToken cookie or refreshToken cookie not found, it means that user already logged out
-        if (!accessTokenFound) {
+        if (!accessCookieExist) {
             throw new ApplicationException(ApplicationErrorCode.TOKEN_EXPIRED, HttpStatus.FORBIDDEN);
         }
 
+    }
+
+    /**
+     * Get access token from cookie
+     *
+     * @param request http request
+     * @return access token
+     */
+    private String getAccessTokenFromRequest(HttpServletRequest request) {
+        // get access token from cookie
+        String accessToken = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (CookieUtil.ACCESS_TOKEN_COOKIE.equals(cookie.getName())) {
+                    accessToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        // If access token is not found in cookie, try go get it from request header
+        if (accessToken == null) {
+            final String authHeader = request.getHeader(JwtTokenProvider.AUTH_HEADER);
+            if (authHeader != null && authHeader.startsWith(JwtTokenProvider.TOKEN_PREFIX)) {
+                accessToken = authHeader.substring(7);
+            }
+        }
+
+        return accessToken;
     }
 
 }

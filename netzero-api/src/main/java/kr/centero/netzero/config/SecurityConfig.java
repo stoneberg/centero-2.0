@@ -32,13 +32,11 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String NETZERO_AUTH_ENTRY_POINTS = "/api/netzero/v1/auth/**";
     private static final String NETZERO_LOGOUT_URL = "/api/netzero/v1/user/signout";
     private final HttpRequestEndpointChecker httpRequestEndpointChecker;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomLogoutHandler customLogoutHandler;
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
-    private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -63,7 +61,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth ->
                 auth
-                        .requestMatchers(new MvcRequestMatcher(introspector, NETZERO_AUTH_ENTRY_POINTS)).permitAll()
+                        // .requestMatchers(new MvcRequestMatcher(introspector, "some url")).permitAll()
                         .anyRequest().authenticated()
         );
 
@@ -82,13 +80,6 @@ public class SecurityConfig {
                 .logoutSuccessHandler(customLogoutSuccessHandler));
 
         return http.build();
-    }
-
-    @Bean
-    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(authenticationProvider);
-        return authenticationManagerBuilder.build();
     }
 
     @Bean
