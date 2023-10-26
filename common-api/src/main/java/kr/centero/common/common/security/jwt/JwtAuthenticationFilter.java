@@ -43,6 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private static final String ROLE_PREFIX = "ROLE_";
     private static final String COMMON_AUTH_ENTRY_POINT = "/api/common/v1/auth";
+    private static final String COMMON_AUTH_ENTRY_POINT2 = "/api/common/v1/members";
     private final JwtTokenProvider jwtTokenProvider;
     private final UserTokenMapper userTokenMapper;
     private final UserTokenRedisService userTokenRedisService;
@@ -65,7 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         // skip jwt filter if request path is /api/common/v1/auth/** (login, signup, refresh, logout)
-        if (request.getServletPath().contains(COMMON_AUTH_ENTRY_POINT)) {
+        if (request.getServletPath().contains(COMMON_AUTH_ENTRY_POINT) || request.getServletPath().contains(COMMON_AUTH_ENTRY_POINT2)) {
             filterChain.doFilter(request, response);
             return;
         }

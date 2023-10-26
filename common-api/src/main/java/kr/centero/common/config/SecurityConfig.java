@@ -66,6 +66,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth ->
                 auth
                         .requestMatchers(new MvcRequestMatcher(introspector, COMMON_AUTH_ENTRY_POINTS)).permitAll()
+                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/members/**")).permitAll()
 //                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methodologies/find-all")).hasRole(ERole.ADMIN.name())
 //                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methodologies/find-one/**")).hasRole(ERole.USER.name())
 //                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/common/v1/methodologies/find-all"))
