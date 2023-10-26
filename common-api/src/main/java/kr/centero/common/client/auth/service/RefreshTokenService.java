@@ -53,6 +53,30 @@ public class RefreshTokenService {
     }
 
     /**
+     * issue new access token with refresh token
+     *
+     * @param oldUserToken old user token properties
+     * @param response     HttpServletResponse
+     * @return new access token
+     */
+    @Transactional
+    public String issueNewUserToken(CenteroUserToken oldUserToken, HttpServletResponse response) {
+        String username = oldUserToken.getUsername();
+        String refreshToken = oldUserToken.getRefreshToken();
+        String authorities = oldUserToken.getRoles();
+        String oldAccessToken = oldUserToken.getAccessToken();
+
+        // 1.update access token and create new cookie
+        List<String> roles = List.of(authorities.split(","));
+        String newAccessToken = jwtTokenProvider.generateToken(username, roles);
+        this.updateAccessTokenInDB(newAccessToken, refreshToken, username);
+        this.updateAccessTokenInRedis(oldAccessToken, newAccessToken, refreshToken, username, authorities);
+        // 2.create new access token cookie
+        cookieUtil.writeAccessCookie(newAccessToken, response);
+        return newAccessToken;
+    }
+
+    /**
      * update access token in db
      *
      * @param access   access token

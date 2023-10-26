@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import kr.centero.core.common.exception.ApplicationErrorCode;
 import kr.centero.core.common.exception.ApplicationException;
 import kr.centero.core.common.util.CookieUtil;
-import kr.centero.netzero.client.auth.mapper.UserTokenMapper;
 import kr.centero.netzero.common.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +28,7 @@ import static kr.centero.netzero.common.security.jwt.JwtTokenProvider.TOKEN_PREF
 @Service
 @RequiredArgsConstructor
 public class CustomLogoutHandler implements LogoutHandler {
-    private final UserTokenMapper userTokenMapper;
+    // private final UserTokenMapper userTokenMapper; // convert api call
     private final JwtTokenProvider jwtTokenProvider;
     private final CookieUtil cookieUtil;
 
@@ -46,7 +45,7 @@ public class CustomLogoutHandler implements LogoutHandler {
         if (!StringUtils.isEmpty(accessToken)) {
             // delete user's accessToken
             String username = jwtTokenProvider.extractUsername(accessToken);
-            userTokenMapper.deleteByUsername(username);
+            // userTokenMapper.deleteByUsername(username);
             // delete access, refresh token cookie
             cookieUtil.cleanUpCookie(CookieUtil.ACCESS_TOKEN_COOKIE, response);
         }

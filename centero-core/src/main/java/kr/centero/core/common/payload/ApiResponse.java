@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse {
     private static final String DEFAULT_MESSAGE = "SUCCESS";
+    private static final String DEFAULT_ERROR_MESSAGE = "ERROR";
     private Boolean success = true;
     private Object data;
     private Integer status;
@@ -123,7 +124,7 @@ public class ApiResponse {
      * @param data payload
      * @return ApiResponse with HttpStatus.CREATED (201)
      */
-    public static ResponseEntity<ApiResponse> is(Object data) {
+    public static ResponseEntity<ApiResponse> of(Object data) {
         response.setStatus(HttpStatus.CREATED.value());
         response.setCode(HttpStatus.CREATED.name());
         response.setMessage(DEFAULT_MESSAGE);
@@ -139,13 +140,27 @@ public class ApiResponse {
      * @param data    payload
      * @return ApiResponse with HttpStatus.CREATED (201)
      */
-    public static ResponseEntity<ApiResponse> is(String message, Object data) {
+    public static ResponseEntity<ApiResponse> of(String message, Object data) {
         response.setStatus(HttpStatus.CREATED.value());
         response.setCode(HttpStatus.CREATED.name());
         response.setMessage(message);
         response.setData(data);
         response.setTimestamp(LocalDateTime.now().toString());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    /**
+     * OpenFeign Not Found Response
+     *
+     * @return ApiResponse with HttpStatus.NOT_FOUND (404)
+     */
+    public static ResponseEntity<ApiResponse> empty() {
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+        response.setCode(HttpStatus.NOT_FOUND.name());
+        response.setMessage(DEFAULT_ERROR_MESSAGE);
+        response.setTimestamp(LocalDateTime.now().toString());
+        response.setData(null);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
 }

@@ -1,22 +1,31 @@
-package kr.centero.netzero.client.auth.domain.model;
+package kr.centero.netzero.client.auth.domain.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.ibatis.type.Alias;
 
 import java.time.LocalDateTime;
 
+/**
+ * centero user token info entity in redis
+ * preserve user token in one hour
+ */
 @Data
 @Builder
-@Alias("UserToken")
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserToken {
+public class CenteroUserTokenEntity {
     private Long id;
-    private String token;
+
+    private String accessToken;
+
     private String username;
+
+    private String refreshToken;
+
     private String roles;
+
     private LocalDateTime issuedAt;
 }
+

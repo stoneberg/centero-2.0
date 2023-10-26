@@ -59,3 +59,9 @@ cookie:
     secure: ${COOKIE_SECURE:false}
     same-site: ${COOKIE_SAME_SITE:None} # if you want to use cookie in cross-site, set None and secure must be true
 
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: ${CONNECT_TIMEOUT:10000} # 10 seconds
+        readTimeout: ${READ_TIMEOUT:10000} # 10 seconds

@@ -36,7 +36,7 @@ public class CookieUtil {
      *
      * @param name     cookie name
      * @param value    cookie value
-     * @param duration   cookie max age
+     * @param duration cookie max age
      * @param response HttpServletResponse
      */
     public void writeCookie(String name, String value, String duration, HttpServletResponse response) {
@@ -120,7 +120,7 @@ public class CookieUtil {
     /**
      * check if cookie exists by specified name
      *
-     * @param request HttpServletRequest
+     * @param request    HttpServletRequest
      * @param cookieName cookie name
      * @return boolean
      */
@@ -160,6 +160,36 @@ public class CookieUtil {
     public void cleanUpCookie(String name, HttpServletResponse response) {
         Cookie cookie = this.deleteCookie(name);
         response.addCookie(cookie);
+    }
+
+    /**
+     * delete access cookie
+     *
+     * @param response HttpServletResponse
+     */
+    public void deleteAccessCookie(HttpServletResponse response) {
+        Cookie cookie = this.deleteCookie(ACCESS_TOKEN_COOKIE);
+        response.addCookie(cookie);
+    }
+
+    /**
+     * check if access cookie exists
+     *
+     * @param request HttpServletRequest
+     * @return boolean
+     */
+    public boolean doesAccessCookieExist(HttpServletRequest request) {
+        boolean cookieExists = false;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (ACCESS_TOKEN_COOKIE.equals(cookie.getName())) {
+                    cookieExists = true;
+                    break;
+                }
+            }
+        }
+        return cookieExists;
     }
 
 }

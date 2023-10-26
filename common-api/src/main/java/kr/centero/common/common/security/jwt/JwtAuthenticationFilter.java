@@ -64,21 +64,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String accessToken = null;
+        String accessToken;
         String username;
         boolean isValidAccessToken;
 
-        // First try to get the access token from cookie
-        accessToken = this.getAccessTokenFromCookie(request, accessToken);
-        log.info("[JWT_FILER]accessToken from cookie===============>{}", accessToken);
-
-        // If access token is not found in cookie, try go get it from request header
-        if (accessToken == null) {
-            final String authHeader = request.getHeader(JwtTokenProvider.AUTH_HEADER);
-            if (authHeader != null && authHeader.startsWith(JwtTokenProvider.TOKEN_PREFIX)) {
-                accessToken = authHeader.substring(7);
-            }
-        }
+        // First try to get the access token from cookie or header
+        accessToken = this.getAccessTokenFromRequest(request);
+        log.info("[COMMON_JWT_FILER]accessToken from request===============>{}", accessToken);
 
         // skip jwt filter if auth header is null or not start with "Bearer "
         // this means that the request is not authenticated and would be handled by the AuthenticationEntryPoint
@@ -175,11 +167,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /**
      * Get access token from cookie
      *
-     * @param request     http request
-     * @param accessToken access token
+     * @param request http request
      * @return access token
      */
-    private String getAccessTokenFromCookie(HttpServletRequest request, String accessToken) {
+    private String getAccessTokenFromRequest(HttpServletRequest request) {
+        // get access token from cookie
+        String accessToken = null;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -187,6 +180,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     accessToken = cookie.getValue();
                     break;
                 }
+            }
+        }
+
+        // If access token is not found in cookie, try go get it from request header
+        if (accessToken == null) {
+            final String authHeader = request.getHeader(JwtTokenProvider.AUTH_HEADER);
+            if (authHeader != null && authHeader.startsWith(JwtTokenProvider.TOKEN_PREFIX)) {
+                accessToken = authHeader.substring(7);
             }
         }
 
