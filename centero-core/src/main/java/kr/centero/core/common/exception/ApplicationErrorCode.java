@@ -10,7 +10,7 @@ public enum ApplicationErrorCode {
      */
     TOKEN_NOT_VALID("SYS_ERR_9010", "토큰이 유효하지 않습니다."),
     TOKEN_EXPIRED("SYS_ERR_9011", "토큰이 만료되었습니다."),
-    REFRESH_TOKEN_EXPIRED("SYS_ERR_9012", "토큰이 만료되었습니다."),
+    REFRESH_TOKEN_EXPIRED("SYS_ERR_9012", "토큰이 만료되었습니다. 다시 로그인 해주세요."),
     BAD_CREDENTIALS("SYS_ERR_9020", "인증정보가 일치하지 않습니다."),
     UNAUTHORIZED_REQUEST("SYS_ERR_9021", "인증되지 않은 사용자입니다."),
     FORBIDDEN_ACCESS("SYS_ERR_9022", "접근 권한이 없습니다."),

@@ -13,12 +13,13 @@ import java.time.LocalDateTime;
 
 /**
  * centero user token info entity in redis
+ * preserve user token in one hour
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@RedisHash("centero_user_token")
+@RedisHash(value = "centero_user_token", timeToLive = 3600)
 public class CenteroUserTokenEntity implements Serializable {
     @Id
     private Long id;

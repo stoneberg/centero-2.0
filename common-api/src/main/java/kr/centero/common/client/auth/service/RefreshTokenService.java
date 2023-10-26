@@ -15,6 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * refresh token service
+ * handle refresh token issue process
+ */
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -27,33 +31,36 @@ public class RefreshTokenService {
 
 
     /**
-     * refresh token 처리 -> access 토큰 재발급
+     * issue new access token with refresh token
      *
-     * @param refreshToken refresh token
+     * @param oldAccessToken old access token
+     * @param refreshToken   refresh token
+     * @param username       username
+     * @param roles          roles
+     * @param response       HttpServletResponse
+     * @return new access token
      */
     @Transactional
-    public void issueNewUserToken(String refreshToken, String username, List<String> roles, HttpServletResponse response) {
-        log.info("[REFRESH TOKEN]=======================>");
-        log.info("refreshToken==========================>{}", refreshToken);
-        log.info("username==============================>{}", username);
-        log.info("roles=================================>{}", roles);
+    public String issueNewUserToken(String oldAccessToken, String refreshToken, String username, List<String> roles, HttpServletResponse response) {
         // 1.update access token and create new cookie
         String newAccessToken = jwtTokenProvider.generateToken(username, roles);
-        this.updateAccessToken(newAccessToken, refreshToken, username);
+        this.updateAccessTokenInDB(newAccessToken, refreshToken, username);
         String authorities = StringUtils.join(roles, ",");
-        this.updateAccessTokenRedis(newAccessToken, refreshToken, username, authorities);
-
+        this.updateAccessTokenInRedis(oldAccessToken, newAccessToken, refreshToken, username, authorities);
+        // 2.create new access token cookie
         cookieUtil.writeAccessCookie(newAccessToken, response);
+        return newAccessToken;
     }
 
     /**
-     * access token 갱신
+     * update access token in db
      *
      * @param access   access token
+     * @param refresh  refresh token
      * @param username username
      */
-    public void updateAccessToken(String access, String refresh, String username) {
-        log.info("2.[ZET]updateAccessToken===================================>");
+    @Transactional
+    public void updateAccessTokenInDB(String access, String refresh, String username) {
         CenteroUserToken accessToken = CenteroUserToken.builder()
                 .accessToken(access)
                 .refreshToken(refresh)
@@ -65,17 +72,22 @@ public class RefreshTokenService {
     }
 
     /**
-     * access token 갱신
+     * update access token in redis (delete and save)
      *
-     * @param newAccessToken  new access token
-     * @param refresh refresh token
-     * @param username username
+     * @param oldAccess   old access token
+     * @param newAccess   new access token
+     * @param refresh     refresh token
+     * @param username    username
      * @param authorities authorities
      */
-    public void updateAccessTokenRedis(String newAccessToken, String refresh, String username, String authorities) {
-        log.info("2.[ZET]updateAccessTokenRedis===============================>");
+    @Transactional
+    public void updateAccessTokenInRedis(String oldAccess, String newAccess, String refresh, String username, String authorities) {
+        // delete old access token, clean up redis
+        userTokenRedisService.deleteByAccessToken(oldAccess);
+
+        // save new access token
         CenteroUserTokenEntity accessToken = CenteroUserTokenEntity.builder()
-                .accessToken(newAccessToken)
+                .accessToken(newAccess)
                 .refreshToken(refresh)
                 .username(username)
                 .roles(authorities)

@@ -68,13 +68,13 @@ public class UserAuthService {
         String refresh = jwtTokenProvider.generateRefreshToken(username);
 
         // 1.delete the previously issued user's tokens
-        userTokenMapper.deleteByUsername(username);
+        // userTokenMapper.deleteByUsername(username);
         userTokenRedisService.deleteByUsername(username);
 
         // 2.save issued tonkens
         String authorities = StringUtils.join(roles, ",");
-        this.registerAccessToken(access, refresh, username, authorities);
-        this.registerAccessTokenRedis(access, refresh, username, authorities);
+        // this.registerAccessTokenInDB(access, refresh, username, authorities);
+        this.registerAccessTokenInRedis(access, refresh, username, authorities);
         cookieUtil.writeAccessCookie(access, response);
 
         // 3.return jwt response
@@ -120,8 +120,8 @@ public class UserAuthService {
 
         // save access token
         String authorities = StringUtils.join(roles, ",");
-        this.registerAccessToken(access, refresh, username, authorities);
-        this.registerAccessTokenRedis(access, refresh, username, authorities);
+        // this.registerAccessTokenInDB(access, refresh, username, authorities);
+        this.registerAccessTokenInRedis(access, refresh, username, authorities);
         cookieUtil.writeAccessCookie(access, response);
 
         // return jwt response
@@ -133,15 +133,14 @@ public class UserAuthService {
     }
 
     /**
-     * access token 등록
+     * register access token in DB
      *
      * @param access   access token
      * @param refresh  refresh token
      * @param username username
      * @param roles    roles (comma separated string)
      */
-    public void registerAccessToken(String access, String refresh, String username, String roles) {
-        log.info("1.[ZET]registerAccessToken=============================>");
+    public void registerAccessTokenInDB(String access, String refresh, String username, String roles) {
         CenteroUserToken accessToken = CenteroUserToken.builder()
                 .accessToken(access)
                 .refreshToken(refresh)
@@ -154,15 +153,14 @@ public class UserAuthService {
     }
 
     /**
-     * access token 등록
+     * register access token in redis
      *
      * @param access      access token
      * @param refresh     refresh token
      * @param username    username
      * @param authorities roles (comma separated string)
      */
-    public void registerAccessTokenRedis(String access, String refresh, String username, String authorities) {
-        log.info("1.[ZET]registerAccessTokenRedis=============================>");
+    public void registerAccessTokenInRedis(String access, String refresh, String username, String authorities) {
         CenteroUserTokenEntity accessToken = CenteroUserTokenEntity.builder()
                 .accessToken(access)
                 .refreshToken(refresh)
