@@ -36,7 +36,7 @@ public class TokenController {
         return ApiResponse.ok();
     }
 
-    // find by memberId
+    // find by accessToken
     @GetMapping("/{accessToken}")
     public ResponseEntity<ApiResponse> findByAccessToken(@PathVariable String accessToken) {
         CenteroUserTokenEntity userToken = userTokenRedisService.findByAccessToken(accessToken);
@@ -44,17 +44,25 @@ public class TokenController {
         return ApiResponse.ok(userToken);
     }
 
-    // find by id
-//    @GetMapping("/{id}")
-//    public ResponseEntity<ApiResponse> findById(@PathVariable Long id) {
-//        Member member = memberService.findById(id);
-//        return ApiResponse.ok(member);
-//    }
+    // find by username
+    @GetMapping("/username/{username}")
+    public ResponseEntity<ApiResponse> findByUsername(@PathVariable String username) {
+        CenteroUserTokenEntity userToken = userTokenRedisService.findByUsername(username);
+        log.info("[ZET]find userToken: {}", userToken);
+        return ApiResponse.ok(userToken);
+    }
 
-    // delete
+    // delete by accessToken
     @DeleteMapping("/{accessToken}")
-    public ResponseEntity<ApiResponse> remove(@PathVariable String accessToken) {
+    public ResponseEntity<ApiResponse> deleteByAccessToken(@PathVariable String accessToken) {
         userTokenRedisService.deleteByAccessToken(accessToken);
+        return ApiResponse.ok();
+    }
+
+    // delete by username
+    @DeleteMapping("/username/{username}")
+    public ResponseEntity<ApiResponse> deleteByUsername(@PathVariable String username) {
+        userTokenRedisService.deleteByUsername(username);
         return ApiResponse.ok();
     }
 

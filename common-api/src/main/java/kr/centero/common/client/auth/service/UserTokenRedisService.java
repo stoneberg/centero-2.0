@@ -39,14 +39,17 @@ public class UserTokenRedisService {
                 });
     }
 
-    public CenteroUserTokenEntity findByUsername(String username) {
-        return userTokenRepository.findByUsername(username).orElse(null);
-    }
-
     public CenteroUserTokenEntity findByAccessToken(String accessToken) {
         log.info("[ZET]findByAccessToken===================>{}", accessToken);
         CenteroUserTokenEntity userToken = userTokenRepository.findByAccessToken(accessToken).orElse(null);
         log.info("[ZET]findByAccessToken===================>{}", userToken);
+        return userToken;
+    }
+
+    public CenteroUserTokenEntity findByUsername(String username) {
+        log.info("[ZET]findByUsername===================>{}", username);
+        CenteroUserTokenEntity userToken = userTokenRepository.findByUsername(username).orElse(null);
+        log.info("[ZET]findByUsername===================>{}", userToken);
         return userToken;
     }
 
