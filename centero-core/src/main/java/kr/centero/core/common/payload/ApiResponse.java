@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDateTime;
 
@@ -23,14 +24,15 @@ public class ApiResponse {
     private String message;
     private String timestamp;
 
-    static final ApiResponse response = new ApiResponse();
 
     /**
      * POST, PUT, DELETE - @PostMapping(""), @PutMapping("/{id}"), @DeleteMapping("/{id}")
      *
      * @return ApiResponse with HttpStatus.OK (200)
      */
+    @ResponseStatus(HttpStatus.OK)
     public static ResponseEntity<ApiResponse> ok() {
+        final ApiResponse response = new ApiResponse();
         response.setStatus(HttpStatus.OK.value());
         response.setCode(HttpStatus.OK.name());
         response.setMessage(DEFAULT_MESSAGE);
@@ -46,6 +48,7 @@ public class ApiResponse {
      * @return ApiResponse with HttpStatus.OK (200)
      */
     public static ResponseEntity<ApiResponse> ok(String message) {
+        final ApiResponse response = new ApiResponse();
         response.setStatus(HttpStatus.OK.value());
         response.setCode(HttpStatus.OK.name());
         response.setMessage(message);
@@ -62,6 +65,7 @@ public class ApiResponse {
      * @return ApiResponse with HttpStatus.OK (200)
      */
     public static ResponseEntity<ApiResponse> ok(String code, String message) {
+        final ApiResponse response = new ApiResponse();
         response.setStatus(HttpStatus.OK.value());
         response.setCode(code);
         response.setMessage(message);
@@ -76,7 +80,8 @@ public class ApiResponse {
      * @param data payload
      * @return ApiResponse with HttpStatus.OK (200)
      */
-    public static ResponseEntity<ApiResponse> ok(Object data) {
+    public static ResponseEntity<ApiResponse> of(Object data) {
+        final ApiResponse response = new ApiResponse();
         response.setStatus(HttpStatus.OK.value());
         response.setCode(HttpStatus.OK.name());
         response.setMessage(DEFAULT_MESSAGE);
@@ -92,7 +97,8 @@ public class ApiResponse {
      * @param data    payload
      * @return ApiResponse with HttpStatus.OK (200)
      */
-    public static ResponseEntity<ApiResponse> ok(String message, Object data) {
+    public static ResponseEntity<ApiResponse> of(String message, Object data) {
+        final ApiResponse response = new ApiResponse();
         response.setStatus(HttpStatus.OK.value());
         response.setCode(HttpStatus.OK.name());
         response.setMessage(message);
@@ -109,7 +115,8 @@ public class ApiResponse {
      * @param data    payload
      * @return ApiResponse with HttpStatus.OK (200)
      */
-    public static ResponseEntity<ApiResponse> ok(String code, String message, Object data) {
+    public static ResponseEntity<ApiResponse> of(String code, String message, Object data) {
+        final ApiResponse response = new ApiResponse();
         response.setStatus(HttpStatus.OK.value());
         response.setCode(code);
         response.setMessage(message);
@@ -118,43 +125,14 @@ public class ApiResponse {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    /**
-     * POST - @PostMapping("")
-     *
-     * @param data payload
-     * @return ApiResponse with HttpStatus.CREATED (201)
-     */
-    public static ResponseEntity<ApiResponse> of(Object data) {
-        response.setStatus(HttpStatus.CREATED.value());
-        response.setCode(HttpStatus.CREATED.name());
-        response.setMessage(DEFAULT_MESSAGE);
-        response.setData(data);
-        response.setTimestamp(LocalDateTime.now().toString());
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
-    /**
-     * POST - @PostMapping("")
-     *
-     * @param message custom message
-     * @param data    payload
-     * @return ApiResponse with HttpStatus.CREATED (201)
-     */
-    public static ResponseEntity<ApiResponse> of(String message, Object data) {
-        response.setStatus(HttpStatus.CREATED.value());
-        response.setCode(HttpStatus.CREATED.name());
-        response.setMessage(message);
-        response.setData(data);
-        response.setTimestamp(LocalDateTime.now().toString());
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
 
     /**
      * OpenFeign Not Found Response
      *
      * @return ApiResponse with HttpStatus.NOT_FOUND (404)
      */
-    public static ResponseEntity<ApiResponse> empty() {
+    public static ResponseEntity<ApiResponse> not() {
+        final ApiResponse response = new ApiResponse();
         response.setStatus(HttpStatus.NOT_FOUND.value());
         response.setCode(HttpStatus.NOT_FOUND.name());
         response.setMessage(DEFAULT_ERROR_MESSAGE);

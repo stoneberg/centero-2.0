@@ -33,7 +33,7 @@ public class UserAuthController {
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse> signup(@RequestBody @Valid UserAuthDto.SignupRequest signupRequest, HttpServletResponse response) {
         UserAuthDto.SigninResponse signinResponse = userTokenService.registerUser(signupRequest, response);
-        return ApiResponse.ok(signinResponse);
+        return ApiResponse.of(signinResponse);
     }
 
     // 로그인 처리 -> access, refresh 토큰 발급
@@ -41,7 +41,7 @@ public class UserAuthController {
     @PostMapping("/signin")
     public ResponseEntity<ApiResponse> signin(@RequestBody @Valid UserAuthDto.SigninRequest signinRequest, HttpServletResponse response) {
         UserAuthDto.SigninResponse signinResponse = userTokenService.issueUserToken(signinRequest, response);
-        return ApiResponse.ok(signinResponse);
+        return ApiResponse.of(signinResponse);
     }
 
     // 로그아웃(/api/common/v1/auth/signout) -> SecurityConfig 에 정의된 CustomLogoutHandler를 통해 처리됨

@@ -26,7 +26,7 @@ public class MemberController {
     public ResponseEntity<ApiResponse> save(@RequestBody Member member) {
         Member createdMember = memberService.save(member);
         log.info("[ZET]save member: {}", createdMember);
-        return ApiResponse.ok(createdMember);
+        return ApiResponse.of(createdMember);
     }
 
     // update
@@ -34,7 +34,7 @@ public class MemberController {
     public ResponseEntity<ApiResponse> update(@PathVariable String memberId, @RequestBody Member member) {
         Member updatedMember = memberService.update(memberId, member);
         log.info("[ZET]update member: {}", updatedMember);
-        return ApiResponse.ok(updatedMember);
+        return ApiResponse.of(updatedMember);
     }
 
     // find by memberId
@@ -42,7 +42,7 @@ public class MemberController {
     public ResponseEntity<ApiResponse> findMemberByMemberId(@PathVariable String memberId) {
         Member member = memberService.findMemberByMemberId(memberId);
         log.info("[ZET]find member: {}", member);
-        return ApiResponse.ok(member);
+        return ApiResponse.of(member);
     }
 
     // find by id

@@ -41,7 +41,7 @@ public class TokenController {
     public ResponseEntity<ApiResponse> findByAccessToken(@PathVariable String accessToken) {
         CenteroUserTokenEntity userToken = userTokenRedisService.findByAccessToken(accessToken);
         log.info("[ZET]find userToken: {}", userToken);
-        return ApiResponse.ok(userToken);
+        return ApiResponse.of(userToken);
     }
 
     // find by username
@@ -49,7 +49,7 @@ public class TokenController {
     public ResponseEntity<ApiResponse> findByUsername(@PathVariable String username) {
         CenteroUserTokenEntity userToken = userTokenRedisService.findByUsername(username);
         log.info("[ZET]find userToken: {}", userToken);
-        return ApiResponse.ok(userToken);
+        return ApiResponse.of(userToken);
     }
 
     // delete by accessToken
