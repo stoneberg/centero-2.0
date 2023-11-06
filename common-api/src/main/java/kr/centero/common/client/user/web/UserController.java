@@ -24,32 +24,48 @@ public class UserController {
     // 사용자 목록 조회
     @Operation(summary = "Centero User 조회", description = "전체 Centero User 정보를 조회한다.")
     @GetMapping
+<<<<<<< HEAD
     public ResponseEntity<ApiResponse<List<UserDto.UserResponse>>> findUsers() {
+=======
+    public ResponseEntity<ApiResponse> findUsers() {
+>>>>>>> 84e2969dd4ad33c8fdc17749b1f77b5a83d5067f
         return ApiResponse.of(userService.findUsers());
     }
 
     // A.사용자 상세 조건 조회 (request param: username, email, role) : Mapping Query String Parameters to ModelAttributes
     @Operation(summary = "Centero User 조회", description = "Centero User 정보를 조회한다. [GetMapping]")
     @GetMapping("/query")
+<<<<<<< HEAD
     public ResponseEntity<ApiResponse<List<UserDto.UserResponse>>> findUserByCondGetMapping(UserDto.UserRequest userRequest) {
         log.info("userRequest: {}", userRequest);
         log.info("userRequest:getCenteroUserId {}", userRequest.getCenteroUserId());
         log.info("userRequest:getCenteroUserRoles {}", userRequest.getCenteroUserRoles());
         log.info("userRequest:getLocale {}", userRequest.getLocale());
+=======
+    public ResponseEntity<ApiResponse> findUserByCondGetMapping(UserDto.UserRequest userRequest) {
+>>>>>>> 84e2969dd4ad33c8fdc17749b1f77b5a83d5067f
         return ApiResponse.of(userService.findUserByCond(userRequest));
     }
 
     // B.사용자 상세 조건 조회 (request param: username, email, role) : Mapping requestBody auto mapping
     @Operation(summary = "Centero User 조회", description = "Centero User 정보를 조회한다. [PostMapping]")
     @PostMapping("/query")
+<<<<<<< HEAD
     public ResponseEntity<ApiResponse<List<UserDto.UserResponse>>> findUserByCondPostMapping(@RequestBody UserDto.UserRequest userRequest) {
+=======
+    public ResponseEntity<ApiResponse> findUserByCondPostMapping(@RequestBody UserDto.UserRequest userRequest) {
+>>>>>>> 84e2969dd4ad33c8fdc17749b1f77b5a83d5067f
         return ApiResponse.of(userService.findUserByCond(userRequest));
     }
 
     // 사용자 상세 조회 페이징 (request param: username, email, role) :  Mapping Query String Parameters to ModelAttributes
     @Operation(summary = "Centero User 조회", description = "Centero User page 를 조회한다. [GetMapping]")
     @GetMapping("/pages")
+<<<<<<< HEAD
     public ResponseEntity<ApiResponse<UserDto.UserPageDtoResponse>> findUserByPageGetMapping(UserDto.UserPageRequest userPageRequest) {
+=======
+    public ResponseEntity<ApiResponse> findUserByPageGetMapping(UserDto.UserPageRequest userPageRequest) {
+>>>>>>> 84e2969dd4ad33c8fdc17749b1f77b5a83d5067f
         return ApiResponse.of(userService.findPagesByCond(userPageRequest));
     }
 

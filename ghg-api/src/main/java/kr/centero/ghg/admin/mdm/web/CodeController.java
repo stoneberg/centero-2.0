@@ -29,13 +29,21 @@ public class CodeController {
     // 코드정보 상세 조건 조회 (request param: searchText, useYn, period) : Mapping
     @Operation(summary = "코드 조회", description = "코드 정보를 조회한다.")
     @PostMapping
+<<<<<<< HEAD
     public ResponseEntity<ApiResponse<List<CodeDto.CodeResponse>>> findAll(@RequestBody CodeDto.CodeRequest codeRequest) {
+=======
+    public ResponseEntity<ApiResponse> findAll(@RequestBody CodeDto.CodeRequest codeRequest) {
+>>>>>>> 84e2969dd4ad33c8fdc17749b1f77b5a83d5067f
         return ApiResponse.of(service.findAll(codeRequest));
     }
 
     @Operation(summary = "트리구성용 코드 조회", description = "트리구성용 코드 정보를 조회한다.")
     @GetMapping("/trees")
+<<<<<<< HEAD
     public ResponseEntity<ApiResponse<List<CodeDto.CodeResponse>>> findAllCodesForTree() {
+=======
+    public ResponseEntity<ApiResponse> findAllCodesForTree() {
+>>>>>>> 84e2969dd4ad33c8fdc17749b1f77b5a83d5067f
         return ApiResponse.of(service.findCodeForTree());
     }
 

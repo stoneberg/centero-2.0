@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDateTime;
 
@@ -23,6 +24,7 @@ public class ApiResponse<T> {
     private String message;
     private String timestamp;
 
+<<<<<<< HEAD
     /*##############################################################################################################
      * 1. ApiResponse.ok() -> ResponseEntity<ApiResponse<Void>> : Use this when you don't need to return data.
      * 2. ApiResponse.of(data) -> ResponseEntity<ApiResponse<T>> : Use this when you need to return data.
@@ -31,14 +33,22 @@ public class ApiResponse<T> {
      * 5. ApiResponse.bad() -> ResponseEntity<ApiResponse<Void>> : Use this when you need to return 400 error message with HttpStatus.OK.
      * 6. ApiResponse.not() -> ResponseEntity<ApiResponse<Void>> : Use this when you need to return 404 error message with HttpStatus.OK.
      *##############################################################################################################*/
+=======
+>>>>>>> 84e2969dd4ad33c8fdc17749b1f77b5a83d5067f
 
     /**
      * return default api response
      *
      * @return ResponseEntity<ApiResponse <Void>>
      */
+<<<<<<< HEAD
     public static <T> ResponseEntity<ApiResponse<T>> ok() {
         final ApiResponse<T> response = new ApiResponse<>();
+=======
+    @ResponseStatus(HttpStatus.OK)
+    public static ResponseEntity<ApiResponse> ok() {
+        final ApiResponse response = new ApiResponse();
+>>>>>>> 84e2969dd4ad33c8fdc17749b1f77b5a83d5067f
         response.setStatus(HttpStatus.OK.value());
         response.setCode(HttpStatus.OK.name());
         response.setMessage(DEFAULT_MESSAGE);
@@ -85,8 +95,13 @@ public class ApiResponse<T> {
      * @param message custom message
      * @return ResponseEntity<ApiResponse <Void>>
      */
+<<<<<<< HEAD
     public static <T> ResponseEntity<ApiResponse<T>> ok(String message) {
         final ApiResponse<T> response = new ApiResponse<>();
+=======
+    public static ResponseEntity<ApiResponse> ok(String message) {
+        final ApiResponse response = new ApiResponse();
+>>>>>>> 84e2969dd4ad33c8fdc17749b1f77b5a83d5067f
         response.setStatus(HttpStatus.OK.value());
         response.setCode(HttpStatus.OK.name());
         response.setMessage(message);
@@ -102,8 +117,13 @@ public class ApiResponse<T> {
      * @param code    custom code
      * @return @return ResponseEntity<ApiResponse<Void>>
      */
+<<<<<<< HEAD
     public static <T> ResponseEntity<ApiResponse<T>> ok(String message, String code) {
         final ApiResponse<T> response = new ApiResponse<>();
+=======
+    public static ResponseEntity<ApiResponse> ok(String code, String message) {
+        final ApiResponse response = new ApiResponse();
+>>>>>>> 84e2969dd4ad33c8fdc17749b1f77b5a83d5067f
         response.setStatus(HttpStatus.OK.value());
         response.setCode(code);
         response.setMessage(message);
@@ -118,8 +138,13 @@ public class ApiResponse<T> {
      * @param data result data<T>
      * @return ResponseEntity<ApiResponse <T>>
      */
+<<<<<<< HEAD
     public static <T> ResponseEntity<ApiResponse<T>> of(T data) {
         final ApiResponse<T> response = new ApiResponse<>();
+=======
+    public static ResponseEntity<ApiResponse> of(Object data) {
+        final ApiResponse response = new ApiResponse();
+>>>>>>> 84e2969dd4ad33c8fdc17749b1f77b5a83d5067f
         response.setStatus(HttpStatus.OK.value());
         response.setCode(HttpStatus.OK.name());
         response.setMessage(DEFAULT_MESSAGE);
@@ -135,8 +160,13 @@ public class ApiResponse<T> {
      * @param message custom message
      * @return ResponseEntity<ApiResponse <T>>
      */
+<<<<<<< HEAD
     public static <T> ResponseEntity<ApiResponse<T>> of(T data, String message) {
         final ApiResponse<T> response = new ApiResponse<>();
+=======
+    public static ResponseEntity<ApiResponse> of(String message, Object data) {
+        final ApiResponse response = new ApiResponse();
+>>>>>>> 84e2969dd4ad33c8fdc17749b1f77b5a83d5067f
         response.setStatus(HttpStatus.OK.value());
         response.setCode(HttpStatus.OK.name());
         response.setMessage(message);
@@ -153,8 +183,13 @@ public class ApiResponse<T> {
      * @param code    custom code
      * @return ResponseEntity<ApiResponse <T>>
      */
+<<<<<<< HEAD
     public static <T> ResponseEntity<ApiResponse<T>> of(T data, String message, String code) {
         final ApiResponse<T> response = new ApiResponse<>();
+=======
+    public static ResponseEntity<ApiResponse> of(String code, String message, Object data) {
+        final ApiResponse response = new ApiResponse();
+>>>>>>> 84e2969dd4ad33c8fdc17749b1f77b5a83d5067f
         response.setStatus(HttpStatus.OK.value());
         response.setCode(code);
         response.setMessage(message);
@@ -163,6 +198,7 @@ public class ApiResponse<T> {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+<<<<<<< HEAD
     /**
      * return error[BAD_REQUEST] api response with HttpStatus.OK
      * this is for the case when you need to return 400 error message with HttpStatus.OK
@@ -187,6 +223,16 @@ public class ApiResponse<T> {
      */
     public static <T> ResponseEntity<ApiResponse<T>> not() {
         final ApiResponse<T> response = new ApiResponse<>();
+=======
+
+    /**
+     * OpenFeign Not Found Response
+     *
+     * @return ApiResponse with HttpStatus.NOT_FOUND (404)
+     */
+    public static ResponseEntity<ApiResponse> not() {
+        final ApiResponse response = new ApiResponse();
+>>>>>>> 84e2969dd4ad33c8fdc17749b1f77b5a83d5067f
         response.setStatus(HttpStatus.NOT_FOUND.value());
         response.setCode(HttpStatus.NOT_FOUND.name());
         response.setMessage(DEFAULT_ERROR_MESSAGE);
