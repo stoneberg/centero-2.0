@@ -1,0 +1,16 @@
+${AnsiColor.BRIGHT_MAGENTA}
+    CENTERO 2.0
+${AnsiColor.BLUE}
+     /$$   /$$ /$$$$$$$$ /$$$$$$$$ /$$$$$$$$ /$$$$$$$$ /$$$$$$$   /$$$$$$
+    | $$$ | $$| $$_____/|__  $$__/|_____ $$ | $$_____/| $$__  $$ /$$__  $$
+    | $$$$| $$| $$         | $$        /$$/ | $$      | $$  \ $$| $$  \ $$
+    | $$ $$ $$| $$$$$      | $$       /$$/  | $$$$$   | $$$$$$$/| $$  | $$
+    | $$  $$$$| $$__/      | $$      /$$/   | $$__/   | $$__  $$| $$  | $$
+    | $$\  $$$| $$         | $$     /$$/    | $$      | $$  \ $$| $$  | $$
+    | $$ \  $$| $$$$$$$$   | $$    /$$$$$$$$| $$$$$$$$| $$  | $$|  $$$$$$/
+    |__/  \__/|________/   |__/   |________/|________/|__/  |__/ \______/
+
+    ${AnsiColor.YELLOW}Hello World!
+    ${AnsiColor.WHITE}${spring.application.name} is running on${AnsiColor.BLUE} ${server.port} ${AnsiColor.WHITE}port in${AnsiColor.RED} ${spring.profiles.active:default} ${AnsiColor.WHITE}profile
+    Since 2023.10.03
+    Powered by Spring Boot ${spring-boot.version}
