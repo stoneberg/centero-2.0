@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.centero.ghg.client.credit.mapper.CreditMapper">
+
+    <select id="findCreditList" resultType="CreditList"> 
+		SELECT  A.TRD_SEQ                                          AS TRD_SEQ
+		       ,A.TRD_PARENT_SEQ                                   AS TRD_P_SEQ
+		       ,A.PJT_SEQ                                          AS PJT_SEQ
+		       ,A.PJT_MNT_SEQ                                      AS PJT_MNT_SEQ
+		       ,A.PJT_CREDIT_SEQ                                   AS PJT_CREDIT_SEQ
+		       ,H.SLS_SEQ                                          AS SLS_SEQ
+		       ,D.GHG_PROGRAM                                      AS GHG_PROGRAM
+		       ,G.ORG_NAME                                         AS GHG_PROGRAM_NM
+		       ,G.ORG_NAME_ENG                                     AS GHG_PROGRAM_ENG_NM
+			   ,CASE
+				   WHEN A.TRD_TP = 'CREDIT' OR  A.TRD_TP = 'TRADING'  THEN 'Active' 
+				   ELSE A.TRD_TP
+				   END                                             AS TRD_TP
+			   ,CASE
+				   WHEN A.TRD_TP_KOR_NM = '거래중' THEN '발급' 
+				   ELSE A.TRD_TP_KOR_NM
+				   END                                             AS TRD_TP_KOR_NM
+		       ,D.PJT_TITLE                                        AS PJT_TITLE
+		       ,D.PJT_TITLE_ENG                                    AS PJT_TITLE_ENG
+		       ,F.ORG_NAME                                         AS PROPONENT_NM
+		       ,F.ORG_NAME_ENG                                     AS PROPONENT_NM_ENG
+		       ,E.ORG_NAME                                         AS CREDIT_PROPONENT_NM
+		       ,E.ORG_NAME_ENG                                     AS CREDIT_PROPONENT_NM_ENG
+		       ,A.CREDIT_SIZE                                      AS CREDIT_SIZE
+		       ,REPLACE(A.PJT_CREDIT_NO, '^', '-')                 AS PJT_CREDIT_NO
+		       ,CONCAT(B.CREDIT_FROM_DT, ' ~ ', B.CREDIT_TO_DT)    AS CREDIT_PERIOD
+		       ,CASE
+		           WHEN A.CREDIT_PROPONENT_MAIN_ID <![CDATA[<>]]> C.CREATE_MAIN_ID THEN 'Y'
+		           ELSE 'N'
+		           END                                             AS SALES_YN
+		       ,CASE
+		           WHEN A.TRD_TP = 'TRADING' THEN 'TRADING'
+		           END                                             AS ETC
+		FROM   (SELECT B.*,
+		               A.MAIN_ACCOUNT_ID AS CREDIT_PROPONENT_MAIN_ID,
+		               CASE
+		                 WHEN B.TRD_TP = 'CREDIT' THEN '발급'
+		                 WHEN B.TRD_TP = 'TRADING' THEN '거래중'
+		                 WHEN B.TRD_TP = 'RETIREMENT' THEN '소각'
+		                 WHEN B.TRD_TP = 'CANCELLATION' THEN '취소'
+		                 WHEN B.TRD_TP = 'SALES' THEN '판매'
+		               END               AS TRD_TP_KOR_NM
+		        FROM   TB_TRD_TRADING_LEDGER B
+		               LEFT OUTER JOIN VW_ACT_ACCOUNT_ALL A
+		                            ON A.ACCOUNT_ID = B.CREATE_ID) A
+		       INNER JOIN TB_PJT_PROJECT_CREDIT B
+		               ON A.PJT_CREDIT_SEQ = B.PJT_CREDIT_SEQ
+		       INNER JOIN (SELECT A.*,
+		                          B.MAIN_ACCOUNT_ID AS CREATE_MAIN_ID
+		                   FROM   TB_PJT_PROJECT_MONITORING A
+		                          LEFT OUTER JOIN VW_ACT_ACCOUNT_ALL B
+		                                       ON B.ACCOUNT_ID = A.CREATE_ID) C
+		               ON A.PJT_MNT_SEQ = C.PJT_MNT_SEQ
+		       INNER JOIN VW_PJT_PROJECT D
+		               ON B.PJT_SEQ = D.PJT_SEQ
+		       INNER JOIN TB_ACT_ACCOUNT E
+		               ON A.CREDIT_PROPONENT_ID = E.ACCOUNT_ID
+		       INNER JOIN TB_ACT_ACCOUNT F
+		               ON C.CREATE_ID = F.ACCOUNT_ID
+		       INNER JOIN TB_ACT_ACCOUNT G
+		               ON D.GHG_PROGRAM = G.ACCOUNT_ID
+		       LEFT JOIN (SELECT A.SLS_SEQ,
+		                         A.TRD_SEQ,
+		                         B.TRD_PARENT_SEQ,
+		                         B.TRD_TP,
+		                         B.PJT_CREDIT_NO
+		                  FROM   TB_TRD_TRADING_SALES A
+		                         INNER JOIN TB_TRD_TRADING_LEDGER B
+		                                 ON A.TRD_SEQ = B.TRD_SEQ
+		                  WHERE  B.TRD_TP = 'SALES') H
+		              ON ( A.PJT_CREDIT_NO = H.PJT_CREDIT_NO )
+		WHERE  A.TRD_TP IN ( 'CREDIT', 'CANCELLATION', 'RETIREMENT', 'TRADING' )
+		       AND A.USE_YN = 'Y'
+		       AND A.DELETE_YN = 'N'
+		   <if test='ghgProgram != null and ghgProgram != ""'>
+               AND  D.GHG_PROGRAM = #{ghgProgram}
+           </if>
+		ORDER  BY TRD_SEQ DESC
+    </select>
+    
+    <select id="findPJTInfo" resultType="PJTInfo"> 
+		SELECT F.ORG_Name	        AS GHG_Program_NM
+			   ,F.ORG_Name_ENG      AS GHG_Program_NM_ENG	
+			   ,G.ORG_Name	        AS VVB_NM
+			   ,G.ORG_Name_ENG      AS VVB_NM_ENG
+			   ,CASE WHEN A.PJT_Proponent = '1' THEN I.ORG_Name
+					  ELSE A.PJT_Proponent_Value
+					   END          AS Proponent_NM
+			   ,CASE WHEN A.PJT_Proponent = '1' THEN I.ORG_Name_ENG
+					  ELSE A.PJT_Proponent_Value
+					   END          AS Proponent_NM_ENG
+			   ,A.PJT_Title         AS PJT_Title
+			   ,A.PJT_Title_ENG     AS PJT_Title_ENG
+			   ,CONCAT(A.PJT_Period_From , ' ~ ', A.PJT_Period_To)    AS PJT_PERIOD
+			   ,I.ORG_Name	        AS CRT_NM
+			   ,I.ORG_Name_ENG      AS CRT_NM_ENG
+			   ,I.ORG_Email	        AS CRT_Email		
+		 FROM	VW_PJT_PROJECT					AS A
+        INNER	JOIN TB_ACT_ACCOUNT				AS F ON A.GHG_Program = F.Account_ID	AND F.Account_TP = 'ACT_TP_02'
+	     LEFT	JOIN TB_ACT_ACCOUNT				AS G ON A.VVB_ID = G.Account_ID	AND G.Account_TP = 'ACT_TP_03'
+        INNER	JOIN VW_ACT_ACCOUNT_ALL			AS I ON A.Create_ID	= I.Account_ID
+	    WHERE	A.PJT_SEQ = #{pjtSeq}
+	
+     </select>
+     <select id="findTradingHistory" resultType="TradingHistory"> 
+		 SELECT A.SLS_SEQ                      AS Sales_SEQ
+				,A.Invoice_Confirm_DT          AS Sales_DT		
+				,SEL.ORG_Name                  AS Credit_Seller_NM		
+				,SEL.ORG_Name_ENG              AS Credit_Seller_NM_ENG	
+				,BUY.ORG_Name                  AS Credit_Buyer_NM		
+				,BUY.ORG_Name_ENG              AS Credit_Buyer_NM_ENG			
+				,FORMAT(B.Credit_Size, N'#,0') AS Credit_Size_NM
+			FROM
+				TB_TRD_TRADING_SALES AS A
+			INNER JOIN TB_TRD_TRADING_LEDGER AS B ON
+				A.TRD_SEQ = B.TRD_SEQ
+			INNER JOIN TB_ACT_ACCOUNT AS SEL ON
+				A.Credit_Seller = SEL.Account_ID
+			INNER JOIN TB_ACT_ACCOUNT AS BUY ON
+				A.Credit_Buyer = BUY.Account_ID
+			WHERE
+				A.SLS_SEQ = #{slsSeq}
+				AND A.Invoice_Confirm_DT IS NOT NULL
+	 </select>
+	 
+	 <select id="findReductionHistory" resultType="ReductionHistory"> 
+		 		WITH RECURSIVE CTE_Temp 
+				AS 
+				(
+					SELECT	TRD_SEQ
+							,TRD_Parent_SEQ
+							,TRD_TP
+							,MNT.Create_ID				AS   Credit_Proponent_ID
+							,Credit_Size
+							,A.Create_DT
+							,CASE WHEN 'KOR' = 'KOR' THEN ACT.ORG_Name	ELSE ACT.ORG_Name_ENG END AS Proponent_NM
+					FROM	TB_TRD_TRADING_LEDGER AS A
+					INNER JOIN TB_PJT_PROJECT_MONITORING AS MNT	ON A.PJT_MNT_SEQ			=	MNT.PJT_MNT_SEQ
+					INNER JOIN TB_ACT_ACCOUNT			 AS ACT	ON MNT.Create_ID			=	ACT.Account_ID
+					WHERE	TRD_SEQ = TRD_Parent_SEQ
+					AND		TRD_SEQ = #{trdPSeq}
+					AND		TRD_TP IN ('Credit', 'Buffer')
+					UNION	ALL
+					SELECT	A.TRD_SEQ
+							,A.TRD_Parent_SEQ
+							,A.TRD_TP
+							,MNT.Create_ID				AS   Credit_Proponent_ID
+							,A.Credit_Size
+							,A.Update_DT AS Create_DT
+							,CASE WHEN 'KOR' = 'KOR' THEN ACT.ORG_Name	ELSE ACT.ORG_Name_ENG END	AS Proponent_NM
+					FROM	TB_TRD_TRADING_LEDGER AS A
+					INNER JOIN CTE_Temp						     AS B	ON B.TRD_SEQ				=	  A.TRD_Parent_SEQ
+					INNER JOIN TB_PJT_PROJECT_MONITORING AS MNT	ON A.PJT_MNT_SEQ			=	MNT.PJT_MNT_SEQ
+					INNER JOIN TB_ACT_ACCOUNT		     AS ACT	ON MNT.Create_ID			=	ACT.Account_ID
+					WHERE A.TRD_TP IN ('Retirement','Cancellation','Sales')
+				) 
+				SELECT	Credit_Proponent_ID                                                    AS Credit_Proponent_ID
+						,Proponent_NM	                                                       AS Proponent_NM
+						,FORMAT(Credit_Size,N'#,0')                                            AS Credit_Size_NM
+						,CASE	WHEN 'KOR' = 'KOR' THEN 
+									CASE	WHEN TRD_TP = 'Credit' THEN '감축량 생성'
+											WHEN TRD_TP = 'Buffer' THEN 'Buffer 감축량 생성'
+											WHEN TRD_TP = 'Retirement' THEN '감축량 소각'
+											WHEN TRD_TP = 'Cancellation' THEN '감축량 취소'
+											WHEN TRD_TP = 'Sales' THEN '감축량 판매'
+									END
+								WHEN 'KOR' = 'ENG' THEN
+									CASE	WHEN TRD_TP = 'Credit' THEN 'Credit'
+											WHEN TRD_TP = 'Buffer' THEN 'Buffer Credit'
+											WHEN TRD_TP = 'Retirement' THEN 'Retirement'
+											WHEN TRD_TP = 'Cancellation' THEN 'Cancellation'
+											WHEN TRD_TP = 'Sales' THEN 'Sales'
+									END
+								END	                                                          AS TRD_TP_NM
+						,Create_DT                                                            AS CRT_DT
+				FROM CTE_Temp
+				UNION ALL
+				SELECT	'NULL'
+						, 'NULL'
+						, FORMAT(SUM(CASE	WHEN TRD_TP = 'Credit' THEN Credit_Size
+											WHEN TRD_TP = 'Buffer' THEN Credit_Size
+											WHEN TRD_TP = 'Retirement' THEN -Credit_Size
+											WHEN TRD_TP = 'Cancellation' THEN -Credit_Size
+											WHEN TRD_TP = 'Sales' THEN -Credit_Size
+									END),N'#,0')                                              AS Credit_Size_NM
+						, NULL
+						,'현재 Credit'
+				FROM CTE_Temp	
+	 </select>
+	 
+	 <select id="findCreditInfo" resultType="CreditInfo"> 
+			 SELECT			
+					 REPLACE(A.PJT_Credit_NO,'^','-')		   AS Credit_NO		
+					,REPLACE(A.PJT_ORG_Credit_NO,'^','-')	   AS ORIGIN_Credit_NO
+					,CONCAT(B.Credit_From_DT , '~' ,B.Credit_To_DT)  AS Credit_Period
+				    ,PJT.GHG_Program                           AS GHG_Program
+					,PJT.PJT_Title                             AS PJT_Title
+					,PJT.PJT_Title_ENG                         AS PJT_Title_ENG
+					,A.Create_DT	                           AS APPR_DT
+					,B.Credit_Buffer                           AS Buffer_Credit
+					,B.Buffer_Deposit_TP	                   AS Buffer_Deposit_TP
+			FROM	TB_TRD_TRADING_LEDGER		AS A
+			INNER JOIN TB_PJT_PROJECT_CREDIT	AS B	ON B.PJT_Credit_SEQ   = A.PJT_Credit_SEQ
+			INNER JOIN VW_PJT_PROJECT			AS PJT	ON PJT.PJT_SEQ		= A.PJT_SEQ
+					
+		    <choose>
+	            <when test='slsSeq != null and slsSeq != ""'>
+					INNER JOIN TB_TRD_TRADING_SALES		AS SLS	ON SLS.TRD_SEQ		= A.TRD_SEQ
+																		   AND	SLS.Sales_Status IN( 'Trading', 'Sales' )
+					WHERE	SLS.SLS_SEQ = #{slsSeq}
+				</when>
+				<otherwise>
+					WHERE   A.TRD_SEQ =#{trdSeq}
+			    </otherwise>	
+		    </choose>
+	 </select>
+	 
+</mapper>

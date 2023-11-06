@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.centero.ghg.client.menu.mapper.MenuMapper">
+
+    <!-- 사용자 Role의 메뉴 목록 조회 -->
+    <select id="findMenuByCond"  resultType="Menu">
+        /* SQL_ID : kr.centero.ghg.client.menu.mapper.findMenuByCond */
+        /* 메뉴 목록 조회 */
+        WITH RECURSIVE CTE_CODE
+        AS (
+                /* 최상위 조회 */
+                SELECT
+                    CODE_LVL						as TREE_LVL,
+                    CONVERT( DSP_ORDER, CHAR(255)) 	as TREE_ORDER,
+                    CONVERT( CODE_CD, CHAR(255)) 	as TREE_PATH,
+                    CODE_CD							,
+                    P_CODE_CD
+                FROM TB_CMM_CODE
+                WHERE USE_YN = 'Y'
+                  AND ATTR7_VAL = 'Y' /*표시여부*/
+                  AND P_CODE_CD = 'SD01' /*메뉴 관리*/
+                  AND ( current_date() >= EXP_FR_DT AND EXP_TO_DT >= current_date()  )
+
+                UNION
+
+                /* 재귀적 조회 */
+                SELECT
+                    PCD.TREE_LVL + 1 								as TREE_LVL,
+                    CONCAT( PCD.TREE_ORDER , '>', CD.DSP_ORDER) 	as TREE_ORDER,
+                    CONCAT( PCD.TREE_PATH , '>' , CD.CODE_CD ) 		as TREE_PATH,
+                    CD.CODE_CD ,
+                    CD.P_CODE_CD
+                FROM       CTE_CODE    		as PCD
+                INNER JOIN TB_CMM_CODE 	    as CD	ON CD.P_CODE_CD = PCD.CODE_CD
+                INNER JOIN TB_CMM_LANG 	    as LN ON LN.LANG_CD = CD.LANG_CD
+                WHERE CD.USE_YN = 'Y'
+                  AND CD.ATTR7_VAL = 'Y' /*표시여부*/
+                  AND ( current_date() >= CD.EXP_FR_DT AND CD.EXP_TO_DT >= current_date()  )
+            )
+        SELECT
+            T.TREE_LVL,
+            T.TREE_ORDER,
+            T.TREE_PATH,
+            CD.P_CODE_CD,
+            CD.CODE_CD,
+            CD.LANG_CD,
+            LN.LOCALE_CD,
+            LN.DSP_TEXT,
+
+            CASE WHEN INSTR(CD.ATTR2_VAL, #{role})>0  THEN 'Y' ELSE 'N' END as C,/*create role*/
+            CASE WHEN INSTR(CD.ATTR3_VAL, #{role})>0  THEN 'Y' ELSE 'N' END as R,/*Read Role*/
+            CASE WHEN INSTR(CD.ATTR4_VAL, #{role})>0  THEN 'Y' ELSE 'N' END U,/*Update Role*/
+            CASE WHEN INSTR(CD.ATTR5_VAL, #{role})>0  THEN 'Y' ELSE 'N' END D,/*Delete Role*/
+            CD.ATTR7_VAL as DSP_YN	/*표시여부 : Y,N*/
+        FROM 		CTE_CODE		as T
+        INNER JOIN  TB_CMM_CODE 	as CD ON CD.CODE_CD = T.CODE_CD AND CD.P_CODE_CD = T.P_CODE_CD
+        INNER JOIN 	TB_CMM_CODE		as PCD ON PCD.CODE_CD = CD.P_CODE_CD
+        LEFT JOIN 	TB_CMM_LANG 	as LN ON LN.LANG_CD = CD.LANG_CD
+        WHERE CD.ATTR3_VAL LIKE CONCAT('%', #{role}, '%')
+          AND LN.LOCALE_CD = #{locale}
+        ORDER BY TREE_ORDER
+    </select>
+
+
+</mapper>

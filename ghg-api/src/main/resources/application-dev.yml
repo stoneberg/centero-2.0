@@ -1,0 +1,33 @@
+SERVER_PORT: 8081
+SERVER_ADDRESS: ghg-api.centero.kr
+# Current Active Profile
+spring:
+  config:
+    activate:
+      on-profile: dev
+# Database Configuration
+DRIVER_CLASS_NAME: net.sf.log4jdbc.sql.jdbcapi.DriverSpy # com.mysql.cj.jdbc.Driver
+DATABASE_URL: jdbc:log4jdbc:mysql://unionplace.iptime.org:9308/ghg?serverTimezone=UTC&useLegacyDatetimeCode=false  # time_zone='+9:00' UTC
+DATABASE_USERNAME: centero_dev
+DATABASE_PASSWORD: Union2030!
+HIKARI_MINIMUM_IDLE: 5
+HIKARI_MAX_LIFETIME: 240000
+HIKARI_MAXIMUM_POOL_SIZE: 10
+HIKARI_IDLE_TIMEOUT: 100000
+SQL_INIT_MODE: never
+# Redis Configuration
+REDIS_HOST: unionplace.iptime.org
+REDIS_PORT: 9679
+# JWT Configuration
+TOKEN_SIGNING_KEY: E147F935D2219326321BFC7B2CE4BCCD8324E2FCA4D03841E5EE8210DA788BAB
+TOKEN_EXPIRATION_ACCESS: 30m
+TOKEN_EXPIRATION_REFRESH: 1d
+# Cookie Configuration
+COOKIE_NAME: accessToken
+COOKIE_DURATION: 7d
+COOKIE_DOMAIN: centero.kr
+COOKIE_SECURE: false
+COOKIE_SAME_SITE: Lax
+# OpenFeign Configuration
+CONNECT_TIMEOUT: 10000 # 10s
+READ_TIMEOUT: 10000 # 10s

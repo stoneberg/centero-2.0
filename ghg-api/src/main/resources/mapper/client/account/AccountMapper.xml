@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.centero.ghg.client.account.mapper.AccountMapper">
+
+    <select id="findMtdList" parameterType="java.util.Map" resultType="Method">
+        /* SQL_ID : kr.centero.ghg.client.account.mapper.AccountMapper.findMtdList */
+        SELECT A.MTD_SEQ AS MTD_SEQ
+             , A.GHG_Program AS GHG_PROG
+             , BL.DSP_TEXT AS PJT_TYPE_NM
+             , CL.DSP_TEXT AS CTRY_NM
+             , DL.DSP_TEXT AS REGION_NM
+             , IF(IFNULL(#{localeCd}, 'ko_KR')='ko_KR', A.MTD_Title, A.MTD_Title_ENG) AS TITLE
+             , CASE WHEN A.MTD_Status = 'CCT_STS_04' THEN IF(IFNULL(#{localeCd}, 'ko_KR')='ko_KR', '방법론 작성', 'MD') ELSE EL.DSP_TEXT END AS STS_NM
+             , CASE WHEN A.MTD_Status IN ('CCT_STS_04','MTD_STS_09') THEN A.Update_DT ELSE NULL END APRV_DT
+             , (
+                 SELECT	COUNT(*)
+                 FROM	TB_RGT_OPEN_COMMENT AS OC
+                 WHERE	OC.OC_Category_SEQ = A.MTD_SEQ
+                 AND		OC.OC_Category = 'Methodology_OC'
+                 AND		OC.Delete_YN  = 'N'
+               ) AS P_CMMT_CNT
+          FROM TB_MTD_METHODOLOGY	AS A
+          JOIN TB_CMM_CODE B ON A.MTD_Applicable_Project = B.CODE_CD AND B.P_CODE_CD  = 'Project_TP'
+          LEFT JOIN TB_CMM_LANG BL ON BL.LOCALE_CD = IFNULL(#{localeCd}, 'ko_KR') AND BL.LANG_CD = B.LANG_CD
+          JOIN TB_CMM_CODE C ON A.MTD_Country = C.CODE_CD AND C.P_CODE_CD = 'Country_CD'
+          LEFT JOIN TB_CMM_LANG CL ON CL.LOCALE_CD = IFNULL(#{localeCd}, 'ko_KR') AND CL.LANG_CD = C.LANG_CD
+          JOIN TB_CMM_CODE D ON A.MTD_Region = D.CODE_CD AND D.P_CODE_CD = 'Region'
+          LEFT JOIN TB_CMM_LANG DL ON DL.LOCALE_CD = IFNULL(#{localeCd}, 'ko_KR') AND DL.LANG_CD = D.LANG_CD
+          JOIN TB_CMM_CODE E ON A.MTD_Status = E.CODE_CD AND E.P_CODE_CD IN ('CCT_STS','MTD_STS')
+          LEFT JOIN TB_CMM_LANG EL ON EL.LOCALE_CD = IFNULL(#{localeCd}, 'ko_KR') AND EL.LANG_CD = E.LANG_CD
+          JOIN TB_ACT_ACCOUNT F ON A.GHG_Program = F.Account_ID	AND F.Account_TP = 'ACT_TP_02'
+          JOIN VW_ACT_ACCOUNT_ALL G ON A.Create_ID = G.Account_ID
+         WHERE ( G.Main_Account_ID = #{userId} OR A.GHG_Program = #{userId} OR A.VVB_ID = #{userId} )
+          AND A.Delete_YN = 'N'
+        ORDER BY A.Create_DT DESC
+    </select>
+
+    <select id="findCreditList" parameterType="java.util.Map" resultType="Credit">
+        /* SQL_ID : kr.centero.ghg.client.account.mapper.AccountMapper.findCreditList */
+        SELECT A.TRD_SEQ AS TRD_SEQ
+             , A.TRD_Parent_SEQ AS TRD_PARENT_SEQ
+             , A.PJT_SEQ AS PJT_SEQ
+             , A.PJT_MNT_SEQ AS PJT_MNT_SEQ
+             , A.PJT_Credit_SEQ AS PJT_CREDIT_SEQ
+             , A.TRD_TP AS TRD_TYPE
+             , CDL.DSP_TEXT AS TRD_TP_NM
+             , REPLACE(A.PJT_Credit_NO,'^','-') AS CREDIT_NO_REP
+             , A.PJT_Credit_NO AS CREDIT_NO
+             , REPLACE(A.PJT_ORG_Credit_NO,'^','-') AS ORG_CREDIT_NO_REP
+             , A.PJT_ORG_Credit_NO AS ORG_CREDIT_NO
+             , A.Credit_Proponent_ID AS CREDIT_PPNT_ID
+             , B.Credit_From_DT AS CREDIT_FR_DT
+             , B.Credit_To_DT AS CREDIT_TO_DT
+             , CONCAT(B.Credit_From_DT, ' ~ ', B.Credit_To_DT) AS CREDIT_PERIOD
+             , CD2L.DSP_TEXT AS BUFFER_TYPE_NM
+             , FORMAT(A.Credit_Size,N'#,0') AS CREDIT_SIZE
+             , PJT.GHG_Program AS GHG_PROG
+             , CASE WHEN IFNULL(#{localeCd}, 'ko_KR') = 'ko_KR' THEN PJT.PJT_Title ELSE PJT.PJT_Title_ENG END AS PJT_TITLE
+             , A.Delete_YN AS DEL_YN
+             , '/Files/Find/' + ATT.Attach_FilePath + '/' + ATT.Attach_RealFile_NM + '/' + ATT.Attach_ServerFile_NM + '/' + ATT.Attach_FileType AS CERT_URL
+             , SLS.SLS_SEQ AS REF_SLS_SEQ
+             , B.Buffer_Deposit_TP AS BUFFER_TYPE
+             , CONCAT(CD2L.DSP_TEXT, ' ', B.Credit_Buffer, ' %') AS BUFFER_RATE
+             , DATE_FORMAT(A.CREATE_DT, '%Y-%m-%d') AS CREATE_DT
+          FROM TB_TRD_TRADING_LEDGER AS A
+               JOIN TB_PJT_PROJECT_CREDIT AS B ON B.PJT_Credit_SEQ = A.PJT_Credit_SEQ
+               JOIN VW_PJT_PROJECT AS PJT ON PJT.PJT_SEQ = A.PJT_SEQ
+               JOIN TB_CMM_CODE AS CD ON CD.CODE_CD = A.TRD_TP AND CD.Use_YN = 'Y'
+               LEFT JOIN TB_CMM_LANG CDL ON CDL.LOCALE_CD = IFNULL(#{localeCd}, 'ko_KR') AND CDL.LANG_CD = CD.LANG_CD
+               JOIN TB_CMM_CODE AS CD2 ON CD2.CODE_CD = B.Buffer_Deposit_TP
+               LEFT JOIN TB_CMM_LANG CD2L ON CD2L.LOCALE_CD = IFNULL(#{localeCd}, 'ko_KR') AND CD2L.LANG_CD = CD2.LANG_CD
+               LEFT JOIN TB_CMM_ATTACHFILE AS ATT ON A.TRD_SEQ = ATT.Attach_Category_SEQ AND A.TRD_Parent_SEQ = ATT.Attach_Category_DIV AND ATT.Attach_Category= 'Certification'
+               LEFT JOIN TB_TRD_TRADING_SALES AS SLS ON A.TRD_SEQ = SLS.TRD_SEQ
+        WHERE A.Credit_Proponent_ID = #{userId}
+        AND A.TRD_TP != 'TradingCancellation'
+        AND A.Use_YN = 'Y'
+        AND A.Delete_YN != 'Y'
+        <if test='trdType != null and trdType != ""'>
+        AND A.TRD_TP = #{trdType}
+        </if>
+        <if test='bufferType != null and bufferType != ""'>
+        AND B.Buffer_Deposit_TP  = #{bufferType}
+        </if>
+        ORDER BY CD.DSP_ORDER, A.TRD_SEQ DESC
+    </select>
+
+</mapper>
