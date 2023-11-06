@@ -1,0 +1,77 @@
+{
+  "success": true,
+  "data": {
+    "users": [
+      {
+        "userId": 7,
+        "username": "Bernini Le Seigneur Jacca",
+        "email": "jorge.stehr@gmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 17,
+        "username": "Chagall Séli",
+        "email": "arie.prosacco@yahoo.com",
+        "role": "USER"
+      },
+      {
+        "userId": 20,
+        "username": "Diego Rivera Le roi burgonde",
+        "email": "alejandro.greenfelder@yahoo.com",
+        "role": "USER"
+      },
+      {
+        "userId": 3,
+        "username": "Donatello Élias de Kelliwic'h",
+        "email": "domingo.schinner@yahoo.com",
+        "role": "USER"
+      },
+      {
+        "userId": 12,
+        "username": "Edward Hopper Lucius Sillius Sallustius",
+        "email": "keri.sanford@yahoo.com",
+        "role": "USER"
+      },
+      {
+        "userId": 13,
+        "username": "Escher Bohort",
+        "email": "leonora.von@hotmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 9,
+        "username": "Escher Le roi burgonde",
+        "email": "emmitt.heathcote@gmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 14,
+        "username": "Gauguin Anna",
+        "email": "fred.cole@yahoo.com",
+        "role": "USER"
+      },
+      {
+        "userId": 15,
+        "username": "Kandinsky Capito",
+        "email": "brooks.welch@hotmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 18,
+        "username": "Klimt Vérinus",
+        "email": "neil.pollich@gmail.com",
+        "role": "USER"
+      }
+    ],
+    "total": 23,
+    "pageNo": 1,
+    "pageSize": 10,
+    "hasNext": true,
+    "first": true,
+    "last": false
+  },
+  "status": 200,
+  "code": "OK",
+  "message": "SUCCESS",
+  "timestamp": "2023-10-19T17:21:49.578892900"
+}

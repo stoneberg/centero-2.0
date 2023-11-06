@@ -1,0 +1,8 @@
+{
+  "success": false,
+  "status": 401,
+  "code": "UNAUTHORIZED",
+  "message": "Unauthorized",
+  "path": "uri=/api/ghg/v1/users/pages",
+  "timestamp": "2023-10-19T17:31:28.410235400"
+}

@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "data": {
+    "username": "Lee",
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJMZWUiLCJpYXQiOjE2OTc3MDQ1NjMsImV4cCI6MTY5NzcwNTE2M30.RqPvFzy4HvrveZeO9bTtBVzCB9QgJQ8qXxJ_yTkP_o4",
+    "roles": [
+      "ADMIN",
+      "USER"
+    ]
+  },
+  "status": 200,
+  "code": "OK",
+  "message": "SUCCESS",
+  "timestamp": "2023-10-19T17:36:03.800891600"
+}

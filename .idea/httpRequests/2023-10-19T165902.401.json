@@ -1,0 +1,8 @@
+{
+  "success": false,
+  "status": 401,
+  "code": "GLB_ERR_9010",
+  "message": "토큰이 만료되었습니다.",
+  "path": "uri=/api/ghg/v1/users/query",
+  "timestamp": "2023-10-19T16:59:02.185"
+}

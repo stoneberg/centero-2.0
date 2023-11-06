@@ -1,0 +1,8 @@
+{
+  "success": false,
+  "status": 400,
+  "code": "GLB_ERR_9030",
+  "message": "Request method 'POST' is not supported",
+  "path": "uri=/api/ghg/v1/users/2",
+  "timestamp": "2023-10-19T18:23:01.854715500"
+}

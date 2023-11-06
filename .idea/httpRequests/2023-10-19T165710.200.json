@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "data": [
+    {
+      "userId": 22,
+      "username": "Lee",
+      "email": "micheal.morissette@yahoo.com",
+      "role": "ADMIN"
+    }
+  ],
+  "status": 200,
+  "code": "OK",
+  "message": "SUCCESS",
+  "timestamp": "2023-10-19T16:57:10.735732200"
+}

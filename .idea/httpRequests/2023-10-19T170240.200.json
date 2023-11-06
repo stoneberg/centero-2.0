@@ -1,0 +1,77 @@
+{
+  "success": true,
+  "data": {
+    "users": [
+      {
+        "userId": 18,
+        "username": "Bernini Bohort",
+        "email": "pat.boyle@yahoo.com",
+        "role": "USER"
+      },
+      {
+        "userId": 14,
+        "username": "Cassatt Le Seigneur Jacca",
+        "email": "jaqueline.ohara@hotmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 15,
+        "username": "Da Vinci Lucius Sillius Sallustius",
+        "email": "louise.hartmann@gmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 12,
+        "username": "Degas Méléagant",
+        "email": "hugh.hill@hotmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 4,
+        "username": "Donatello Angharad",
+        "email": "latrina.treutel@gmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 2,
+        "username": "Donatello Méléagant",
+        "email": "francisco.funk@gmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 11,
+        "username": "Durer Lucius Sillius Sallustius",
+        "email": "pablo.rath@gmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 17,
+        "username": "Durer Méléagant",
+        "email": "marci.rodriguez@yahoo.com",
+        "role": "USER"
+      },
+      {
+        "userId": 6,
+        "username": "Edward Hopper Guenièvre",
+        "email": "kellye.weimann@yahoo.com",
+        "role": "USER"
+      },
+      {
+        "userId": 8,
+        "username": "Kandinsky Belt",
+        "email": "branden.koch@hotmail.com",
+        "role": "USER"
+      }
+    ],
+    "total": 23,
+    "pageNo": 1,
+    "pageSize": 10,
+    "hasNext": true,
+    "first": true,
+    "last": false
+  },
+  "status": 200,
+  "code": "OK",
+  "message": "SUCCESS",
+  "timestamp": "2023-10-19T17:02:40.660664500"
+}

@@ -1,0 +1,47 @@
+{
+  "success": true,
+  "data": {
+    "users": [
+      {
+        "userId": 16,
+        "username": "Diego Rivera Gauvain",
+        "email": "patsy.kozey@gmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 8,
+        "username": "Durer Grüdü",
+        "email": "novella.lang@hotmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 3,
+        "username": "Gauguin Ygerne",
+        "email": "rory.renner@gmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 18,
+        "username": "Joan Miro César",
+        "email": "nakesha.bednar@yahoo.com",
+        "role": "USER"
+      },
+      {
+        "userId": 14,
+        "username": "Kandinsky Appius Manilius",
+        "email": "bob.vandervort@gmail.com",
+        "role": "USER"
+      }
+    ],
+    "total": 23,
+    "pageNo": 2,
+    "pageSize": 5,
+    "hasNext": true,
+    "first": false,
+    "last": false
+  },
+  "status": 200,
+  "code": "OK",
+  "message": "SUCCESS",
+  "timestamp": "2023-10-19T17:38:21.809813700"
+}

@@ -1,0 +1,147 @@
+{
+  "success": true,
+  "data": [
+    {
+      "userId": 18,
+      "username": "Bernini Bohort",
+      "email": "pat.boyle@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 14,
+      "username": "Cassatt Le Seigneur Jacca",
+      "email": "jaqueline.ohara@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 15,
+      "username": "Da Vinci Lucius Sillius Sallustius",
+      "email": "louise.hartmann@gmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 12,
+      "username": "Degas Méléagant",
+      "email": "hugh.hill@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 4,
+      "username": "Donatello Angharad",
+      "email": "latrina.treutel@gmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 2,
+      "username": "Donatello Méléagant",
+      "email": "francisco.funk@gmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 11,
+      "username": "Durer Lucius Sillius Sallustius",
+      "email": "pablo.rath@gmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 17,
+      "username": "Durer Méléagant",
+      "email": "marci.rodriguez@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 6,
+      "username": "Edward Hopper Guenièvre",
+      "email": "kellye.weimann@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 8,
+      "username": "Kandinsky Belt",
+      "email": "branden.koch@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 21,
+      "username": "Kandinsky Lucius Sillius Sallustius",
+      "email": "francisco.ferry@gmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 22,
+      "username": "Lee",
+      "email": "micheal.morissette@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 1,
+      "username": "Magritte Le Répurgateur",
+      "email": "dustin.walker@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 10,
+      "username": "Manet Le Jurisconsulte",
+      "email": "laurence.davis@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 24,
+      "username": "Park",
+      "email": "johnsie.corwin@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 5,
+      "username": "Pissarro Anna",
+      "email": "vivan.mann@gmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 16,
+      "username": "Raphael Séfriane d'Aquitaine",
+      "email": "wilford.ondricka@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 20,
+      "username": "Rembrandt Lancelot",
+      "email": "yun.rodriguez@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 13,
+      "username": "Titian Belt",
+      "email": "johnsie.murray@gmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 9,
+      "username": "Titian Demetra",
+      "email": "vennie.mante@gmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 19,
+      "username": "Warhol Lucius Sillius Sallustius",
+      "email": "norah.lang@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 3,
+      "username": "Winslow Homer Arthur",
+      "email": "rickey.wisozk@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 7,
+      "username": "Winslow Homer La Dame du Lac",
+      "email": "eli.kerluke@yahoo.com",
+      "role": "USER"
+    }
+  ],
+  "status": 200,
+  "code": "OK",
+  "message": "SUCCESS",
+  "timestamp": "2023-10-19T17:01:31.735015500"
+}

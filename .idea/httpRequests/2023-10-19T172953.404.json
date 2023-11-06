@@ -1,0 +1,8 @@
+{
+  "success": false,
+  "status": 404,
+  "code": "NOT_FOUND",
+  "message": "Not Found",
+  "path": "uri=/error",
+  "timestamp": "2023-10-19T17:29:53.488041200"
+}

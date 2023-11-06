@@ -1,0 +1,77 @@
+{
+  "success": true,
+  "data": {
+    "users": [
+      {
+        "userId": 12,
+        "username": "Ansel Adams Le maître d'armes",
+        "email": "shasta.bernhard@hotmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 14,
+        "username": "Bernini Loth",
+        "email": "theron.dickinson@yahoo.com",
+        "role": "USER"
+      },
+      {
+        "userId": 20,
+        "username": "Botticelli Merlin",
+        "email": "lorraine.murphy@gmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 1,
+        "username": "Dali Galessin",
+        "email": "jan.kuhlman@gmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 15,
+        "username": "Degas Breccan",
+        "email": "scottie.cormier@gmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 6,
+        "username": "Diego Rivera Méléagant",
+        "email": "claudine.rau@hotmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 4,
+        "username": "Donatello Séfriane d'Aquitaine",
+        "email": "joe.berge@gmail.com",
+        "role": "USER"
+      },
+      {
+        "userId": 2,
+        "username": "Escher Mevanwi",
+        "email": "keenan.streich@yahoo.com",
+        "role": "USER"
+      },
+      {
+        "userId": 13,
+        "username": "Gauguin Merlin",
+        "email": "tashina.johns@yahoo.com",
+        "role": "USER"
+      },
+      {
+        "userId": 17,
+        "username": "Joan Miro Séfriane d'Aquitaine",
+        "email": "emilie.lind@gmail.com",
+        "role": "USER"
+      }
+    ],
+    "total": 23,
+    "pageNo": 1,
+    "pageSize": 10,
+    "hasNext": true,
+    "first": true,
+    "last": false
+  },
+  "status": 200,
+  "code": "OK",
+  "message": "SUCCESS",
+  "timestamp": "2023-10-19T17:05:18.079587100"
+}

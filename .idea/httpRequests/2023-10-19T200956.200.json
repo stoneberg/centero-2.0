@@ -1,0 +1,201 @@
+{
+  "success": true,
+  "data": [
+    {
+      "userId": 9,
+      "username": "Chagall Guethenoc",
+      "email": "eddie.breitenberg@hotmail.com",
+      "role": "ADMIN"
+    },
+    {
+      "userId": 9,
+      "username": "Chagall Guethenoc",
+      "email": "eddie.breitenberg@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 20,
+      "username": "Chagall Yvain",
+      "email": "claudio.mann@gmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 4,
+      "username": "Degas Roparzh",
+      "email": "paula.reinger@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 19,
+      "username": "Degas Yvain",
+      "email": "latrina.gaylord@gmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 8,
+      "username": "El Greco Galessin",
+      "email": "emmett.steuber@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 23,
+      "username": "Hong",
+      "email": "chieko.klocko@hotmail.com",
+      "role": "ADMIN"
+    },
+    {
+      "userId": 10,
+      "username": "Joan Miro Urgan",
+      "email": "norberto.kerluke@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 5,
+      "username": "Kandinsky Grüdü",
+      "email": "evelia.brekke@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 18,
+      "username": "Klimt Attila",
+      "email": "cassandra.lind@yahoo.com",
+      "role": "ADMIN"
+    },
+    {
+      "userId": 18,
+      "username": "Klimt Attila",
+      "email": "cassandra.lind@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 22,
+      "username": "Lee",
+      "email": "deidre.hand@hotmail.com",
+      "role": "ADMIN"
+    },
+    {
+      "userId": 22,
+      "username": "Lee",
+      "email": "deidre.hand@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 6,
+      "username": "Monet Spurius Cordius Frontinius",
+      "email": "morris.dietrich@gmail.com",
+      "role": "ADMIN"
+    },
+    {
+      "userId": 6,
+      "username": "Monet Spurius Cordius Frontinius",
+      "email": "morris.dietrich@gmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 2,
+      "username": "Monet Séli",
+      "email": "mack.moore@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 24,
+      "username": "Park",
+      "email": "mirian.treutel@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 17,
+      "username": "Paul Klee Ygerne",
+      "email": "randal.boehm@gmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 12,
+      "username": "Pissarro Capito",
+      "email": "chanelle.bruen@hotmail.com",
+      "role": "ADMIN"
+    },
+    {
+      "userId": 12,
+      "username": "Pissarro Capito",
+      "email": "chanelle.bruen@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 7,
+      "username": "Pissarro Hervé de Rinel",
+      "email": "trevor.kozey@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 1,
+      "username": "Pissarro Loth",
+      "email": "nam.hegmann@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 11,
+      "username": "Raphael Cryda de Tintagel",
+      "email": "edison.erdman@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 21,
+      "username": "Rothko Caius Camillus",
+      "email": "nova.blick@yahoo.com",
+      "role": "ADMIN"
+    },
+    {
+      "userId": 21,
+      "username": "Rothko Caius Camillus",
+      "email": "nova.blick@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 14,
+      "username": "Rothko Père Blaise",
+      "email": "cassie.wisozk@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 16,
+      "username": "Rothko Yvain",
+      "email": "roberto.langworth@gmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 15,
+      "username": "Vettriano Le Jurisconsulte",
+      "email": "nena.crooks@hotmail.com",
+      "role": "ADMIN"
+    },
+    {
+      "userId": 15,
+      "username": "Vettriano Le Jurisconsulte",
+      "email": "nena.crooks@hotmail.com",
+      "role": "USER"
+    },
+    {
+      "userId": 3,
+      "username": "Vincent Le duc d'Aquitaine",
+      "email": "buck.lebsack@yahoo.com",
+      "role": "ADMIN"
+    },
+    {
+      "userId": 3,
+      "username": "Vincent Le duc d'Aquitaine",
+      "email": "buck.lebsack@yahoo.com",
+      "role": "USER"
+    },
+    {
+      "userId": 13,
+      "username": "Winslow Homer Loth",
+      "email": "harold.schamberger@gmail.com",
+      "role": "USER"
+    }
+  ],
+  "status": 200,
+  "code": "OK",
+  "message": "SUCCESS",
+  "timestamp": "2023-10-19T20:09:56.098990700"
+}
