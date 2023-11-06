@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import kr.centero.core.common.interceptor.logging.LoggingInterceptor;
 import kr.centero.core.common.interceptor.mdc.MdcInterceptor;
-import kr.centero.core.common.interceptor.timezone.LocaleTimeZoneInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -33,14 +32,11 @@ import java.util.Locale;
 public class NetzeroAppConfig implements WebMvcConfigurer {
     private final MdcInterceptor mdcInterceptor;
     private final LoggingInterceptor loggingInterceptor;
-    private final LocaleTimeZoneInterceptor localeTimeZoneInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loggingInterceptor);
         registry.addInterceptor(mdcInterceptor);
-        // Locale 및 TimeZone 을 LocaleTimeZoneContextHolder에 담는 처리 필터
-        registry.addInterceptor(localeTimeZoneInterceptor);
     }
 
     @Bean
